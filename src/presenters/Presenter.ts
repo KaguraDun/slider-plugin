@@ -13,15 +13,36 @@ class Presenter {
   }
 
   handleDragThumb = (e: MouseEvent) => {
-    console.log(e);
-    console.log(this.view);
-    let shiftX = e.clientX - this.view.thumb.element.getBoundingClientRect().left;
+    e.preventDefault();
 
-    this.view.thumb.element.addEventListener('mousemove', (e) => {
-      let offsetX = e.pageX - shiftX - this.view.track.getBoundingClientRect().left;
+    let shiftX = e.clientX - this.view.thumb.element.offsetLeft;
+    console.log(e.clientX, this.view.thumb.element.offsetLeft);
+
+    const onMouseMove = (e: MouseEvent) => {
+      let offsetX = e.clientX - shiftX - this.view.track.offsetLeft;
+
+      const trackWidth = this.view.track.getBoundingClientRect().width;
+      const thumbWidth = this.view.thumb.element.getBoundingClientRect().width;
+
+      if (offsetX < 0) {
+        offsetX = 0;
+      }
+
+      if (offsetX > trackWidth - thumbWidth) {
+        offsetX = trackWidth - thumbWidth;
+      }
+
       this.model.setFrom(offsetX);
       this.view.thumb.move(offsetX);
-    });
+    };
+
+    const onMouseUp = () => {
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
   };
 }
 

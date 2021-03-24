@@ -10,17 +10,21 @@ class Thumb {
     this.element;
   }
 
-  render(parent: HTMLElement, from: number, handler: Function) {
+  render(parent: HTMLElement, from: number, handler: any) {
     this.element = createElement('div', 'thumb');
     this.element.style.left = `${from}px`;
     this.element.innerText = String(from);
     this.element.addEventListener('mousedown', handler);
+    this.element.ondragstart = function () {
+      return false;
+    };
 
     parent.append(this.element);
   }
 
   move(from: number) {
     this.element.style.left = `${from}px`;
+    this.element.innerText = String(from);
   }
 }
 
