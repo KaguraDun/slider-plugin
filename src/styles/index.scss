@@ -1,0 +1,24 @@
+@import '~normalize-scss/sass/normalize';
+@include normalize();
+
+.track {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 20px;
+  background: plum;
+  position: relative;
+}
+
+.thumb {
+  width: 25px;
+  height: 40px;
+  background: red;
+  position: absolute;
+}
+
+.container {
+  margin: 300px auto;
+  width: 400px;
+}
