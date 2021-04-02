@@ -2,22 +2,22 @@ import Thumb from './Thumb';
 import Track from './Track';
 
 class View {
-  track: HTMLElement;
+  track: Track;
   parent: HTMLElement;
   thumb: Thumb;
 
   constructor() {
     this.parent = document.querySelector('.container');
-    this.track;
+    this.track = new Track();
     this.thumb = new Thumb();
   }
 
   renderTrack() {
-    this.track = new Track(this.parent).render();
+    this.track.render(this.parent);
   }
 
   renderThumb(from: number, handler: Function) {
-    this.thumb.render(this.track, from, handler);
+    this.thumb.render(this.track.element, from, handler);
   }
 }
 

@@ -1,16 +1,15 @@
 import createElement from '../helpers/createElement';
 
 class Track {
-  parent: HTMLElement;
+  element: HTMLElement;
 
-  constructor(parent: HTMLElement) {
-    this.parent = parent;
+  constructor() {
+    this.element;
   }
 
-  render() {
-    const track = createElement('div', 'track');
-    this.parent.append(track);
-    return track;
+  render(parent: HTMLElement) {
+    this.element = createElement('div', 'track');
+    parent.append(this.element);
   }
 }
 
