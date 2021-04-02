@@ -10,6 +10,7 @@ class Presenter {
   init() {
     this.view.renderTrack();
     this.view.renderThumb(this.model.getFrom(), this.handleDragThumb);
+    this.view.renderTip(this.model.getFrom());
   }
 
   handleDragThumb = (e: MouseEvent) => {
@@ -35,6 +36,7 @@ class Presenter {
 
       this.model.setFrom(offsetX);
       this.view.thumb.move(offsetX);
+      this.view.tip.setValue(offsetX);
     };
 
     const onMouseUp = () => {

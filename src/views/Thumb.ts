@@ -13,7 +13,6 @@ class Thumb {
   render(parent: HTMLElement, from: number, handler: any) {
     this.element = createElement('div', 'thumb');
     this.element.style.left = `${from}px`;
-    this.element.innerText = String(from);
     this.element.addEventListener('mousedown', handler);
     this.element.ondragstart = function () {
       return false;
@@ -24,7 +23,6 @@ class Thumb {
 
   move(from: number) {
     this.element.style.left = `${from}px`;
-    this.element.innerText = String(from);
   }
 }
 
