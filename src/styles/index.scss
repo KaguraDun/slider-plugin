@@ -2,6 +2,7 @@
 @include normalize();
 
 .track {
+  margin-bottom: 25px;
   display: flex;
   align-items: center;
   width: 100%;
@@ -32,7 +33,19 @@
   cursor: pointer;
 }
 
+.scale {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.scale-mark {
+
+}
+
 .container {
+  display: flex;
+  flex-direction: column;
   margin: 300px auto;
   width: 400px;
 }

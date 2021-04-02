@@ -2,11 +2,13 @@ class Model {
   from: number;
   max: number;
   min: number;
+  step: number;
 
   constructor() {
     this.from = 0;
     this.min = 0;
     this.max = 100;
+    this.step = 10;
   }
 
   setMin(value: number) {
@@ -31,6 +33,14 @@ class Model {
 
   getFrom() {
     return this.from;
+  }
+
+  setStep(value: number) {
+    this.step = value;
+  }
+
+  getStep() {
+    return this.step;
   }
 }
 
