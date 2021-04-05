@@ -18,6 +18,10 @@ class View {
     this.scale = new Scale();
   }
 
+  clearAll() {
+    this.parent.innerHTML = '';
+  }
+
   renderTrack() {
     this.track.render(this.parent);
   }
@@ -30,7 +34,7 @@ class View {
     this.tip.render(this.thumb.element, from);
   }
 
-  renderScale(params:any){
+  renderScale(params: any) {
     this.scale.render(this.parent, params);
   }
 }
