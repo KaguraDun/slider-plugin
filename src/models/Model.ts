@@ -1,14 +1,21 @@
 class Model {
-  from: number;
-  max: number;
-  min: number;
-  step: number;
+  private from: number;
+  private max: number;
+  private min: number;
+  private step: number;
+  private to: number;
+  private vertical: boolean;
+  private Range: boolean;
+  private showScale: boolean;
+  private showTip: boolean;
+  private showBar: boolean;
 
   constructor() {
     this.from = 0;
     this.min = 0;
-    this.max = 100;
+    this.max = 50;
     this.step = 10;
+    this.to = 0;
   }
 
   setMin(value: number) {
