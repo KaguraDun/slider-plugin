@@ -18,7 +18,7 @@ class Scale {
 
     for (let i = 0; i <= markCount; i += 1) {
       const mark = createElement('div', 'scale-mark');
-      mark.innerText = String(i * step);
+      mark.innerText = String(min + i * step);
       this.element.append(mark);
     }
 
