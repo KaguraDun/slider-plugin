@@ -17,6 +17,7 @@ class Model {
     this.step = 10;
     this.to = 0;
     this.showScale = true;
+    this.showTip = true;
   }
 
   setMin(value: number) {
@@ -57,6 +58,14 @@ class Model {
 
   setShowScale(show: boolean) {
     this.showScale = show;
+  }
+
+  getShowTip() {
+    return this.showTip;
+  }
+
+  setShowTip(show: boolean) {
+    this.showTip = show;
   }
 }
 

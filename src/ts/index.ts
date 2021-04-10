@@ -71,3 +71,9 @@ document.getElementById('scale').addEventListener('change', (e) => {
   const target = e.target as HTMLInputElement;
   app.showScale(target.checked);
 });
+
+document.getElementById('tip').addEventListener('change', (e) => {
+  const target = e.target as HTMLInputElement;
+  app.showTip(target.checked);
+});
+

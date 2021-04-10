@@ -21,12 +21,13 @@ class Presenter {
     const step = this.model.getStep();
     const from = this.model.getFrom();
     const showScale = this.model.getShowScale();
+    const showTip = this.model.getShowTip();
 
     this.view.clearAll();
     this.view.renderTrack();
     this.view.renderThumb(this.handleDragThumb);
-    this.view.renderTip(min);
 
+    if (showTip) this.view.renderTip(min);
     if (showScale) this.view.renderScale({ min, max, step });
 
     const fromCoords = this.getFromCoordinates(from);
@@ -125,6 +126,11 @@ class Presenter {
 
   showScale(show: boolean) {
     this.model.setShowScale(show);
+    this.render();
+  }
+
+  showTip(show: boolean) {
+    this.model.setShowTip(show);
     this.render();
   }
 }
