@@ -11,7 +11,7 @@ class View {
   scale: Scale;
 
   constructor() {
-    this.parent = document.querySelector('.container');
+    this.parent;
     this.track = new Track();
     this.thumb = new Thumb();
     this.tip = new Tip();
@@ -26,8 +26,8 @@ class View {
     this.track.render(this.parent);
   }
 
-  renderThumb(from: number, handler: Function) {
-    this.thumb.render(this.track.element, from, handler);
+  renderThumb(handler: any) {
+    this.thumb.render(this.track.element, handler);
   }
 
   renderTip(from: number) {

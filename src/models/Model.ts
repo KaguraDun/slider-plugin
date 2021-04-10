@@ -11,7 +11,7 @@ class Model {
   private showBar: boolean;
 
   constructor() {
-    this.from = 0;
+    this.from = 25;
     this.min = 0;
     this.max = 50;
     this.step = 10;

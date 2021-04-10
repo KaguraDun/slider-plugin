@@ -2,17 +2,13 @@ import createElement from '../helpers/createElement';
 
 class Thumb {
   element: HTMLElement;
-  parent: HTMLElement;
-  from: number;
-  handler: Function;
 
   constructor() {
     this.element;
   }
 
-  render(parent: HTMLElement, from: number, handler: any) {
+  render(parent: HTMLElement, handler: any) {
     this.element = createElement('div', 'thumb');
-    this.element.style.left = `${from}px`;
     this.element.addEventListener('mousedown', handler);
     this.element.ondragstart = function () {
       return false;

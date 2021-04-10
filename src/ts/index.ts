@@ -2,16 +2,14 @@ import '../styles/index.scss';
 
 import createElement from '../helpers/createElement';
 import Presenter from '../presenters/Presenter';
-import Model from '../models/Model';
-import View from '../views/View';
 
 const container = createElement('div', 'container');
 const inputsContainer = createElement('div', 'inputs-container');
 
 document.body.append(container, inputsContainer);
 
-const app = new Presenter(new Model(), new View());
-app.render();
+const app = new Presenter();
+app.createSlider(container);
 
 const numberInputs = ['min', 'max', 'step', 'from', 'to'];
 const booleanInputs = ['vertical', 'range', 'scale', 'bar', 'tip'];
@@ -45,4 +43,9 @@ document.getElementById('max').addEventListener('change', (e) => {
 document.getElementById('step').addEventListener('change', (e) => {
   const target = e.target as HTMLInputElement;
   app.changeStep(Number(target.value));
+});
+
+document.getElementById('from').addEventListener('change', (e) => {
+  const target = e.target as HTMLInputElement;
+  app.changeFrom(Number(target.value));
 });
