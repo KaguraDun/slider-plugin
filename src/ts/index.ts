@@ -30,6 +30,23 @@ numberInputs.forEach((inputName) => {
   inputsContainer.append(inputContainer);
 });
 
+booleanInputs.forEach((inputName) => {
+  const inputContainer = createElement('div', 'checkbox-container');
+
+  const label = createElement('label', 'checkbox-label') as HTMLLabelElement;
+  label.htmlFor = inputName;
+  label.innerText = inputName;
+
+  const checkbox = createElement('input', 'checkbox') as HTMLInputElement;
+  checkbox.type = 'checkbox';
+  checkbox.id = inputName;
+  const propertyName = 'show' + inputName.charAt(0).toUpperCase() + inputName.slice(1);
+  checkbox.checked = app.model[propertyName];
+
+  inputContainer.append(label, checkbox);
+  inputsContainer.append(inputContainer);
+});
+
 document.getElementById('min').addEventListener('change', (e) => {
   const target = e.target as HTMLInputElement;
   app.changeMin(Number(target.value));
@@ -48,4 +65,9 @@ document.getElementById('step').addEventListener('change', (e) => {
 document.getElementById('from').addEventListener('change', (e) => {
   const target = e.target as HTMLInputElement;
   app.changeFrom(Number(target.value));
+});
+
+document.getElementById('scale').addEventListener('change', (e) => {
+  const target = e.target as HTMLInputElement;
+  app.showScale(target.checked);
 });

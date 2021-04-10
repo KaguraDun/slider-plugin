@@ -20,12 +20,14 @@ class Presenter {
     const max = this.model.getMax();
     const step = this.model.getStep();
     const from = this.model.getFrom();
+    const showScale = this.model.getShowScale();
 
     this.view.clearAll();
     this.view.renderTrack();
     this.view.renderThumb(this.handleDragThumb);
     this.view.renderTip(min);
-    this.view.renderScale({ min, max, step });
+
+    if (showScale) this.view.renderScale({ min, max, step });
 
     const fromCoords = this.getFromCoordinates(from);
     this.moveThumb(fromCoords);
@@ -119,6 +121,11 @@ class Presenter {
   changeFrom(value: number) {
     const offsetX = this.getFromCoordinates(value);
     this.moveThumb(offsetX);
+  }
+
+  showScale(show: boolean) {
+    this.model.setShowScale(show);
+    this.render();
   }
 }
 

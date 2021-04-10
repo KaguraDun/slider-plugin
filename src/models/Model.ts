@@ -16,6 +16,7 @@ class Model {
     this.max = 50;
     this.step = 10;
     this.to = 0;
+    this.showScale = true;
   }
 
   setMin(value: number) {
@@ -48,6 +49,14 @@ class Model {
 
   getStep() {
     return this.step;
+  }
+
+  getShowScale() {
+    return this.showScale;
+  }
+
+  setShowScale(show: boolean) {
+    this.showScale = show;
   }
 }
 
