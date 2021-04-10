@@ -14,7 +14,7 @@ class Scale {
 
     this.element = createElement('div', 'scale');
 
-    const markCount = (Math.abs(min) + Math.abs(max)) / step;
+    const markCount = (max - min) / step;
 
     for (let i = 0; i <= markCount; i += 1) {
       const mark = createElement('div', 'scale-mark');
