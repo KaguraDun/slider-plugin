@@ -6,14 +6,16 @@ import Scale from './Scale';
 class View {
   track: Track;
   parent: HTMLElement;
-  thumb: Thumb;
+  firstThumb: Thumb;
+  secondThumb: Thumb;
   tip: Tip;
   scale: Scale;
 
   constructor() {
     this.parent;
     this.track = new Track();
-    this.thumb = new Thumb();
+    this.firstThumb = new Thumb();
+    this.secondThumb = new Thumb();
     this.tip = new Tip();
     this.scale = new Scale();
   }
@@ -27,11 +29,12 @@ class View {
   }
 
   renderThumb(handler: any) {
-    this.thumb.render(this.track.element, handler);
+    this.firstThumb.render(this.track.element, handler);
   }
 
-  renderTip(from: number) {
-    this.tip.render(this.thumb.element, from);
+  renderRange(handler: any) {
+    this.firstThumb.render(this.track.element, handler);
+    this.secondThumb.render(this.track.element, handler);
   }
 
   renderScale(params: any) {

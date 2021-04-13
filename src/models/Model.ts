@@ -5,19 +5,20 @@ class Model {
   private step: number;
   private to: number;
   private vertical: boolean;
-  private Range: boolean;
+  private isRange: boolean;
   private showScale: boolean;
   private showTip: boolean;
   private showBar: boolean;
 
   constructor() {
-    this.from = 25;
+    this.from = 20;
     this.min = 0;
     this.max = 50;
     this.step = 10;
-    this.to = 0;
+    this.to = 40;
     this.showScale = true;
     this.showTip = true;
+    this.isRange = true;
   }
 
   setMin(value: number) {
@@ -44,6 +45,14 @@ class Model {
     return this.from;
   }
 
+  setTo(value: number) {
+    this.to = value;
+  }
+
+  getTo() {
+    return this.to;
+  }
+
   setStep(value: number) {
     this.step = value;
   }
@@ -66,6 +75,14 @@ class Model {
 
   setShowTip(show: boolean) {
     this.showTip = show;
+  }
+
+  getIsRange() {
+    return this.isRange;
+  }
+
+  setIsRange(isRange: boolean) {
+    this.isRange = isRange;
   }
 }
 

@@ -67,9 +67,20 @@ document.getElementById('from').addEventListener('change', (e) => {
   app.changeFrom(Number(target.value));
 });
 
+document.getElementById('to').addEventListener('change', (e) => {
+  const target = e.target as HTMLInputElement;
+  app.changeTo(Number(target.value));
+});
+
+
 document.getElementById('scale').addEventListener('change', (e) => {
   const target = e.target as HTMLInputElement;
   app.showScale(target.checked);
+});
+
+document.getElementById('range').addEventListener('change', (e) => {
+  const target = e.target as HTMLInputElement;
+  app.isRange(target.checked);
 });
 
 document.getElementById('tip').addEventListener('change', (e) => {

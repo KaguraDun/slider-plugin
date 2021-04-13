@@ -9,15 +9,15 @@ class Tip {
     this.element;
   }
 
-  render(parent: HTMLElement, from: number) {
+  render(parent: HTMLElement, value: number) {
     this.element = createElement('div', 'tip');
-    this.element.innerText = String(from);
+    this.element.innerText = String(value);
 
     parent.append(this.element);
   }
 
-  setValue(from: number) {
-    this.element.innerText = String(from);
+  setValue(value: number) {
+    this.element.innerText = String(value);
   }
 }
 
