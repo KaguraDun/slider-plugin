@@ -16,6 +16,7 @@ class Model {
     this.max = 50;
     this.step = 10;
     this.to = 40;
+    this.showBar = true;
     this.showScale = true;
     this.showTip = true;
     this.isRange = true;
@@ -75,6 +76,14 @@ class Model {
 
   setShowTip(show: boolean) {
     this.showTip = show;
+  }
+
+  getShowBar() {
+    return this.showBar;
+  }
+
+  setShowBar(show: boolean) {
+    this.showBar = show;
   }
 
   getIsRange() {

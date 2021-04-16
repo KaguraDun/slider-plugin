@@ -2,6 +2,7 @@ import Thumb from './Thumb';
 import Track from './Track';
 import Tip from './Tip';
 import Scale from './Scale';
+import Bar from './Bar';
 
 class View {
   track: Track;
@@ -10,6 +11,7 @@ class View {
   secondThumb: Thumb;
   tip: Tip;
   scale: Scale;
+  bar: Bar;
 
   constructor() {
     this.parent;
@@ -18,6 +20,7 @@ class View {
     this.secondThumb = new Thumb();
     this.tip = new Tip();
     this.scale = new Scale();
+    this.bar = new Bar();
   }
 
   clearAll() {
@@ -26,6 +29,10 @@ class View {
 
   renderTrack() {
     this.track.render(this.parent);
+  }
+
+  renderBar(){
+    this.bar.render(this.track.element);
   }
 
   renderThumb(handler: any) {
@@ -40,6 +47,7 @@ class View {
   renderScale(params: any) {
     this.scale.render(this.parent, params);
   }
+
 }
 
 export default View;

@@ -88,3 +88,8 @@ document.getElementById('tip').addEventListener('change', (e) => {
   app.showTip(target.checked);
 });
 
+document.getElementById('bar').addEventListener('change', (e) => {
+  const target = e.target as HTMLInputElement;
+  app.showBar(target.checked);
+});
+

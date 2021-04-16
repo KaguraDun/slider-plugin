@@ -23,10 +23,12 @@ class Presenter {
     const to = this.model.getTo();
     const showScale = this.model.getShowScale();
     const showTip = this.model.getShowTip();
+    const showBar = this.model.getShowBar();
     const isRange = this.model.getIsRange();
 
     this.view.clearAll();
     this.view.renderTrack();
+    if (showBar) this.view.renderBar();
 
     if (isRange) {
       this.view.renderRange(this.handleDragThumb);
@@ -62,7 +64,7 @@ class Presenter {
     const shiftX = e.clientX - this.view.firstThumb.element.offsetLeft;
 
     const onMouseMove = (e: MouseEvent) => {
-      const offsetX = e.clientX - shiftX - this.view.track.element.offsetLeft;
+      const offsetX = e.clientX - shiftX;
       const isFirstThumb = selectedThumb === this.view.firstThumb;
 
       if (isFirstThumb) {
@@ -105,23 +107,19 @@ class Presenter {
     const PXperMark = this.getPXPerMark({ min, max, step });
     const currentMark = Math.floor(offsetX / PXperMark);
 
-    const shiftInPX = currentMark * PXperMark;
+    let shiftInPX = currentMark * PXperMark;
     let thumbValue = currentMark * step + min;
+    const trackWidthWithoutThumb = this.getTrackWidthWithoutThumb();
 
     if (thumbValue < min) thumbValue = min;
     if (thumbValue > max) thumbValue = max;
+
+    if (shiftInPX > trackWidthWithoutThumb) shiftInPX = trackWidthWithoutThumb;
+    if (shiftInPX < 0) shiftInPX = 0;
     return { shiftInPX, thumbValue };
   }
 
-  moveThumb(thumb: any, offsetX: number) {
-    const trackWidthWithoutThumb = this.getTrackWidthWithoutThumb();
-    const { shiftInPX } = this.calculateThumbProperties(offsetX);
-
-    const isRightBorder = shiftInPX > trackWidthWithoutThumb;
-    const isLeftBorder = shiftInPX < 0;
-    console.log(shiftInPX);
-    if (isLeftBorder || isRightBorder) return;
-
+  moveThumb(thumb: any, shiftInPX: number) {
     thumb.move(shiftInPX);
   }
 
@@ -143,15 +141,24 @@ class Presenter {
   changeFrom(value: number, offsetX?: number) {
     if (!offsetX) offsetX = this.getCoordinatesByValue(value);
 
-    const { thumbValue } = this.calculateThumbProperties(offsetX);
+    const { thumbValue, shiftInPX } = this.calculateThumbProperties(offsetX);
     const to = this.model.getTo();
     const isRange = this.model.getIsRange();
-    
+
     if (isRange && thumbValue >= to) return;
 
-    this.moveThumb(this.view.firstThumb, offsetX);
+    this.view.firstThumb.move(shiftInPX);
     this.model.setFrom(thumbValue);
     this.view.firstThumb.tip.setValue(thumbValue);
+
+    if (isRange) {
+      this.view.bar.updateRange(
+        this.view.firstThumb.element.offsetLeft,
+        this.view.secondThumb.element.offsetLeft,
+      );
+    } else {
+      this.view.bar.update(this.view.firstThumb.element.offsetLeft);
+    }
   }
 
   changeTo(value: number, offsetX?: number) {
@@ -160,15 +167,18 @@ class Presenter {
     if (!isRange) return;
     if (!offsetX) offsetX = this.getCoordinatesByValue(value);
 
-    const { thumbValue } = this.calculateThumbProperties(offsetX);
+    const { thumbValue, shiftInPX } = this.calculateThumbProperties(offsetX);
     const from = this.model.getFrom();
 
     if (thumbValue <= from) return;
 
-    console.log('valto', thumbValue);
-    this.moveThumb(this.view.secondThumb, offsetX);
+    this.view.secondThumb.move(shiftInPX);
     this.model.setTo(thumbValue);
     this.view.secondThumb.tip.setValue(thumbValue);
+    this.view.bar.updateRange(
+      this.view.firstThumb.element.offsetLeft,
+      this.view.secondThumb.element.offsetLeft,
+    );
   }
 
   showScale(show: boolean) {
@@ -178,6 +188,11 @@ class Presenter {
 
   showTip(show: boolean) {
     this.model.setShowTip(show);
+    this.render();
+  }
+
+  showBar(show: boolean) {
+    this.model.setShowBar(show);
     this.render();
   }
 
