@@ -10,7 +10,7 @@ class Scale {
   }
 
   render(parent: HTMLElement, params: any) {
-    const { min, max, step } = params;
+    const { min, max, step, isVertical } = params;
 
     this.element = createElement('div', 'scale');
 
@@ -21,6 +21,8 @@ class Scale {
       mark.innerText = String(min + i * step);
       this.element.append(mark);
     }
+    
+    if (isVertical) this.element.classList.add('slider-scale--vertical');
 
     parent.append(this.element);
   }

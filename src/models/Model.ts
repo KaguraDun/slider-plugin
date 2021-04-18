@@ -4,7 +4,7 @@ class Model {
   private min: number;
   private step: number;
   private to: number;
-  private vertical: boolean;
+  private isVertical: boolean;
   private isRange: boolean;
   private showScale: boolean;
   private showTip: boolean;
@@ -20,6 +20,7 @@ class Model {
     this.showScale = true;
     this.showTip = true;
     this.isRange = true;
+    this.isVertical = true;
   }
 
   setMin(value: number) {
@@ -92,6 +93,14 @@ class Model {
 
   setIsRange(isRange: boolean) {
     this.isRange = isRange;
+  }
+
+  getIsVertical() {
+    return this.isVertical;
+  }
+
+  setIsVertical(isVertical: boolean) {
+    this.isVertical = isVertical;
   }
 }
 

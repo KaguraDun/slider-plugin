@@ -18,20 +18,24 @@ class View {
     this.track = new Track();
     this.firstThumb = new Thumb();
     this.secondThumb = new Thumb();
-    this.tip = new Tip();
     this.scale = new Scale();
     this.bar = new Bar();
+  }
+
+  setParent(parent: HTMLElement) {
+    this.parent = parent;
+    this.parent.classList.add('slider');
   }
 
   clearAll() {
     this.parent.innerHTML = '';
   }
 
-  renderTrack() {
-    this.track.render(this.parent);
+  renderTrack(isVertical: boolean) {
+    this.track.render(this.parent, isVertical);
   }
 
-  renderBar(){
+  renderBar() {
     this.bar.render(this.track.element);
   }
 

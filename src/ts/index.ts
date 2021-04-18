@@ -3,7 +3,7 @@ import '../styles/index.scss';
 import createElement from '../helpers/createElement';
 import Presenter from '../presenters/Presenter';
 
-const container = createElement('div', 'container');
+const container = createElement('div');
 const inputsContainer = createElement('div', 'inputs-container');
 
 document.body.append(container, inputsContainer);
@@ -40,8 +40,8 @@ booleanInputs.forEach((inputName) => {
   const checkbox = createElement('input', 'checkbox') as HTMLInputElement;
   checkbox.type = 'checkbox';
   checkbox.id = inputName;
-  const propertyName = 'show' + inputName.charAt(0).toUpperCase() + inputName.slice(1);
-  checkbox.checked = app.model[propertyName];
+  const propertyName = inputName.charAt(0).toUpperCase() + inputName.slice(1);
+  checkbox.checked = app.model['show' + propertyName] || app.model['is' + propertyName];
 
   inputContainer.append(label, checkbox);
   inputsContainer.append(inputContainer);
@@ -72,7 +72,6 @@ document.getElementById('to').addEventListener('change', (e) => {
   app.changeTo(Number(target.value));
 });
 
-
 document.getElementById('scale').addEventListener('change', (e) => {
   const target = e.target as HTMLInputElement;
   app.showScale(target.checked);
@@ -93,3 +92,7 @@ document.getElementById('bar').addEventListener('change', (e) => {
   app.showBar(target.checked);
 });
 
+document.getElementById('vertical').addEventListener('change', (e) => {
+  const target = e.target as HTMLInputElement;
+  app.isVertical(target.checked);
+});

@@ -21,11 +21,11 @@ class Thumb {
   }
 
   move(value: number) {
-    this.element.style.left = `${value}px`;
+     this.element.style.left = `${value}px`;
   }
 
-  renderTip(value: number) {
-    this.tip.render(this.element, value);
+  renderTip(value: number, isVertical: boolean) {
+    this.tip.render(this.element, value, isVertical);
   }
 }
 

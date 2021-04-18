@@ -14,7 +14,7 @@ body {
   background: lightblue;
 }
 
-.track {
+.slider-track {
   position: relative;
   margin-bottom: 25px;
   display: flex;
@@ -56,7 +56,7 @@ body {
 .scale-mark {
 }
 
-.container {
+.slider {
   display: flex;
   flex-direction: column;
   margin: 200px auto 50px;
@@ -98,4 +98,22 @@ body {
 .checkbox {
   width: 30px;
   height: 30px;
+}
+
+.slider--vertical {
+  transform: rotate(90deg);
+}
+
+.slider-track--vertical {
+}
+
+.tip-vertical {
+  transform: rotate(-90deg);
+}
+
+.slider-scale--vertical {
+
+  .scale-mark{
+    transform: rotate(-90deg);
+  }
 }
