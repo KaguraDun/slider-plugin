@@ -1,6 +1,7 @@
 import Model from '../models/Model';
 import View from '../views/View';
 
+import '../styles/slider.scss';
 import sliderPropertiesInterface from '../models/SliderPropertiesInterface';
 
 class Presenter {
