@@ -2,6 +2,7 @@ import '../styles/index.scss';
 
 import createElement from '../helpers/createElement';
 import Presenter from '../presenters/Presenter';
+import sliderPropertiesInterface from '../models/SliderPropertiesInterface';
 
 const container = createElement('div');
 const inputsContainer = createElement('div', 'inputs-container');
@@ -9,7 +10,20 @@ const inputsContainer = createElement('div', 'inputs-container');
 document.body.append(container, inputsContainer);
 
 const app = new Presenter();
-app.createSlider(container);
+const sliderProperties: sliderPropertiesInterface = {
+  from: -30,
+  min: -50,
+  max: 50,
+  step: 10,
+  to: 30,
+  showBar: true,
+  showScale: true,
+  showTip: true,
+  isRange: true,
+  isVertical: true,
+};
+
+app.createSlider(container, sliderProperties);
 
 const numberInputs = ['min', 'max', 'step', 'from', 'to'];
 const booleanInputs = ['vertical', 'range', 'scale', 'bar', 'tip'];

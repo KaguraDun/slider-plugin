@@ -1,6 +1,8 @@
 import Model from '../models/Model';
 import View from '../views/View';
 
+import sliderPropertiesInterface from '../models/SliderPropertiesInterface';
+
 class Presenter {
   model: any;
   view: View;
@@ -10,9 +12,19 @@ class Presenter {
     this.view = new View();
   }
 
-  createSlider(parent: HTMLElement, params?: any) {
+  createSlider(parent: HTMLElement, params?: sliderPropertiesInterface) {
+    if (params) this.setSliderParams(params);
+
     this.view.setParent(parent);
     this.render();
+  }
+
+  setSliderParams(params: sliderPropertiesInterface) {
+    Object.keys(params).forEach((key: keyof typeof params) => {
+      const methodName = 'set' + key.charAt(0).toUpperCase() + key.slice(1);
+      const value = params[key];
+      this.model[methodName](value);
+    });
   }
 
   render() {
