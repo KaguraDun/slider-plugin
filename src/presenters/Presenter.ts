@@ -143,23 +143,13 @@ class Presenter {
     return thumbValue;
   }
 
-  moveThumb(thumb: any, shiftInPX: number) {
-    thumb.move(shiftInPX);
-  }
-
-  changeMin(value: number) {
-    this.model.setMin(value);
-    this.render();
-  }
-
-  changeMax(value: number) {
-    this.model.setMax(value);
-    this.render();
-  }
-
-  changeStep(value: number) {
-    this.model.setStep(value);
-    this.render();
+  getCoordinatesByValue(value: number) {
+    const min = this.model.getMin();
+    const PXPerValue = this.getPXPerMark() / this.model.getStep();
+    const coordinates = PXPerValue * value;
+    const negativeOffset = PXPerValue * Math.abs(min);
+    
+    return min > 0 ? coordinates - negativeOffset : coordinates + negativeOffset;
   }
 
   changeFrom(value: number, offsetX?: number) {
