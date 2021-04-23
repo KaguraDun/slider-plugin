@@ -13,14 +13,14 @@ class Bar {
   }
 
   update(firstThumbOffset: number) {
-    this.element.style.width = String(firstThumbOffset) + 'px';
+    this.element.style.width = `${String(firstThumbOffset)}px`;
   }
 
   updateRange(firstThumbOffset: number, secondThumbOffset: number) {
     const distanceBetween = secondThumbOffset - firstThumbOffset;
 
-    this.element.style.left = String(firstThumbOffset) + 'px';
-    this.element.style.width = String(distanceBetween) + 'px';
+    this.element.style.left = `${String(firstThumbOffset)}px`;
+    this.element.style.width = `${String(distanceBetween)}px`;
   }
 }
 

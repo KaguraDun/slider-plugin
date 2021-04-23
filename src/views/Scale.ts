@@ -12,12 +12,12 @@ class Scale {
   render(parent: HTMLElement, params: any) {
     const { min, max, step, isVertical } = params;
 
-    this.element = createElement('div', 'scale');
+    this.element = createElement('div', 'slider-scale');
 
     const markCount = (max - min) / step;
 
     for (let i = 0; i <= markCount; i += 1) {
-      const mark = createElement('div', 'scale-mark');
+      const mark = createElement('div', 'slider-scale-mark');
       mark.innerText = String(min + i * step);
       this.element.append(mark);
     }

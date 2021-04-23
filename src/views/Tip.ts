@@ -10,9 +10,9 @@ class Tip {
   }
 
   render(parent: HTMLElement, value: number, isVertical :boolean) {
-    this.element = createElement('div', 'tip');
+    this.element = createElement('div', 'slider-tip');
     this.element.innerText = String(value);
-    if (isVertical) this.element.classList.add('tip-vertical')
+    if (isVertical) this.element.classList.add('slider-tip--vertical')
     parent.append(this.element);
   }
 

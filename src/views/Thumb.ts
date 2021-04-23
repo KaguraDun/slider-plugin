@@ -11,7 +11,7 @@ class Thumb {
   }
 
   render(parent: HTMLElement, handler: any) {
-    this.element = createElement('div', 'thumb');
+    this.element = createElement('div', 'slider-thumb');
     this.element.addEventListener('mousedown', (e) => handler(e, this));
     this.element.ondragstart = function () {
       return false;
@@ -21,7 +21,7 @@ class Thumb {
   }
 
   move(value: number) {
-     this.element.style.left = `${value}px`;
+    this.element.style.left = `${value}px`;
   }
 
   renderTip(value: number, isVertical: boolean) {
