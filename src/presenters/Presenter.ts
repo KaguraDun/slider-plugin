@@ -64,15 +64,6 @@ class Presenter {
     if (isRange) this.changeTo(to);
   }
 
-  getCoordinatesByValue(value: number) {
-    const step = this.model.getStep();
-
-    const PXperMark = this.getPXPerMark();
-    const PXperValue = PXperMark / step;
-
-    return PXperValue * value;
-  }
-
   handleDragThumb = (e: MouseEvent, selectedThumb: any) => {
     e.preventDefault();
     const shiftX = e.clientX - selectedThumb.element.offsetLeft;
@@ -163,7 +154,7 @@ class Presenter {
     const PXPerValue = this.getPXPerMark() / this.model.getStep();
     const coordinates = PXPerValue * value;
     const negativeOffset = PXPerValue * Math.abs(min);
-    
+
     return min > 0 ? coordinates - negativeOffset : coordinates + negativeOffset;
   }
 
