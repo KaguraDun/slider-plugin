@@ -3,6 +3,7 @@ import View from '../views/View';
 
 import '../styles/slider.scss';
 import sliderPropertiesInterface from '../models/SliderPropertiesInterface';
+import sliderPropertiesList from '../models/SliderPropertiesList';
 
 class Presenter {
   model: any;
@@ -21,10 +22,11 @@ class Presenter {
   }
 
   setSliderParams(params: sliderPropertiesInterface) {
-    Object.keys(params).forEach((key: keyof typeof params) => {
-      const methodName = 'set' + key.charAt(0).toUpperCase() + key.slice(1);
-      const value = params[key];
-      this.model[methodName](value);
+    Object.keys(params).forEach((param: keyof typeof params) => {
+      const value = params[param];
+      const methodName = sliderPropertiesList[param];
+
+      if (methodName) this.model[methodName](value);
     });
   }
 
