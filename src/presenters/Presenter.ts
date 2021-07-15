@@ -230,6 +230,21 @@ class Presenter {
     this.model.setIsVertical(isVertical);
     this.render();
   }
+
+  changeMin(min: number) {
+    this.model.setMin(min);
+    this.render();
+  }
+
+  changeMax(max: number) {
+    this.model.setMax(max);
+    this.render();
+  }
+
+  changeStep(step: number) {
+    this.model.setStep(step);
+    this.render();
+  }
 }
 
 export default Presenter;
