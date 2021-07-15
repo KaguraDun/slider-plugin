@@ -221,12 +221,12 @@ class Presenter {
     this.render();
   }
 
-  isRange(isRange: boolean) {
+  setRange(isRange: boolean) {
     this.model.setIsRange(isRange);
     this.render();
   }
 
-  isVertical(isVertical: boolean) {
+  setVertical(isVertical: boolean) {
     this.model.setIsVertical(isVertical);
     this.render();
   }

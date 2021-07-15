@@ -93,7 +93,7 @@ document.getElementById('scale').addEventListener('change', (e) => {
 
 document.getElementById('range').addEventListener('change', (e) => {
   const target = e.target as HTMLInputElement;
-  app.isRange(target.checked);
+  app.setRange(target.checked);
 });
 
 document.getElementById('tip').addEventListener('change', (e) => {
@@ -108,5 +108,5 @@ document.getElementById('bar').addEventListener('change', (e) => {
 
 document.getElementById('vertical').addEventListener('change', (e) => {
   const target = e.target as HTMLInputElement;
-  app.isVertical(target.checked);
+  app.setVertical(target.checked);
 });
