@@ -1,13 +1,60 @@
 {
-    "compilerOptions": {
-        "outDir": "./dist/",
-        "noImplicitAny": true,
-        "module": "es6",
-        "target": "es5",
-        "jsx": "react",
-        "allowJs": true
-    },
-    "include": [
-        "src/**/*"
-    ]
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noEmit": true,
+    "noEmitOnError": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+    "removeComments": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "es5",
+    "plugins": [
+      {
+        "name": "typescript-plugin-css-modules"
+      }
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ],
+      "@/helpers/*": [
+        "src/helpers/*"
+      ],
+      "@/images/*": [
+        "src/images/*"
+      ],
+      "@/models/*": [
+        "src/models/*"
+      ],
+      "@/presenter/*": [
+        "src/presenter/*"
+      ],
+      "@/styles/*": [
+        "src/styles/*"
+      ],
+      "@/views/*": [
+        "src/views/*"
+      ],
+      "@/test/*": [
+        "src/test/*"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*"
+  ]
 }

@@ -1,10 +1,17 @@
 {
+  "root": true,
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": [
-      "./tsconfig.json"
-    ],
-    "rules": {
+    "ecmaVersion": 11,
+    "sourceType": "module",
+    "project": ["./tsconfig.json"],
+    "warnOnUnsupportedTypeScriptVersion": false
+  },
+  "ignorePatterns": [
+    "dist",
+    "node_modules"
+  ],
+    "rules": { 
       "object-curly-newline": "off",
       "linebreak-style": 0,
       "max-len": [
@@ -22,29 +29,19 @@
       ],
       "prettier/prettier": [
         "error"
-      ]
+      ],
+      "lines-between-class-members": "off",
+      "@typescript-eslint/lines-between-class-members": ["off"],
+      "react/jsx-filename-extension": [0]
     },
     "settings": {
-      "import/extensions": [
-        ".js",
-        ".jsx",
-        ".ts",
-        ".tsx"
-      ],
+      "import/extensions": [".js", ".ts"],
       "import/parsers": {
-        "@typescript-eslint/parser": [
-          ".ts",
-          ".tsx"
-        ]
+        "@typescript-eslint/parser": [".ts"]
       },
       "import/resolver": {
-        "node": {
-          "extensions": [
-            ".js",
-            ".jsx",
-            ".ts",
-            ".tsx"
-          ]
+        "webpack": {
+          "config": "config/webpack.common.js"
         }
       }
     },
@@ -53,13 +50,25 @@
       "browser": true
     },
     "plugins": [
-      "prettier",
-      "@typescript-eslint"
+      "import",
+      "jest",
+      "@typescript-eslint",
+      "prettier"
     ],
     "extends": [
-      "airbnb-typescript/base", // Airbnb style guide
+      "airbnb-typescript",
       "plugin:prettier/recommended",
-      "prettier/@typescript-eslint"
+      "plugin:jest/recommended",
+      "plugin:import/typescript"
+    ],"overrides": [
+      {
+        "files": ["*.ts", "*.tsx"],
+        "extends": [
+          "plugin:@typescript-eslint/eslint-recommended",
+          "plugin:@typescript-eslint/recommended"
+        ],
+        "parser": "@typescript-eslint/parser",
+        "plugins": ["@typescript-eslint"]
+      }
     ]
-  }
 }

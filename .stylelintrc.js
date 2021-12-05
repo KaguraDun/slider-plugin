@@ -1,7 +1,6 @@
 module.exports = {
-  extends: ["stylelint-config-airbnb",
-            "stylelint-config-rational-order",
-            "stylelint-prettier/recommended"],
+  extends: ["stylelint-prettier/recommended",
+             "stylelint-config-rational-order"],
   plugins: ["stylelint-order", "stylelint-scss"],
   rules: {
     // Дополнительные правила

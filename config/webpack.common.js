@@ -1,42 +1,51 @@
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const paths = require('./paths');
+const ESLintPlugin = require('eslint-webpack-plugin');
+const StylelintPlugin = require('stylelint-webpack-plugin');
 
 module.exports = {
+  target: 'web',
   // Where webpack looks to start building the bundle
   entry: [`${paths.src}/ts/index.ts`],
 
   // Where webpack outputs the assets and bundles
   output: {
     path: paths.build,
-    filename: '[name].bundle.js',
-    publicPath: '/',
-    assetModuleFilename: 'assets/resource/[name][ext]',
+    filename: '[name].[fullhash].js',
+    publicPath: '',
   },
+  cache: {
+    // 1. Set cache type to filesystem
+    type: 'filesystem',
+    allowCollectingMemory: true,
+    buildDependencies: {
+      // 2. Add your config as buildDependency to get cache invalidation on config change
+      config: [__filename],
+
+      // 3. If you have other things the build depends on you can add them here
+      // Note that webpack, loaders and all modules referenced from your config are automatically added
+    },
+  },
+
 
   // Customize the webpack build process
   plugins: [
     // Removes/cleans build folders and unused assets when rebuilding
     new CleanWebpackPlugin(),
 
-    // Copies files from target to destination folder
-    new CopyWebpackPlugin({
-      patterns: [
-        {
-          from: paths.public,
-          to: 'assets/',
-          globOptions: {
-            ignore: ['*.DS_Store'],
-          },
-        },
-      ],
+    new ESLintPlugin({
+      files: ['.', 'src', 'config'],
+      extensions: ['ts', 'js'],
+      cache: true,
+      cacheLocation: 'node_modules/.cache/eslint/.eslintcache',
     }),
+    
+    new StylelintPlugin({ fix: true }),
 
     // Generates an HTML file from a template
     // Generates deprecation warning: https://github.com/jantimon/html-webpack-plugin/issues/1501
     new HtmlWebpackPlugin({
-      // title: "webpack Boilerplate",
       favicon: `${paths.src}/images/favicon.png`,
       template: `${paths.src}/template.html`, // template file
       filename: 'index.html', // output file
@@ -48,21 +57,12 @@ module.exports = {
     rules: [
       // JavaScript: Use Babel to transpile JavaScript files
       {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: ['babel-loader'],
+        test: /\.(ts|js)x?$/,
+        use: {
+          loader: 'babel-loader',
+          options: { cacheDirectory: true },
+        },
       },
-      {
-        test: /\.ts(x)?$/,
-        loader: 'ts-loader',
-        exclude: /node_modules/,
-      },
-      {
-        test: /\.ts(x)?$/,
-        loader: 'eslint-loader',
-        exclude: /node_modules/,
-      },
-
 
       // Styles: Inject CSS into the head with source maps
       {
@@ -83,7 +83,7 @@ module.exports = {
         test: /\.(?:ico|gif|png|jpg|jpeg)$/i,
         type: 'asset/resource',
         generator: {
-          filename: 'assets/images/[name][ext]',
+          filename: 'assets/images/[name][contenthash][ext]',
         },
       },
 
@@ -92,7 +92,7 @@ module.exports = {
         test: /\.(woff(2)?|eot|ttf|otf)$/,
         type: 'asset/resource',
         generator: {
-          filename: 'assets/fonts/[name][ext]',
+          filename: 'assets/fonts/[name][contenthash][[ext]',
         },
       },
 
@@ -100,19 +100,41 @@ module.exports = {
         test: /\.(svg)$/,
         type: 'asset/resource',
         generator: {
-          filename: 'assets/icons/[name][ext]',
+          filename: 'assets/icons/[name][contenthash][[ext]',
         },
       },
       {
         test: /\.(ogg|mp3|wav|mpe?g)$/i,
         type: 'asset/resource',
         generator: {
-          filename: 'assets/audio/[name][ext]',
+          filename: 'assets/audio/[name][contenthash][[ext]',
         },
       },
     ],
   },
   resolve: {
-    extensions: ['.ts', '.tsx', '.js']
+    modules: [paths.src, 'node_modules'],
+    extensions: ['.js', '.ts', '.json'],
+    alias: {
+      '@': paths.src,
+      '@/helpers': `${paths.src}/helpers`,
+      '@/images': `${paths.src}/images`,
+      '@/models': `${paths.src}/models`,
+      '@/presenter': `${paths.src}/presenter`,
+      '@/styles': `${paths.src}/styles`,
+      '@/views': `${paths.src}/views`,
+    },
+  },
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          name: 'vendors',
+          test: /node_modules/,
+          chunks: 'all',
+          enforce: true,
+        },
+      },
+    },
   },
 };
