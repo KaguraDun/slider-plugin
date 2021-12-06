@@ -7,8 +7,10 @@ const StylelintPlugin = require('stylelint-webpack-plugin');
 module.exports = {
   target: 'web',
   // Where webpack looks to start building the bundle
-  entry: [`${paths.src}/ts/index.ts`],
-
+  entry: {
+    example: `${paths.example}/example.ts`,
+    slider: `${paths.src}/ts/slider.ts`, 
+  },
   // Where webpack outputs the assets and bundles
   output: {
     path: paths.build,
@@ -46,9 +48,10 @@ module.exports = {
     // Generates an HTML file from a template
     // Generates deprecation warning: https://github.com/jantimon/html-webpack-plugin/issues/1501
     new HtmlWebpackPlugin({
+      chunks: ['example'],
       favicon: `${paths.src}/images/favicon.png`,
       template: `${paths.src}/template.html`, // template file
-      filename: 'index.html', // output file
+      filename: 'example.html', // output file
     }),
   ],
 

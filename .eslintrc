@@ -37,7 +37,7 @@
     "settings": {
       "import/extensions": [".js", ".ts"],
       "import/parsers": {
-        "@typescript-eslint/parser": [".ts"]
+        "@typescript-eslint/parser": [".js", ".ts"]
       },
       "import/resolver": {
         "webpack": {
@@ -62,7 +62,7 @@
       "plugin:import/typescript"
     ],"overrides": [
       {
-        "files": ["*.ts", "*.tsx"],
+        "files": ["*.js", "*.ts"],
         "extends": [
           "plugin:@typescript-eslint/eslint-recommended",
           "plugin:@typescript-eslint/recommended"
