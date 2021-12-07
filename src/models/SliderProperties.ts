@@ -1,4 +1,4 @@
-interface sliderPropertiesInterface {
+interface SliderProperties {
   from: number;
   min: number;
   max: number;
@@ -11,4 +11,4 @@ interface sliderPropertiesInterface {
   isVertical: boolean;
 }
 
-export default sliderPropertiesInterface;
+export default SliderProperties;
