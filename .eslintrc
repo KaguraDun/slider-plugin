@@ -60,15 +60,5 @@
       "plugin:prettier/recommended",
       "plugin:jest/recommended",
       "plugin:import/typescript"
-    ],"overrides": [
-      {
-        "files": ["*.js", "*.ts"],
-        "extends": [
-          "plugin:@typescript-eslint/eslint-recommended",
-          "plugin:@typescript-eslint/recommended"
-        ],
-        "parser": "@typescript-eslint/parser",
-        "plugins": ["@typescript-eslint"]
-      }
     ]
 }

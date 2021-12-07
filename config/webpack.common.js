@@ -8,7 +8,7 @@ module.exports = {
   target: 'web',
   // Where webpack looks to start building the bundle
   entry: {
-    example: `${paths.example}/example.ts`,
+    example: `${paths.example}/example.js`,
     slider: `${paths.src}/ts/slider.ts`, 
   },
   // Where webpack outputs the assets and bundles
