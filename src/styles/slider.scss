@@ -1,3 +1,6 @@
+@import '~normalize-scss/sass/normalize';
+@include normalize();
+
 .slider {
   display: flex;
   flex-direction: column;
