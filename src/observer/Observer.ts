@@ -1,15 +1,15 @@
 // https://refactoring.guru/ru/design-patterns/observer/typescript/example
 
-import SliderProperties from '@/models/SliderProperties';
+import SliderSettings from '@/models/SliderSetting';
 
 interface Observer {
-  (state: SliderProperties): void;
+  (state: SliderSettings): void;
 }
 
 interface Subject {
   attach(observer: Observer): void;
   detach(observer: Observer): void;
-  notify(state: SliderProperties): void;
+  notify(state: SliderSettings): void;
 }
 
 class Subject implements Subject {
