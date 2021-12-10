@@ -1,106 +1,118 @@
-class Model {
-  private from: number;
-  private max: number;
-  private min: number;
-  private step: number;
-  private to: number;
-  private isVertical: boolean;
-  private isRange: boolean;
-  private showScale: boolean;
-  private showTip: boolean;
-  private showBar: boolean;
+import { ObserverEvents } from '@/observer/ObserverEvents';
+import SliderSettings from './SliderSetting';
 
-  constructor() {
-    this.from = 20;
-    this.min = 0;
-    this.max = 50;
-    this.step = 10;
-    this.to = 40;
-    this.showBar = true;
-    this.showScale = true;
-    this.showTip = true;
-    this.isRange = true;
-    this.isVertical = true;
+class Model {
+  private observerEvents: ObserverEvents;
+  private state: SliderSettings;
+
+  constructor(observerEvents: ObserverEvents) {
+    this.observerEvents = observerEvents;
+    this.state = {
+      from: 50,
+      min: 0,
+      max: 100,
+      step: 10,
+      to: 40,
+      showBar: true,
+      showScale: true,
+      showTip: true,
+      isRange: false,
+      isVertical: false,
+    };
+
+    this.observerEvents.stateChanged.notify(this.state);
   }
 
-  setMin(value: number) {
-    this.min = value;
+  setOptions(options: SliderSettings) {
+    Object.entries(options).forEach(
+      ([option, value]: [string, number | boolean]) => {
+        if (this.state.hasOwnProperty(option)) {
+          Object.assign(this.state, { [option]: value });
+        }
+      },
+    );
+
+    this.observerEvents.stateChanged.notify(this.state);
+  }
+
+  setMin(min: number) {
+    this.setOptions({ min });
   }
 
   getMin() {
-    return this.min;
+    return this.state.min;
   }
 
-  setMax(value: number) {
-    this.max = value;
+  setMax(max: number) {
+    this.setOptions({ max });
   }
 
   getMax() {
-    return this.max;
+    return this.state.max;
   }
 
-  setFrom(value: number) {
-    this.from = value;
+  setFrom(from: number) {
+    this.setOptions({ from });
   }
 
   getFrom() {
-    return this.from;
+    return this.state.from;
   }
 
-  setTo(value: number) {
-    this.to = value;
+  setTo(to: number) {
+    this.setOptions({ to });
   }
 
   getTo() {
-    return this.to;
+    return this.state.to;
   }
 
-  setStep(value: number) {
-    this.step = value;
+  setStep(step: number) {
+    this.setOptions({ step });
   }
 
   getStep() {
-    return this.step;
+    return this.state.step;
+  }
+
+  setShowScale(showScale: boolean) {
+    this.setOptions({ showScale });
   }
 
   getShowScale() {
-    return this.showScale;
+    return this.state.showScale;
   }
 
-  setShowScale(show: boolean) {
-    this.showScale = show;
+  setShowTip(showTip: boolean) {
+    this.setOptions({ showTip });
   }
 
   getShowTip() {
-    return this.showTip;
+    return this.state.showTip;
   }
 
-  setShowTip(show: boolean) {
-    this.showTip = show;
+  setShowBar(showBar: boolean) {
+    this.setOptions({ showBar });
   }
 
   getShowBar() {
-    return this.showBar;
-  }
-
-  setShowBar(show: boolean) {
-    this.showBar = show;
-  }
-
-  getIsRange() {
-    return this.isRange;
+    return this.state.showBar;
   }
 
   setIsRange(isRange: boolean) {
-    this.isRange = isRange;
+    this.setOptions({ isRange });
   }
 
-  getIsVertical() {
-    return this.isVertical;
+  getIsRange() {
+    return this.state.isRange;
   }
 
   setIsVertical(isVertical: boolean) {
-    this.isVertical = isVertical;
+    this.setOptions({ isVertical });
+  }
+
+  getIsVertical() {
+    return this.state.isVertical;
   }
 }
 
