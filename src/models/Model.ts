@@ -4,7 +4,6 @@ import SliderSettings from './SliderSetting';
 class Model {
   private observerEvents: ObserverEvents;
   private state: SliderSettings;
-
   constructor(observerEvents: ObserverEvents) {
     this.observerEvents = observerEvents;
     this.state = {
@@ -13,14 +12,24 @@ class Model {
       max: 100,
       step: 10,
       to: 40,
+      values: [],
       showBar: true,
       showScale: true,
       showTip: true,
       isRange: false,
       isVertical: false,
     };
+  }
 
-    this.observerEvents.stateChanged.notify(this.state);
+  generateValues() {
+    const { min, max, step } = this.state;
+    const numberOfItems = (max - min) / step + 1;
+    const newValues = Array.from(
+      Array(numberOfItems),
+      (value, index) => min + index * step,
+    );
+
+    this.state.values = newValues;
   }
 
   setOptions(options: SliderSettings) {
@@ -32,6 +41,12 @@ class Model {
       },
     );
 
+    this.generateValues();
+    this.observerEvents.stateChanged.notify(this.state);
+  }
+
+  setDefaultSettings() {
+    this.generateValues();
     this.observerEvents.stateChanged.notify(this.state);
   }
 
