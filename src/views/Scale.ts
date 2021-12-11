@@ -1,28 +1,21 @@
-import createElement from '../helpers/createElement';
-
+import createElement from '@/helpers/createElement';
 class Scale {
-  element: HTMLElement;
-  parent: HTMLElement;
-  from: number;
+  element: HTMLElement | null;
 
   constructor() {
-    this.element;
+    this.element = null;
   }
 
-  render(parent: HTMLElement, params: any) {
-    const { min, max, step, isVertical } = params;
+  render(parent: HTMLElement, values: []) {
+    this.element = createElement('div', { class: 'slider-scale' });
 
-    this.element = createElement('div', 'slider-scale');
+    values.forEach((item) => {
+      const mark = createElement('div', { class: 'slider-scale-mark' });
+      mark.innerText = item;
+      this.element?.append(mark);
+    });
 
-    const markCount = (max - min) / step;
-
-    for (let i = 0; i <= markCount; i += 1) {
-      const mark = createElement('div', 'slider-scale-mark');
-      mark.innerText = String(min + i * step);
-      this.element.append(mark);
-    }
-    
-    if (isVertical) this.element.classList.add('slider-scale--vertical');
+    // if (isVertical) this.element.classList.add('slider-scale--vertical');
 
     parent.append(this.element);
   }
