@@ -1,14 +1,15 @@
-import createElement from '../helpers/createElement';
+import createElement from '@/helpers/createElement';
 
 class Track {
-  element: HTMLElement;
+  element: HTMLElement | null;
 
   constructor() {
-    this.element;
+    this.element = null;
   }
 
   render(parent: HTMLElement, isVertical: boolean) {
-    this.element = createElement('div', 'slider-track');
+    this.element = createElement('div', { class: 'slider-track' });
+
     if (isVertical) {
       parent.classList.add('slider--vertical');
       this.element.classList.add('slider-track--vertical');
