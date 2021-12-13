@@ -24,6 +24,7 @@ class Presenter {
     }
 
     this.view.init(container);
+    this.observerEvents.thumbMoved.attach(this.model.setOptions);
 
     if (options) {
       this.model.setOptions(options);
