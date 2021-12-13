@@ -14,7 +14,7 @@ function createInputs({ container, items, type }) {
       class: inputClasses,
       type: type,
       name: name,
-      ...(type === 'checkbox' && { checked: getValue() }),
+      ...(type === 'checkbox' && getValue() && { checked: 'checked' }),
       ...(type === 'number' && { value: getValue() }),
     });
 
