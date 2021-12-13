@@ -1,5 +1,6 @@
 import { ObserverEvents } from '@/observer/ObserverEvents';
 import SliderSettings from './SliderSetting';
+import sliderErrors from './sliderErrors';
 
 class Model {
   private observerEvents: ObserverEvents;
@@ -7,29 +8,42 @@ class Model {
   constructor(observerEvents: ObserverEvents) {
     this.observerEvents = observerEvents;
     this.state = {
-      from: 50,
-      min: 0,
-      max: 100,
-      step: 10,
-      to: 40,
+      fromIndex: 0,
+      min: -10,
+      minIndex: 0,
+      max: 10,
+      maxIndex: 21,
+      stepIndex: 1,
+      toIndex: 5,
       values: [],
+      generatorFn: this.generateNumberSequence,
       showBar: true,
       showScale: true,
       showTip: true,
       isRange: false,
       isVertical: false,
     };
+
+    this.setOptions = this.setOptions.bind(this);
+  }
+
+  generateNumberSequence() {
+    const { maxIndex, min, stepIndex } = this.state;
+
+    return Array.from(Array(maxIndex), (value, index) =>
+      String(min + index * stepIndex),
+    );
   }
 
   generateValues() {
-    const { min, max, step } = this.state;
-    const numberOfItems = (max - min) / step + 1;
-    const newValues = Array.from(
-      Array(numberOfItems),
-      (value, index) => min + index * step,
-    );
+    const { min, max, stepIndex } = this.state;
+    this.maxIndex = (max - min) / stepIndex + 1;
 
-    this.state.values = newValues;
+    this.state.values = this.generateNumberSequence();
+
+    // if (!this.state.generatorFunction) return;
+
+    // this.state.values = this.state.generatorFn();
   }
 
   setOptions(options: SliderSettings) {
@@ -46,7 +60,7 @@ class Model {
   }
 
   setDefaultSettings() {
-    this.generateValues();
+    this.state.values = this.generateNumberSequence();
     this.observerEvents.stateChanged.notify(this.state);
   }
 
@@ -66,20 +80,36 @@ class Model {
     return this.state.max;
   }
 
-  setFrom(from: number) {
-    this.setOptions({ from });
+  setFrom(from: string) {
+    const { min, max } = this.state;
+    const fromIndex = this.state.values.indexOf(from);
+
+    if (fromIndex === -1) {
+      sliderErrors.throwOptionOutOfRange('from', min, max);
+      return;
+    }
+
+    this.setOptions({ fromIndex });
   }
 
   getFrom() {
-    return this.state.from;
+    return this.state.values[this.state.fromIndex];
   }
 
   setTo(to: number) {
-    this.setOptions({ to });
+    const { min, max } = this.state;
+    const toIndex = this.state.values.indexOf(to);
+
+    if (toIndex === -1) {
+      sliderErrors.throwOptionOutOfRange('to', min, max);
+      return;
+    }
+
+    this.setOptions({ toIndex });
   }
 
   getTo() {
-    return this.state.to;
+    return this.state.values[this.state.toIndex];
   }
 
   setStep(step: number) {
