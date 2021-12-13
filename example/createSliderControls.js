@@ -5,7 +5,7 @@ function createInputs({ container, items, type }) {
     class: 'slider-controls__inputs-container',
   });
 
-  items.forEach(({ name, handler, getValue }) => {
+  items.forEach(({ name, getValue }) => {
     const inputClasses = `slider-controls__input ${
       type === 'checkbox' ? 'slider-controls__input--checkbox' : ''
     }`;
@@ -42,15 +42,17 @@ function createInputs({ container, items, type }) {
       [label],
     );
 
-    const handleInputChange = ({ target }) => {
-      if (target.type === 'checkbox') handler(target.checked);
-      if (target.type === 'number') handler(target.value);
-    };
-
-    inputsContainer.addEventListener('change', handleInputChange);
-
     inputsContainer.append(inputContainer);
   });
+
+  const handleInputChange = ({ target }) => {
+    const { handler } = items.filter(({ name }) => name === target.name)[0];
+
+    if (target.type === 'checkbox') handler(target.checked);
+    if (target.type === 'number') handler(target.value);
+  };
+
+  inputsContainer.addEventListener('change', handleInputChange);
 
   container.append(inputsContainer);
 }
