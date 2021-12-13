@@ -1,6 +1,6 @@
 function createElement(
   tag: string,
-  attributes: string[],
+  attributes: Record<string, string>,
   children?: HTMLElement[],
 ) {
   const element = document.createElement(tag);
