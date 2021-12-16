@@ -1,31 +1,36 @@
 import createElement from '@/helpers/createElement';
 
 class Bar {
-  element: HTMLElement | null;
+  parent: HTMLElement;
+  element: HTMLElement;
 
-  constructor() {
-    this.element = null;
+  constructor(parent: HTMLElement) {
+    this.parent = parent;
+    this.element = createElement('div', { class: 'slider__bar' });
   }
 
-  render(parent: HTMLElement) {
-    this.element = createElement('div', { class: 'slider-bar' });
-    parent.append(this.element);
+  show(showBar: boolean) {
+    if (showBar) {
+      this.parent.append(this.element);
+    } else {
+      this.element.remove();
+    }
   }
 
-  update(firstThumbOffset: number) {
-    if (!this.element) return;
+  update(
+    firstThumbOffsetLeft: number,
+    secondThumbOffsetLeft: number,
+    isRange: boolean,
+  ) {
+    this.element.style.left = '0';
+    this.element.style.width = `${String(firstThumbOffsetLeft)}px`;
 
-    this.element.style.width = `${String(firstThumbOffset)}px`;
-  }
+    if (isRange) {
+      const distanceBetween = secondThumbOffsetLeft - firstThumbOffsetLeft;
 
-  updateRange(firstThumbOffset: number, secondThumbOffset: number) {
-    if (!this.element) return;
-
-    const distanceBetween = secondThumbOffset - firstThumbOffset;
-
-    this.element.style.left = `${String(firstThumbOffset)}px`;
-    this.element.style.width = `${String(distanceBetween)}px`;
+      this.element.style.left = `${String(firstThumbOffsetLeft)}px`;
+      this.element.style.width = `${String(distanceBetween)}px`;
+    }
   }
 }
-
 export default Bar;
