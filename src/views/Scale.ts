@@ -1,13 +1,16 @@
 import createElement from '@/helpers/createElement';
 import SliderSettings from '@/models/SliderSetting';
 import { Subject } from '@/observer/Observer';
+import ThumbID from '@/models/ThumbID';
 
 class Scale {
+  state: SliderSettings | null;
   parent: HTMLElement | null;
   scaleClickEvent: Subject;
   element: HTMLElement;
 
   constructor(scaleClick: Subject) {
+    this.state = null;
     this.parent = null;
     this.scaleClickEvent = scaleClick;
     this.element = createElement('div', {
@@ -17,18 +20,36 @@ class Scale {
     this.handleScaleClick = this.handleScaleClick.bind(this);
   }
 
+  getClosestThumb(ID: number) {
+    const { fromIndex, toIndex } = this.state;
+
+    if (!fromIndex || !toIndex) return;
+
+    const distanceToFirst = Math.abs(ID - fromIndex);
+    const distanceToSecond = Math.abs(ID - toIndex);
+
+    if (distanceToFirst <= distanceToSecond) {
+      return ThumbID.from;
+    } else {
+      return ThumbID.to;
+    }
+  }
+
   handleScaleClick(clickEvent: MouseEvent) {
     const target = <HTMLElement>clickEvent.target;
     const closest = target.closest('.slider__scale-mark');
 
     if (!closest) return;
 
-    const ID = target.dataset.id;
+    const ID = Number(target.dataset.id);
+    const closestThumb = this.getClosestThumb(ID);
 
-    this.scaleClickEvent.notify({ fromIndex: ID });
+    this.scaleClickEvent.notify({ [`${closestThumb}Index`]: ID });
   }
 
   render(parent: HTMLElement, state: SliderSettings) {
+    this.state = state;
+
     const { values, showScale } = state;
 
     if (!values || !showScale) return;
