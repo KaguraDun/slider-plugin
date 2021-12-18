@@ -42,7 +42,13 @@ class Scale {
     if (!closest) return;
 
     const ID = Number(target.dataset.id);
-    const closestThumb = this.getClosestThumb(ID);
+    let closestThumb;
+
+    if (this.state?.isRange) {
+      closestThumb = ThumbID.from;
+    } else {
+      closestThumb = this.getClosestThumb(ID);
+    }
 
     this.scaleClickEvent.notify({ [`${closestThumb}Index`]: ID });
   }
