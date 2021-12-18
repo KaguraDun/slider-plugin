@@ -28,19 +28,33 @@ class Model {
   }
 
   generateNumberSequence() {
-    const { maxIndex, min, stepIndex } = this.state;
+    const { maxIndex, min, max, stepIndex } = this.state;
 
-    return Array.from(Array(maxIndex), (value, index) =>
-      String(min + index * stepIndex),
-    );
+    if (!min || !max || !stepIndex) return;
+
+    const generateFn = (value: null, index: number) =>
+      Number(min) + index * Number(stepIndex);
+    const sequence = Array.from(Array(maxIndex), generateFn);
+
+    // Add the last value separately because we do not need to adjust the values ​​to the step
+    sequence.push(max);
+
+    return sequence;
   }
 
   generateValues() {
-    const { min, max, stepIndex } = this.state;
-    this.maxIndex = (max - min) / stepIndex + 1;
+    const { min, max, stepIndex, fromIndex, toIndex } = this.state;
+    if (!min || !max || !stepIndex || !toIndex) return;
+    if (stepIndex <= 0) return;
+
+    const maxIndex = Math.abs((max - min) / stepIndex);
+    this.state.maxIndex = Math.ceil(maxIndex);
+
+    if (fromIndex > this.state.maxIndex)
+      this.state.fromIndex = this.state.maxIndex;
+    if (toIndex > this.state.maxIndex) this.state.toIndex = this.state.maxIndex;
 
     this.state.values = this.generateNumberSequence();
-
     // if (!this.state.generatorFunction) return;
 
     // this.state.values = this.state.generatorFn();
