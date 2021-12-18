@@ -1,17 +1,13 @@
 import * as $ from 'jquery';
 
 import Presenter from '@/presenter/Presenter';
-import SliderProperties from '@/models/SliderProperties';
+import SliderSettings from '@/models/SliderSetting';
 
-$.fn.createSlider = function (properties: SliderProperties) {
+$.fn.createSlider = function (options: SliderSettings) {
   const [container] = $(this);
-
-  if (!container) {
-    throw new Error('slider container not found');
-  }
-
   const slider = new Presenter();
-  slider.createSlider(container, properties);
+
+  slider.createSlider(container, options);
 
   return {
     setFrom(from: number) {
@@ -21,9 +17,66 @@ $.fn.createSlider = function (properties: SliderProperties) {
     getFrom() {
       return slider.getFrom();
     },
+    setTo(to: number | string) {
+      slider.setTo(to);
+      return this;
+    },
+    getTo() {
+      return slider.getTo();
+    },
     setStep(step: number) {
       slider.setStep(step);
       return this;
+    },
+    getStep() {
+      return slider.getStep();
+    },
+    setMin(min: number) {
+      slider.setMin(min);
+    },
+    getMin() {
+      return slider.getMin();
+    },
+    setMax(max: number) {
+      slider.setMax(max);
+    },
+    getMax() {
+      return slider.getMax();
+    },
+    setShowTip(show: boolean) {
+      slider.setShowTip(show);
+      return this;
+    },
+    getShowTip() {
+      return slider.getShowTip();
+    },
+    setShowScale(show: boolean) {
+      slider.setShowScale(show);
+      return this;
+    },
+    getShowScale() {
+      return slider.getShowScale();
+    },
+    setShowBar(show: boolean) {
+      slider.setShowBar(show);
+      return this;
+    },
+    getShowBar() {
+      return slider.getShowBar();
+    },
+    setIsRange(isRange: boolean) {
+      slider.setIsRange(isRange);
+      return this;
+    },
+    getIsRange() {
+      return slider.getIsRange();
+    },
+    setIsVertical(isVertical: boolean) {
+      slider.setIsVertical(isVertical);
+      return this;
+    },
+    getIsVertical() {
+      return slider.getIsVertical();
     },
   };
 };
