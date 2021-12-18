@@ -57,33 +57,33 @@ function createInputs({ container, items, type }) {
   container.append(inputsContainer);
 }
 
-function createSliderControls({ container, $instance }) {
+function createSliderControls({ container, $slider }) {
   const numberInputs = [
-    // { name: 'min', handler: $instance.setMin, getValue: $instance.getMin },
-    // { name: 'max', handler: $instance.setMax, getValue: $instance.getMax },
-    // { name: 'step', handler: $instance.setStep, getValue: $instance.getStep },
-    { name: 'from', handler: $instance.setFrom, getValue: $instance.getFrom },
-    // { name: 'to', handler: $instance.setTo, getValue: $instance.getTo },
+    { name: 'min', handler: $slider.setMin, getValue: $slider.getMin },
+    { name: 'max', handler: $slider.setMax, getValue: $slider.getMax },
+    { name: 'step', handler: $slider.setStep, getValue: $slider.getStep },
+    { name: 'from', handler: $slider.setFrom, getValue: $slider.getFrom },
+    { name: 'to', handler: $slider.setTo, getValue: $slider.getTo },
   ];
 
   const booleanInputs = [
-    // {
-    //   name: 'vertical',
-    //   handler: $instance.setIsVertical,
-    //   getValue: $instance.getIsVertical,
-    // },
-    // {
-    //   name: 'range',
-    //   handler: $instance.setIsRange,
-    //   getValue: $instance.getIsRange,
-    // },
-    // {
-    //   name: 'scale',
-    //   handler: $instance.showScale,
-    //   getValue: $instance.getShowScale,
-    // },
-    // { name: 'bar', handler: $instance.showBar, getValue: $instance.getShowBar },
-    // { name: 'tip', handler: $instance.showTip, getValue: $instance.getShowTip },
+    {
+      name: 'vertical',
+      handler: $slider.setIsVertical,
+      getValue: $slider.getIsVertical,
+    },
+    {
+      name: 'range',
+      handler: $slider.setIsRange,
+      getValue: $slider.getIsRange,
+    },
+    {
+      name: 'scale',
+      handler: $slider.setShowScale,
+      getValue: $slider.getShowScale,
+    },
+    { name: 'bar', handler: $slider.setShowBar, getValue: $slider.getShowBar },
+    { name: 'tip', handler: $slider.setShowTip, getValue: $slider.getShowTip },
   ];
 
   createInputs({
