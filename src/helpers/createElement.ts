@@ -1,7 +1,7 @@
 function createElement(
   tag: string,
   attributes: Record<string, string>,
-  children?: HTMLElement[],
+  children?: HTMLElement[] | string[],
 ) {
   const element = document.createElement(tag);
 
