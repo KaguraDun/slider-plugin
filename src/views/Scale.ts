@@ -22,9 +22,6 @@ class Scale {
 
   getClosestThumb(ID: number) {
     const { fromIndex, toIndex } = this.state;
-
-    if (!fromIndex || !toIndex) return;
-
     const distanceToFirst = Math.abs(ID - fromIndex);
     const distanceToSecond = Math.abs(ID - toIndex);
 
@@ -45,9 +42,9 @@ class Scale {
     let closestThumb;
 
     if (this.state?.isRange) {
-      closestThumb = ThumbID.from;
-    } else {
       closestThumb = this.getClosestThumb(ID);
+    } else {
+      closestThumb = ThumbID.from;
     }
 
     this.scaleClickEvent.notify({ [`${closestThumb}Index`]: ID });
@@ -62,9 +59,7 @@ class Scale {
 
     const numberOfMiddleItems = 3;
     const lastItem = 1;
-    const itemsStep = Math.round(
-      values?.length / numberOfMiddleItems - lastItem,
-    );
+    let itemsStep = Math.round(values?.length / numberOfMiddleItems - lastItem);
 
     this.parent = parent;
     this.element.innerHTML = '';
