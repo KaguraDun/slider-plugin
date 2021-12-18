@@ -1,6 +1,7 @@
 import { ObserverEvents } from '@/observer/ObserverEvents';
 import SliderSettings from './SliderSetting';
 import sliderErrors from './sliderErrors';
+import ThumbID from '@/models/ThumbID';
 
 class Model {
   private observerEvents: ObserverEvents;
@@ -63,6 +64,16 @@ class Model {
   setOptions(options: SliderSettings) {
     Object.entries(options).forEach(
       ([option, value]: [string, number | boolean]) => {
+        if (option === ThumbID.from) {
+          this.setFrom(value);
+          return;
+        }
+
+        if (option === ThumbID.to) {
+          this.setTo(value);
+          return;
+        }
+
         if (this.state.hasOwnProperty(option)) {
           Object.assign(this.state, { [option]: value });
         }
@@ -70,6 +81,7 @@ class Model {
     );
 
     this.generateValues();
+
     this.observerEvents.stateChanged.notify(this.state);
   }
 
@@ -94,14 +106,17 @@ class Model {
     return this.state.max;
   }
 
-  setFrom(from: string) {
-    const { min, max } = this.state;
-    const fromIndex = this.state.values.indexOf(from);
+  setFrom(from: number | String) {
+    const { min, max, isRange, toIndex } = this.state;
+    let fromIndex = this.state.values.indexOf(Number(from));
 
     if (fromIndex === -1) {
-      sliderErrors.throwOptionOutOfRange('from', min, max);
+      sliderErrors.throwOptionOutOfRange(ThumbID.from, min, max);
       return;
     }
+
+    if (fromIndex > this.state.maxIndex) fromIndex = this.state.maxIndex;
+    if (isRange && fromIndex >= toIndex) fromIndex = toIndex;
 
     this.setOptions({ fromIndex });
   }
@@ -111,13 +126,16 @@ class Model {
   }
 
   setTo(to: number) {
-    const { min, max } = this.state;
-    const toIndex = this.state.values.indexOf(to);
+    const { min, max, isRange, fromIndex } = this.state;
+    let toIndex = this.state.values.indexOf(Number(to));
 
     if (toIndex === -1) {
-      sliderErrors.throwOptionOutOfRange('to', min, max);
+      sliderErrors.throwOptionOutOfRange(ThumbID.to, min, max);
       return;
     }
+
+    if (toIndex > this.state.maxIndex) toIndex = this.state.maxIndex;
+    if (isRange && toIndex <= fromIndex) toIndex = fromIndex;
 
     this.setOptions({ toIndex });
   }
@@ -126,12 +144,12 @@ class Model {
     return this.state.values[this.state.toIndex];
   }
 
-  setStep(step: number) {
-    this.setOptions({ step });
+  setStep(stepIndex: number) {
+    this.setOptions({ stepIndex });
   }
 
   getStep() {
-    return this.state.step;
+    return this.state.stepIndex;
   }
 
   setShowScale(showScale: boolean) {
