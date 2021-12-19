@@ -1,57 +1,95 @@
 import Thumb from './Thumb';
 import Track from './Track';
-import Tip from './Tip';
 import Scale from './Scale';
 import Bar from './Bar';
-
+import createElement from '@/helpers/createElement';
+import SliderSettings from '@/models/SliderSetting';
+import { ObserverEvents } from '@/observer/ObserverEvents';
+import ThumbID from '@/models/ThumbID';
 class View {
-  track: Track;
-  parent: HTMLElement;
-  firstThumb: Thumb;
-  secondThumb: Thumb;
-  tip: Tip;
-  scale: Scale;
-  bar: Bar;
+  private observerEvents: ObserverEvents;
+  private track: Track;
+  private container: HTMLElement | null;
+  private slider: HTMLElement;
+  private firstThumb: Thumb;
+  private secondThumb: Thumb;
+  private scale: Scale;
+  private bar: Bar;
 
-  constructor() {
-    this.parent;
+  constructor(observerEvents: ObserverEvents) {
+    this.observerEvents = observerEvents;
+    this.container = null;
+    this.slider = createElement('div', { class: 'slider' });
     this.track = new Track();
-    this.firstThumb = new Thumb();
-    this.secondThumb = new Thumb();
-    this.scale = new Scale();
-    this.bar = new Bar();
+    this.firstThumb = new Thumb(ThumbID.from, this.observerEvents.thumbMoved);
+    this.secondThumb = new Thumb(ThumbID.to, this.observerEvents.thumbMoved);
+    this.scale = new Scale(this.observerEvents.scaleClick);
+    this.bar = new Bar(this.track.element);
+    this.update = this.update.bind(this);
   }
 
-  setParent(parent: HTMLElement) {
-    this.parent = parent;
-    this.parent.classList.add('slider');
+  init(container: HTMLElement, state: SliderSettings) {
+    const {
+      fromIndex,
+      toIndex,
+      values,
+      showTip,
+      showBar,
+      isRange,
+      isVertical,
+    } = state;
+
+    this.container = container;
+    this.container.append(this.slider);
+    this.track.render(this.slider, isRange);
+
+    this.firstThumb.render(this.track.element, state);
+    this.firstThumb.renderTip(values[fromIndex], isVertical, showTip);
+    this.secondThumb.render(this.track.element, state);
+    this.secondThumb.renderTip(values[toIndex], isVertical, showTip);
+
+    this.scale.render(this.slider, state);
+
+    this.bar.show(showBar);
+    this.bar.update(
+      this.firstThumb.element.offsetLeft,
+      this.secondThumb.element.offsetLeft,
+      isRange,
+    );
   }
 
-  clearAll() {
-    this.parent.innerHTML = '';
-  }
+  update(state: SliderSettings) {
+    const {
+      fromIndex,
+      toIndex,
+      values,
+      showScale,
+      showTip,
+      showBar,
+      isRange,
+      isVertical,
+    } = state;
 
-  renderTrack(isVertical: boolean) {
-    this.track.render(this.parent, isVertical);
-  }
+    this.firstThumb.move(fromIndex);
+    this.firstThumb.tip.update(values[fromIndex]);
+    this.firstThumb.tip.show(showTip);
 
-  renderBar() {
-    this.bar.render(this.track.element);
-  }
+    this.secondThumb.show(isRange);
+    this.secondThumb.move(toIndex);
+    this.secondThumb.tip.update(values[toIndex]);
+    this.secondThumb.tip.show(showTip);
 
-  renderThumb(handler: any) {
-    this.firstThumb.render(this.track.element, handler);
-  }
+    this.scale.show(showScale);
 
-  renderRange(handler: any) {
-    this.firstThumb.render(this.track.element, handler);
-    this.secondThumb.render(this.track.element, handler);
-  }
+    this.scale.render(this.slider, state);
 
-  renderScale(params: any) {
-    this.scale.render(this.parent, params);
+    this.bar.show(showBar);
+    this.bar.update(
+      this.firstThumb.element.offsetLeft,
+      this.secondThumb.element.offsetLeft,
+      isRange,
+    );
   }
-
 }
 
 export default View;
