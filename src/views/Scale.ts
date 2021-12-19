@@ -16,14 +16,13 @@ class Scale {
     this.element = createElement('div', {
       class: 'slider__scale',
     });
-
     this.handleScaleClick = this.handleScaleClick.bind(this);
   }
 
-  getClosestThumb(ID: number) {
+  getClosestThumb(markID: number) {
     const { fromIndex, toIndex } = this.state;
-    const distanceToFirst = Math.abs(ID - fromIndex);
-    const distanceToSecond = Math.abs(ID - toIndex);
+    const distanceToFirst = Math.abs(markID - fromIndex);
+    const distanceToSecond = Math.abs(markID - toIndex);
 
     if (distanceToFirst <= distanceToSecond) {
       return ThumbID.from;
@@ -50,27 +49,63 @@ class Scale {
     this.scaleClickEvent.notify({ [`${closestThumb}Index`]: ID });
   }
 
-  render(parent: HTMLElement, state: SliderSettings) {
-    this.state = state;
+  getMarkWidth(minElement: string, maxElement: string) {
+    const widerElement =
+      minElement.length >= maxElement.length ? minElement : maxElement;
 
+    // create fake mark to access element width
+    const mark = createElement(
+      'span',
+      {
+        class: 'slider__scale-mark',
+        style: 'position: absolute; opacity:0',
+      },
+      [`${widerElement}`],
+    );
+
+    this.parent?.append(mark);
+
+    const markWidth = mark.getBoundingClientRect().width;
+    mark.remove();
+
+    return markWidth;
+  }
+
+  resizeArrayOfValues(values: string[] | number[], newLength: number) {
+    if (values.length <= newLength) return values;
+
+    const step = Math.ceil((values.length - 1) / newLength);
+    const resizedArray = [];
+    let nextIndex = 0;
+    let index = 0;
+
+    while (index < newLength) {
+      resizedArray.push(values[nextIndex]);
+      nextIndex += step;
+      index += 1;
+    }
+
+    resizedArray.push(values[values.length - 1]);
+    return resizedArray;
+  }
+
+  render(parent: HTMLElement, state: SliderSettings) {
     const { values, showScale } = state;
 
-    if (!values || !showScale) return;
-
-    const numberOfMiddleItems = 3;
-    const lastItem = 1;
-    let itemsStep = Math.round(values?.length / numberOfMiddleItems - lastItem);
-
+    this.state = state;
     this.parent = parent;
     this.element.innerHTML = '';
 
-    values?.forEach((item, index) => {
-      const isMiddleItem = index > 0 && index < values.length - 1;
-      const isFitToItemsStep = index % itemsStep === 0;
+    const markWidth = this.getMarkWidth(
+      String(values[0]),
+      String(values[values.length - 1]),
+    );
+    const sliderWidth = this.parent.getBoundingClientRect().width;
+    const itemsInScale = Math.floor(sliderWidth / markWidth) - 1;
+    const scaleItems = this.resizeArrayOfValues(values, itemsInScale);
 
-      if (isMiddleItem) {
-        if (!isFitToItemsStep) return;
-      }
+    values.forEach((item: number | string, index: number) => {
+      if (scaleItems.indexOf(item) === -1) return;
 
       const mark = createElement(
         'span',
