@@ -1,12 +1,18 @@
 import createElement from '@/helpers/createElement';
-import SliderSettings from '@/models/SliderSetting';
+import SliderSettings, { SliderState } from '@/models/SliderSetting';
 import { Subject } from '@/observer/Observer';
 import ThumbID from '@/models/ThumbID';
 
+interface GetMarkWidthProps {
+  minElement: string;
+  maxElement: string;
+  isVertical: boolean;
+}
+
 class Scale {
-  state: SliderSettings | null;
+  private state: SliderState | null;
   parent: HTMLElement | null;
-  scaleClickEvent: Subject;
+  private scaleClickEvent: Subject;
   element: HTMLElement;
 
   constructor(scaleClick: Subject) {
@@ -49,7 +55,7 @@ class Scale {
     this.scaleClickEvent.notify({ [`${closestThumb}Index`]: ID });
   }
 
-  getMarkWidth(minElement: string, maxElement: string) {
+  getMarkWidth({ minElement, maxElement, isVertical }: GetMarkWidthProps) {
     const widerElement =
       minElement.length >= maxElement.length ? minElement : maxElement;
 
@@ -64,48 +70,33 @@ class Scale {
     );
 
     this.parent?.append(mark);
-
-    const markWidth = mark.getBoundingClientRect().width;
+    const markSizes = mark.getBoundingClientRect();
+    const markWidth = isVertical ? markSizes.height : markSizes.width;
     mark.remove();
 
     return markWidth;
   }
 
-  resizeArrayOfValues(values: string[] | number[], newLength: number) {
-    if (values.length <= newLength) return values;
-
-    const step = Math.ceil((values.length - 1) / newLength);
-    const resizedArray = [];
-    let nextIndex = 0;
-    let index = 0;
-
-    while (index < newLength) {
-      resizedArray.push(values[nextIndex]);
-      nextIndex += step;
-      index += 1;
-    }
-
-    resizedArray.push(values[values.length - 1]);
-    return resizedArray;
-  }
-
   render(parent: HTMLElement, state: SliderSettings) {
-    const { values, showScale } = state;
+    const { values, showScale, isVertical } = state;
 
     this.state = state;
     this.parent = parent;
     this.element.innerHTML = '';
 
-    const markWidth = this.getMarkWidth(
-      String(values[0]),
-      String(values[values.length - 1]),
-    );
+    const markWidth = this.getMarkWidth({
+      minElement: String(values[0]),
+      maxElement: String(values[values.length - 1]),
+      isVertical,
+    });
     const sliderWidth = this.parent.getBoundingClientRect().width;
     const itemsInScale = Math.floor(sliderWidth / markWidth) - 1;
-    const scaleItems = this.resizeArrayOfValues(values, itemsInScale);
+    const step = Math.ceil(values.length / itemsInScale);
 
     values.forEach((item: number | string, index: number) => {
-      if (scaleItems.indexOf(item) === -1) return;
+      if (index !== values.length - 1) {
+        if (index % step !== 0) return;
+      }
 
       const mark = createElement(
         'span',
@@ -115,7 +106,6 @@ class Scale {
       this.element?.append(mark);
     });
 
-    // if (isVertical) this.element.classList.add('slider-scale--vertical');
     this.show(showScale);
   }
 
