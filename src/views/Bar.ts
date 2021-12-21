@@ -1,5 +1,11 @@
 import createElement from '@/helpers/createElement';
 
+interface UpdateProps {
+  firstThumbOffset: number;
+  secondThumbOffset: number;
+  isRange: boolean;
+}
+
 class Bar {
   parent: HTMLElement;
   element: HTMLElement;
@@ -17,18 +23,14 @@ class Bar {
     }
   }
 
-  update(
-    firstThumbOffsetLeft: number,
-    secondThumbOffsetLeft: number,
-    isRange: boolean,
-  ) {
+  update({ firstThumbOffset, secondThumbOffset, isRange }: UpdateProps) {
     this.element.style.left = '0';
-    this.element.style.width = `${String(firstThumbOffsetLeft)}px`;
+    this.element.style.width = `${String(firstThumbOffset)}px`;
 
     if (isRange) {
-      const distanceBetween = secondThumbOffsetLeft - firstThumbOffsetLeft;
+      const distanceBetween = secondThumbOffset - firstThumbOffset;
 
-      this.element.style.left = `${String(firstThumbOffsetLeft)}px`;
+      this.element.style.left = `${String(firstThumbOffset)}px`;
       this.element.style.width = `${String(distanceBetween)}px`;
     }
   }

@@ -51,11 +51,11 @@ class View {
     this.scale.render(this.slider, state);
 
     this.bar.show(showBar);
-    this.bar.update(
-      this.firstThumb.element.offsetLeft,
-      this.secondThumb.element.offsetLeft,
+    this.bar.update({
+      firstThumbOffset: this.firstThumb.element.offsetLeft,
+      secondThumbOffset: this.secondThumb.element.offsetLeft,
       isRange,
-    );
+    });
   }
 
   update(state: SliderSettings) {
@@ -84,11 +84,11 @@ class View {
     this.scale.render(this.slider, state);
 
     this.bar.show(showBar);
-    this.bar.update(
-      this.firstThumb.element.offsetLeft,
-      this.secondThumb.element.offsetLeft,
+    this.bar.update({
+      firstThumbOffset: this.firstThumb.element.offsetLeft,
+      secondThumbOffset: this.secondThumb.element.offsetLeft,
       isRange,
-    );
+    });
   }
 }
 
