@@ -12,12 +12,14 @@ interface GetMarkWidthProps {
 class Scale {
   private state: SliderState | null;
   parent: HTMLElement | null;
+  PXperMark: number;
   private scaleClickEvent: Subject;
   element: HTMLElement;
 
   constructor(scaleClick: Subject) {
     this.state = null;
     this.parent = null;
+    this.PXperMark = 0;
     this.scaleClickEvent = scaleClick;
     this.element = createElement('div', {
       class: 'slider__scale',
@@ -77,11 +79,12 @@ class Scale {
     return markWidth;
   }
 
-  render(parent: HTMLElement, state: SliderSettings) {
+  render(parent: HTMLElement, state: SliderSettings, PXperMark: number) {
     const { values, showScale, isVertical } = state;
 
     this.state = state;
     this.parent = parent;
+    this.PXperMark = PXperMark;
     this.element.innerHTML = '';
 
     const markWidth = this.getMarkWidth({
@@ -92,15 +95,23 @@ class Scale {
     const sliderWidth = this.parent.getBoundingClientRect().width;
     const itemsInScale = Math.floor(sliderWidth / markWidth) - 1;
     const step = Math.ceil(values.length / itemsInScale);
+    const direction = this.state?.isVertical ? 'top' : 'left';
 
     values.forEach((item: number | string, index: number) => {
-      if (index !== values.length - 1) {
-        if (index % step !== 0) return;
+      const isLastElement = index === values.length - 1;
+      const isFitToStep = index % step === 0;
+
+      if (!isLastElement) {
+        if (!isFitToStep) return;
       }
 
       const mark = createElement(
         'span',
-        { class: 'slider__scale-mark', ['data-id']: String(index) },
+        {
+          class: 'slider__scale-mark',
+          ['data-id']: String(index),
+          style: `${direction}:${index * this.PXperMark}px`,
+        },
         [String(item)],
       );
       this.element?.append(mark);

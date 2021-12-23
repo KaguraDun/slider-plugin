@@ -48,7 +48,7 @@ class View {
     this.secondThumb.render(this.track.element, state);
     this.secondThumb.renderTip(values[toIndex], isVertical, showTip);
 
-    this.scale.render(this.slider, state);
+    this.scale.render(this.slider, state, this.firstThumb.getPXPerMark());
 
     this.bar.show(showBar);
     this.bar.update({
@@ -81,7 +81,7 @@ class View {
 
     this.scale.show(showScale);
 
-    this.scale.render(this.slider, state);
+    this.scale.render(this.slider, state, this.firstThumb.getPXPerMark());
 
     this.bar.show(showBar);
     this.bar.update({
