@@ -3,7 +3,6 @@ import createElement from '@/helpers/createElement';
 interface TipProps {
   parent: HTMLElement;
   value: number | string;
-  isVertical: boolean;
   showTip: boolean;
 }
 
@@ -16,11 +15,10 @@ class Tip {
     this.element = createElement('div', { class: 'slider__tip' });
   }
 
-  render({ parent, value, isVertical, showTip }: TipProps) {
+  render({ parent, value, showTip }: TipProps) {
     this.parent = parent;
     this.element.innerText = String(value);
 
-    if (isVertical) this.element.classList.add('slider__tip--vertical');
     this.show(showTip);
   }
 

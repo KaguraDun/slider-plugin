@@ -46,12 +46,12 @@ class View {
 
     this.container = container;
     this.container.append(this.slider);
-    this.track.render(this.slider, isRange);
+    this.track.render(this.slider);
 
     this.firstThumb.render(this.track.element, state);
-    this.firstThumb.renderTip(values[fromIndex], isVertical, showTip);
+    this.firstThumb.renderTip(values[fromIndex], showTip);
     this.secondThumb.render(this.track.element, state);
-    this.secondThumb.renderTip(values[toIndex], isVertical, showTip);
+    this.secondThumb.renderTip(values[toIndex], showTip);
 
     this.scale.render(this.slider, state, this.firstThumb.getPXPerMark());
 

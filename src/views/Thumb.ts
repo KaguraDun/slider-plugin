@@ -104,8 +104,8 @@ class Thumb {
     }
   }
 
-  renderTip(value: number, isVertical: boolean, showTip: boolean) {
-    this.tip.render({ parent: this.element, value, isVertical, showTip });
+  renderTip(value: number, showTip: boolean) {
+    this.tip.render({ parent: this.element, value, showTip });
   }
 }
 
