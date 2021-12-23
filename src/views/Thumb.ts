@@ -18,24 +18,25 @@ class Thumb {
     this.moveEvent = thumbMoved;
     this.state = null;
     this.element = createElement('div', {
-      class: 'slider-thumb',
+      class: 'slider__thumb',
     });
     this.tip = new Tip();
   }
 
   getPXPerMark() {
-    const thumbWidth = this.element.getBoundingClientRect().width;
+    const thumb = this.element.getBoundingClientRect();
     const track = this.parent.getBoundingClientRect();
+    const thumbWidth = this.state.isVertical ? thumb.height : thumb.width;
     const trackWidth = this.state.isVertical ? track.height : track.width;
     const PXperMark = (trackWidth - thumbWidth) / this.state.maxIndex;
 
     return PXperMark;
   }
 
-  handleDragThumb = (e: MouseEvent) => {
-    e.preventDefault();
-    const shiftX = e.clientX - this.element.offsetLeft;
-    const shiftY = e.clientY - this.element.offsetLeft;
+  handleDragThumb = (mouseDown: MouseEvent) => {
+    mouseDown.preventDefault();
+    const shiftX = mouseDown.clientX - this.element.offsetLeft;
+    const shiftY = mouseDown.clientY - this.element.offsetTop;
 
     const handleMouseMove = (mouseMove: MouseEvent) => {
       const offsetX = mouseMove.clientX - shiftX;
@@ -66,24 +67,36 @@ class Thumb {
     document.addEventListener('mouseup', handleMouseUp);
   };
 
+  handleDragStart() {
+    return false;
+  }
+
   render(parent: HTMLElement, state: SliderSettings) {
     this.parent = parent;
     this.state = state;
 
     this.element.addEventListener('mousedown', this.handleDragThumb);
-    this.element.addEventListener('dragstart', () => false);
+    this.element.addEventListener('dragstart', this.handleDragStart);
 
-    this.move(this.state[`${this.thumbID}Index`]);
+    this.move(this.state[`${this.thumbID}Index`], this.state.isVertical);
     this.show(this.state?.isRange);
   }
 
-  move(valueIndex: number) {
+  move(valueIndex: number, isVertical: boolean) {
     const movePX = this.getPXPerMark() * valueIndex;
 
-    this.element.style.left = `${movePX}px`;
+    if (isVertical) {
+      this.element.style.top = `${movePX}px`;
+      this.element.style.left = '0';
+    } else {
+      this.element.style.left = `${movePX}px`;
+      this.element.style.top = '0';
+    }
   }
 
   show(isRange: boolean) {
+    if (!this.parent) return;
+
     if (!isRange && this.thumbID === 'to') {
       this.element.remove();
     } else {

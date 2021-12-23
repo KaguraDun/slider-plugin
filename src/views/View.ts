@@ -28,6 +28,10 @@ class View {
     this.update = this.update.bind(this);
   }
 
+  toggleSliderVertical(isVertical: boolean) {
+    this.slider.classList.toggle('slider--vertical', isVertical);
+  }
+
   init(container: HTMLElement, state: SliderSettings) {
     const {
       fromIndex,
@@ -38,6 +42,7 @@ class View {
       isRange,
       isVertical,
     } = state;
+    this.toggleSliderVertical(isVertical);
 
     this.container = container;
     this.container.append(this.slider);
@@ -52,9 +57,10 @@ class View {
 
     this.bar.show(showBar);
     this.bar.update({
-      firstThumbOffset: this.firstThumb.element.offsetLeft,
-      secondThumbOffset: this.secondThumb.element.offsetLeft,
+      firstThumb: this.firstThumb.element,
+      secondThumb: this.secondThumb.element,
       isRange,
+      isVertical,
     });
   }
 
@@ -70,12 +76,14 @@ class View {
       isVertical,
     } = state;
 
-    this.firstThumb.move(fromIndex);
+    this.toggleSliderVertical(isVertical);
+
+    this.firstThumb.move(fromIndex, isVertical);
     this.firstThumb.tip.update(values[fromIndex]);
     this.firstThumb.tip.show(showTip);
 
     this.secondThumb.show(isRange);
-    this.secondThumb.move(toIndex);
+    this.secondThumb.move(toIndex, isVertical);
     this.secondThumb.tip.update(values[toIndex]);
     this.secondThumb.tip.show(showTip);
 
@@ -85,9 +93,10 @@ class View {
 
     this.bar.show(showBar);
     this.bar.update({
-      firstThumbOffset: this.firstThumb.element.offsetLeft,
-      secondThumbOffset: this.secondThumb.element.offsetLeft,
+      firstThumb: this.firstThumb.element,
+      secondThumb: this.secondThumb.element,
       isRange,
+      isVertical,
     });
   }
 }

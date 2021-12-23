@@ -1,9 +1,10 @@
 import createElement from '@/helpers/createElement';
 
 interface UpdateProps {
-  firstThumbOffset: number;
-  secondThumbOffset: number;
+  firstThumb: HTMLElement;
+  secondThumb: HTMLElement;
   isRange: boolean;
+  isVertical: boolean;
 }
 
 class Bar {
@@ -23,15 +24,32 @@ class Bar {
     }
   }
 
-  update({ firstThumbOffset, secondThumbOffset, isRange }: UpdateProps) {
+  resetSize() {
+    this.element.style.width = '100%';
+    this.element.style.height = '100%';
+    this.element.style.top = '0';
     this.element.style.left = '0';
-    this.element.style.width = `${String(firstThumbOffset)}px`;
+  }
+
+  update({ firstThumb, secondThumb, isRange, isVertical }: UpdateProps) {
+    const firstThumbOffset = isVertical
+      ? firstThumb.offsetTop
+      : firstThumb.offsetLeft;
+    const secondThumbOffset = isVertical
+      ? secondThumb.offsetTop
+      : secondThumb.offsetLeft;
+    const direction = isVertical ? 'top' : 'left';
+    const size = isVertical ? 'height' : 'width';
+
+    this.resetSize();
+
+    this.element.style[size] = `${String(firstThumbOffset)}px`;
 
     if (isRange) {
       const distanceBetween = secondThumbOffset - firstThumbOffset;
 
-      this.element.style.left = `${String(firstThumbOffset)}px`;
-      this.element.style.width = `${String(distanceBetween)}px`;
+      this.element.style[direction] = `${String(firstThumbOffset)}px`;
+      this.element.style[size] = `${String(distanceBetween)}px`;
     }
   }
 }
