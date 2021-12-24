@@ -23,7 +23,9 @@
       ],
       "lines-between-class-members": "off",
       "@typescript-eslint/lines-between-class-members": ["off"],
-      "react/jsx-filename-extension": [0]
+      "react/jsx-filename-extension": [0],
+      "simple-import-sort/imports": 2,
+      "simple-import-sort/exports": 2
     },
     "settings": {
       "import/extensions": [".js", ".ts"],
@@ -44,7 +46,8 @@
       "import",
       "jest",
       "@typescript-eslint",
-      "prettier"
+      "prettier",
+      "simple-import-sort"
     ],
     "extends": [
       "airbnb-typescript",
