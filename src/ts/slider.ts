@@ -1,7 +1,7 @@
 import * as $ from 'jquery';
 
-import Presenter from '@/presenter/Presenter';
 import SliderSettings from '@/models/SliderSetting';
+import Presenter from '@/presenter/Presenter';
 
 $.fn.createSlider = function (options: SliderSettings) {
   const [container] = $(this);

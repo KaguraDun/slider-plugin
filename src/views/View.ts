@@ -6,6 +6,13 @@ import createElement from '@/helpers/createElement';
 import SliderSettings from '@/models/SliderSetting';
 import { ObserverEvents } from '@/observer/ObserverEvents';
 import ThumbID from '@/models/ThumbID';
+import { ObserverEvents } from '@/observer/ObserverEvents';
+
+import Bar from './Bar';
+import Scale from './Scale';
+import Thumb from './Thumb';
+import Track from './Track';
+
 class View {
   private observerEvents: ObserverEvents;
   private track: Track;

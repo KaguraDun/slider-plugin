@@ -1,9 +1,10 @@
 import './styles/example.scss';
-
-import * as $ from 'jquery';
 import '../src/ts/slider';
 
+import * as $ from 'jquery';
+
 import createElement from '@/helpers/createElement';
+
 import createSliderControls from './createSliderControls';
 
 function createSliderExample({ heading, properties }) {

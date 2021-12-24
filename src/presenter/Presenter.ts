@@ -1,10 +1,10 @@
-import Model from '@/models/Model';
-import View from '@/views/View';
-
 import '@/styles/slider.scss';
-import SliderSettings from '@/models/SliderSetting';
+
+import Model from '@/models/Model';
 import sliderErrors from '@/models/sliderErrors';
+import SliderSettings from '@/models/SliderSetting';
 import { ObserverEvents } from '@/observer/ObserverEvents';
+import View from '@/views/View';
 
 class Presenter {
   observerEvents: ObserverEvents;

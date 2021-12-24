@@ -1,7 +1,7 @@
 import createElement from '@/helpers/createElement';
 import SliderSettings, { SliderState } from '@/models/SliderSetting';
-import { Subject } from '@/observer/Observer';
 import ThumbID from '@/models/ThumbID';
+import { Subject } from '@/observer/Observer';
 
 interface GetMarkWidthProps {
   minElement: string;

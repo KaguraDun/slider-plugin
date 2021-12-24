@@ -1,8 +1,9 @@
 import createElement from '@/helpers/createElement';
 import SliderSettings from '@/models/SliderSetting';
-import Tip from './Tip';
-import { Subject } from '@/observer/Observer';
 import ThumbID from '@/models/ThumbID';
+import { Subject } from '@/observer/Observer';
+
+import Tip from './Tip';
 
 class Thumb {
   parent: HTMLElement | null;

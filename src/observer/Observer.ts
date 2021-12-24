@@ -39,4 +39,4 @@ class Subject implements Subject {
   }
 }
 
-export { Subject, Observer };
+export { Observer, Subject };

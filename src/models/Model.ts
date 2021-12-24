@@ -1,7 +1,8 @@
-import { ObserverEvents } from '@/observer/ObserverEvents';
-import SliderSettings from './SliderSetting';
-import sliderErrors from './sliderErrors';
 import ThumbID from '@/models/ThumbID';
+import { ObserverEvents } from '@/observer/ObserverEvents';
+
+import sliderErrors from './sliderErrors';
+import SliderSettings, { SliderState } from './SliderSetting';
 
 class Model {
   private observerEvents: ObserverEvents;
