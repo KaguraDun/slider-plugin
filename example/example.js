@@ -1,11 +1,11 @@
-import './styles/example.scss';
-import '../src/ts/slider';
-
 import * as $ from 'jquery';
 
 import createElement from '@/helpers/createElement';
 
 import createSliderControls from './createSliderControls';
+
+import './styles/example.scss';
+import '../src/ts/slider';
 
 function createSliderExample({ heading, properties }) {
   const sliderContainer = createElement('div', {

@@ -1,10 +1,5 @@
-import Thumb from './Thumb';
-import Track from './Track';
-import Scale from './Scale';
-import Bar from './Bar';
 import createElement from '@/helpers/createElement';
 import SliderSettings from '@/models/SliderSetting';
-import { ObserverEvents } from '@/observer/ObserverEvents';
 import ThumbID from '@/models/ThumbID';
 import { ObserverEvents } from '@/observer/ObserverEvents';
 
