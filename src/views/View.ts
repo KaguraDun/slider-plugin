@@ -57,7 +57,12 @@ class View {
     this.secondThumb.render(this.track.element, state);
     this.secondThumb.renderTip(values[toIndex], showTip);
 
-    this.scale.render(this.slider, state, this.firstThumb.getPXPerMark());
+    this.scale.render({
+      sliderElement: this.slider,
+      state,
+      pxPerMark: this.firstThumb.getPxPerMark(),
+      thumbRect: this.firstThumb.element.getBoundingClientRect(),
+    });
 
     this.bar.show(showBar);
     this.bar.update({
@@ -97,7 +102,12 @@ class View {
     });
 
     this.scale.show(showScale);
-    this.scale.render(this.slider, state, this.firstThumb.getPXPerMark());
+    this.scale.render({
+      sliderElement: this.slider,
+      state,
+      pxPerMark: this.firstThumb.getPxPerMark(),
+      thumbRect: this.firstThumb.element.getBoundingClientRect(),
+    });
 
     this.bar.show(showBar);
     this.bar.update({

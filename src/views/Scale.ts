@@ -3,6 +3,13 @@ import SliderSettings, { SliderState } from '@/models/SliderSetting';
 import ThumbID from '@/models/ThumbID';
 import { Subject } from '@/observer/Observer';
 
+interface RenderProps {
+  sliderElement: HTMLElement;
+  state: SliderState;
+  pxPerMark: number;
+  thumbRect: DOMRect;
+}
+
 interface GetMarkWidthProps {
   minElement: string;
   maxElement: string;
@@ -10,24 +17,85 @@ interface GetMarkWidthProps {
 }
 
 class Scale {
-  private state: SliderState | null;
   parent: HTMLElement | null;
-  PXperMark: number;
-  private scaleClickEvent: Subject;
+  pxPerMark: number;
   element: HTMLElement;
-
+  private scaleClickEvent: Subject;
+  private state: SliderState | null;
   constructor(scaleClick: Subject) {
-    this.state = null;
     this.parent = null;
-    this.PXperMark = 0;
-    this.scaleClickEvent = scaleClick;
+    this.pxPerMark = 0;
     this.element = createElement('div', {
       class: 'slider__scale',
     });
     this.handleScaleClick = this.handleScaleClick.bind(this);
+    this.scaleClickEvent = scaleClick;
+    this.state = null;
   }
 
-  getClosestThumb(markID: number) {
+  render({ sliderElement, state, pxPerMark, thumbRect }: RenderProps) {
+    const { values, showScale, isVertical } = state;
+
+    this.state = state;
+    this.parent = sliderElement;
+    this.pxPerMark = pxPerMark;
+    this.element.innerHTML = '';
+
+    const markWidth = this.getMarkWidth({
+      minElement: String(values[0]),
+      maxElement: String(values[values.length - 1]),
+      isVertical,
+    });
+    const sliderWidth = this.parent.getBoundingClientRect().width;
+
+    const itemsInScale = Math.ceil(sliderWidth / markWidth) - 1;
+    const step = Math.round(values.length / itemsInScale);
+
+    const direction = isVertical ? 'top' : 'left';
+    const size = isVertical ? 'height' : 'width';
+
+    const translateX = isVertical ? 0 : thumbRect.width;
+    const translateY = isVertical ? thumbRect.height : 0;
+    const thumbCenter = thumbRect[size] / 2 + markWidth / 2;
+
+    values.forEach((item: number | string, index: number) => {
+      const isLastElement = index === values.length - 1;
+      const isFitToStep = index % step === 0;
+
+      if (!isLastElement) {
+        if (!isFitToStep) return;
+      }
+
+      const markOffset = index * this.pxPerMark - thumbCenter;
+
+      const mark = createElement(
+        'span',
+        {
+          class: 'slider__scale-mark',
+          ['data-id']: String(index),
+          style: `${direction}:${markOffset}px;
+          width: ${markWidth}px;
+          transform:translate(${translateX}px,${translateY}px);
+          `,
+        },
+        [String(item)],
+      );
+      this.element?.append(mark);
+    });
+
+    this.show(showScale);
+  }
+
+  show(showScale: boolean) {
+    if (showScale) {
+      this.parent?.append(this.element);
+      this.element.addEventListener('click', this.handleScaleClick);
+    } else {
+      this.element.remove();
+    }
+  }
+
+  private getClosestThumb(markID: number) {
     const { fromIndex, toIndex } = this.state;
     const distanceToFirst = Math.abs(markID - fromIndex);
     const distanceToSecond = Math.abs(markID - toIndex);
@@ -39,7 +107,7 @@ class Scale {
     }
   }
 
-  handleScaleClick(clickEvent: MouseEvent) {
+  private handleScaleClick(clickEvent: MouseEvent) {
     const target = <HTMLElement>clickEvent.target;
     const closest = target.closest('.slider__scale-mark');
 
@@ -57,7 +125,11 @@ class Scale {
     this.scaleClickEvent.notify({ [`${closestThumb}Index`]: ID });
   }
 
-  getMarkWidth({ minElement, maxElement, isVertical }: GetMarkWidthProps) {
+  private getMarkWidth({
+    minElement,
+    maxElement,
+    isVertical,
+  }: GetMarkWidthProps) {
     const widerElement =
       minElement.length >= maxElement.length ? minElement : maxElement;
 
@@ -77,56 +149,6 @@ class Scale {
     mark.remove();
 
     return markWidth;
-  }
-
-  render(parent: HTMLElement, state: SliderSettings, PXperMark: number) {
-    const { values, showScale, isVertical } = state;
-
-    this.state = state;
-    this.parent = parent;
-    this.PXperMark = PXperMark;
-    this.element.innerHTML = '';
-
-    const markWidth = this.getMarkWidth({
-      minElement: String(values[0]),
-      maxElement: String(values[values.length - 1]),
-      isVertical,
-    });
-    const sliderWidth = this.parent.getBoundingClientRect().width;
-    const itemsInScale = Math.floor(sliderWidth / markWidth) - 1;
-    const step = Math.ceil(values.length / itemsInScale);
-    const direction = this.state?.isVertical ? 'top' : 'left';
-
-    values.forEach((item: number | string, index: number) => {
-      const isLastElement = index === values.length - 1;
-      const isFitToStep = index % step === 0;
-
-      if (!isLastElement) {
-        if (!isFitToStep) return;
-      }
-
-      const mark = createElement(
-        'span',
-        {
-          class: 'slider__scale-mark',
-          ['data-id']: String(index),
-          style: `${direction}:${index * this.PXperMark}px`,
-        },
-        [String(item)],
-      );
-      this.element?.append(mark);
-    });
-
-    this.show(showScale);
-  }
-
-  show(showScale: boolean) {
-    if (showScale) {
-      this.parent?.append(this.element);
-      this.element.addEventListener('click', this.handleScaleClick);
-    } else {
-      this.element.remove();
-    }
   }
 }
 

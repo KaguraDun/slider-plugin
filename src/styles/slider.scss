@@ -58,6 +58,7 @@ $color-black: #121212;
 
   &__scale-mark {
     position: absolute;
+    padding: 0 5px;
     color: $color-black;
     font-weight: bold;
     font-size: 18px;
@@ -101,6 +102,7 @@ $color-black: #121212;
 
     .slider__scale-mark {
       max-width: 50px;
+      padding: 5px 0;
     }
 
     .slider__tip {
