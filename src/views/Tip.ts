@@ -6,6 +6,12 @@ interface TipProps {
   showTip: boolean;
 }
 
+interface CheckIntersectionProps {
+  firstTip: HTMLElement;
+  secondTip: HTMLElement;
+  isVertical: boolean;
+}
+
 class Tip {
   element: HTMLElement;
   parent: HTMLElement | null;
@@ -17,8 +23,8 @@ class Tip {
 
   render({ parent, value, showTip }: TipProps) {
     this.parent = parent;
-    this.element.innerText = String(value);
 
+    this.update(value);
     this.show(showTip);
   }
 
@@ -35,6 +41,41 @@ class Tip {
       this.element.remove();
     }
   }
+
+  toggleExpand(expanded: boolean) {
+    this.element.classList.toggle(Tip.EXPANDED_MODIFIER, expanded);
+  }
+
+  static checkIntersection({
+    firstTip,
+    secondTip,
+    isVertical,
+  }: CheckIntersectionProps) {
+    const firstTipRect = firstTip.getBoundingClientRect();
+    const secondTipRect = secondTip.getBoundingClientRect();
+
+    const isExpanded = firstTip.classList.contains(Tip.EXPANDED_MODIFIER);
+
+    enum MatchSizes {
+      unExpanded = 1,
+      expanded = 2,
+    }
+    const matchSize = isExpanded ? MatchSizes.expanded : MatchSizes.unExpanded;
+
+    let isIntersect = false;
+
+    if (isVertical) {
+      const secondTipArea = secondTipRect.height * matchSize;
+      isIntersect = firstTipRect.top + secondTipArea >= secondTipRect.top;
+    } else {
+      const secondTipArea = secondTipRect.width;
+      isIntersect = firstTipRect.left + secondTipArea >= secondTipRect.left;
+    }
+
+    return isIntersect;
+  }
+
+  private static EXPANDED_MODIFIER = 'slider__tip_expanded';
 }
 
 export default Tip;

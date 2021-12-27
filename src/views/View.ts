@@ -2,6 +2,7 @@ import createElement from '@/helpers/createElement';
 import SliderSettings from '@/models/SliderSetting';
 import ThumbID from '@/models/ThumbID';
 import { ObserverEvents } from '@/observer/ObserverEvents';
+import Tip from '@/views/Tip';
 
 import Bar from './Bar';
 import Scale from './Scale';
@@ -52,6 +53,7 @@ class View {
 
     this.firstThumb.render(this.track.element, state);
     this.firstThumb.renderTip(values[fromIndex], showTip);
+
     this.secondThumb.render(this.track.element, state);
     this.secondThumb.renderTip(values[toIndex], showTip);
 
@@ -81,16 +83,20 @@ class View {
     this.toggleSliderVertical(isVertical);
 
     this.firstThumb.move(fromIndex, isVertical);
-    this.firstThumb.tip.update(values[fromIndex]);
     this.firstThumb.tip.show(showTip);
 
     this.secondThumb.show(isRange);
     this.secondThumb.move(toIndex, isVertical);
-    this.secondThumb.tip.update(values[toIndex]);
     this.secondThumb.tip.show(showTip);
 
-    this.scale.show(showScale);
+    this.updateTips({
+      fromValue: values[fromIndex],
+      toValue: values[toIndex],
+      isRange,
+      isVertical,
+    });
 
+    this.scale.show(showScale);
     this.scale.render(this.slider, state, this.firstThumb.getPXPerMark());
 
     this.bar.show(showBar);
@@ -100,6 +106,34 @@ class View {
       isRange,
       isVertical,
     });
+  }
+
+  private updateTips({
+    fromValue,
+    toValue,
+    isRange,
+    isVertical,
+  }: SliderSettings) {
+    const isIntersect = Tip.checkIntersection({
+      firstTip: this.firstThumb.tip.element,
+      secondTip: this.secondThumb.tip.element,
+      isVertical,
+    });
+
+    const toggle = isRange ? isIntersect : false;
+    this.firstThumb.tip.toggleExpand(toggle);
+
+    if (isIntersect && isRange) {
+      const tipValue = isVertical
+        ? `${fromValue} ${toValue}`
+        : `${fromValue} : ${toValue}`;
+
+      this.secondThumb.tip.show(false);
+      this.firstThumb.tip.update(tipValue);
+    } else {
+      this.firstThumb.tip.update(fromValue);
+      this.secondThumb.tip.update(toValue);
+    }
   }
 }
 

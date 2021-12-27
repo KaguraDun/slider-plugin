@@ -35,6 +35,11 @@
     border-radius: 2px;
     transform: translateX(-50%);
     cursor: pointer;
+
+    &_expanded {
+      left: 100%;
+      width: max-content;
+    }
   }
 
   &__scale {
@@ -91,6 +96,15 @@
       bottom: 0;
       left: 0;
       transform: translate(-130%, 25%);
+    }
+
+    .slider__tip_expanded {
+      top: 50%;
+      left: 0;
+      width: auto;
+      height: max-content;
+      text-align: center;
+      transform: translate(-125%, -50%);
     }
 
     .slider__thumb {
