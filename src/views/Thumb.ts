@@ -60,12 +60,12 @@ class Thumb {
     };
 
     const handleMouseUp = () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('pointermove', handleMouseMove);
+      document.removeEventListener('pointerup', handleMouseUp);
     };
 
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener('pointermove', handleMouseMove);
+    document.addEventListener('pointerup', handleMouseUp);
   };
 
   handleDragStart() {
@@ -76,7 +76,7 @@ class Thumb {
     this.parent = parent;
     this.state = state;
 
-    this.element.addEventListener('mousedown', this.handleDragThumb);
+    this.element.addEventListener('pointerdown', this.handleDragThumb);
     this.element.addEventListener('dragstart', this.handleDragStart);
 
     this.move(this.state[`${this.thumbID}Index`], this.state.isVertical);
