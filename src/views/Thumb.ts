@@ -29,8 +29,10 @@ class Thumb {
 
     const thumb = this.element.getBoundingClientRect();
     const track = this.parent.getBoundingClientRect();
+
     const thumbWidth = this.state.isVertical ? thumb.height : thumb.width;
     const trackWidth = this.state.isVertical ? track.height : track.width;
+
     const pxPerMark = (trackWidth - thumbWidth) / this.state.maxIndex;
 
     return pxPerMark;
@@ -43,8 +45,8 @@ class Thumb {
     this.element.addEventListener('pointerdown', this.handleDragThumb);
     this.element.addEventListener('dragstart', this.handleDragStart);
 
-    this.move(this.state[`${this.thumbID}Index`], this.state.isVertical);
     this.show(this.state?.isRange);
+    this.move(this.state[`${this.thumbID}Index`], this.state.isVertical);
   }
 
   move(valueIndex: number, isVertical: boolean) {
@@ -62,7 +64,7 @@ class Thumb {
   show(isRange: boolean) {
     if (!this.parent) return;
 
-    if (!isRange && this.thumbID === 'to') {
+    if (!isRange && this.thumbID === ThumbID.to) {
       this.element.remove();
     } else {
       this.parent.append(this.element);
