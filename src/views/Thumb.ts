@@ -24,52 +24,16 @@ class Thumb {
     this.tip = new Tip();
   }
 
-  getPXPerMark() {
+  getPxPerMark() {
+    if (!this.parent) return 0;
+
     const thumb = this.element.getBoundingClientRect();
     const track = this.parent.getBoundingClientRect();
     const thumbWidth = this.state.isVertical ? thumb.height : thumb.width;
     const trackWidth = this.state.isVertical ? track.height : track.width;
-    const PXperMark = (trackWidth - thumbWidth) / this.state.maxIndex;
+    const pxPerMark = (trackWidth - thumbWidth) / this.state.maxIndex;
 
-    return PXperMark;
-  }
-
-  handleDragThumb = (mouseDown: MouseEvent) => {
-    mouseDown.preventDefault();
-    const shiftX = mouseDown.clientX - this.element.offsetLeft;
-    const shiftY = mouseDown.clientY - this.element.offsetTop;
-
-    const handleMouseMove = (mouseMove: MouseEvent) => {
-      const offsetX = mouseMove.clientX - shiftX;
-      const offsetY = mouseMove.clientY - shiftY;
-      let offset = this.state?.isVertical ? offsetY : offsetX;
-
-      if (offset < 0) offset = 0;
-
-      let valueIndex = Math.round(offset / this.getPXPerMark());
-
-      if (valueIndex > this.state?.maxIndex) valueIndex = this.state?.maxIndex;
-
-      const value = this.state?.values[valueIndex];
-
-      if (this.thumbID === ThumbID.from) {
-        this.moveEvent.notify({ from: value });
-      } else if (this.thumbID === ThumbID.to) {
-        this.moveEvent.notify({ to: value });
-      }
-    };
-
-    const handleMouseUp = () => {
-      document.removeEventListener('pointermove', handleMouseMove);
-      document.removeEventListener('pointerup', handleMouseUp);
-    };
-
-    document.addEventListener('pointermove', handleMouseMove);
-    document.addEventListener('pointerup', handleMouseUp);
-  };
-
-  handleDragStart() {
-    return false;
+    return pxPerMark;
   }
 
   render(parent: HTMLElement, state: SliderSettings) {
@@ -84,7 +48,7 @@ class Thumb {
   }
 
   move(valueIndex: number, isVertical: boolean) {
-    const movePX = this.getPXPerMark() * valueIndex;
+    const movePX = this.getPxPerMark() * valueIndex;
 
     if (isVertical) {
       this.element.style.top = `${movePX}px`;
@@ -108,6 +72,44 @@ class Thumb {
   renderTip(value: number, showTip: boolean) {
     this.tip.render({ parent: this.element, value, showTip });
   }
+
+  private handleDragStart() {
+    return false;
+  }
+
+  private handleDragThumb = (mouseDown: MouseEvent) => {
+    mouseDown.preventDefault();
+    const shiftX = mouseDown.clientX - this.element.offsetLeft;
+    const shiftY = mouseDown.clientY - this.element.offsetTop;
+
+    const handleMouseMove = (mouseMove: MouseEvent) => {
+      const offsetX = mouseMove.clientX - shiftX;
+      const offsetY = mouseMove.clientY - shiftY;
+      let offset = this.state?.isVertical ? offsetY : offsetX;
+
+      if (offset < 0) offset = 0;
+
+      let valueIndex = Math.round(offset / this.getPxPerMark());
+
+      if (valueIndex > this.state?.maxIndex) valueIndex = this.state?.maxIndex;
+
+      const value = this.state?.values[valueIndex];
+
+      if (this.thumbID === ThumbID.from) {
+        this.moveEvent.notify({ from: value });
+      } else if (this.thumbID === ThumbID.to) {
+        this.moveEvent.notify({ to: value });
+      }
+    };
+
+    const handleMouseUp = () => {
+      document.removeEventListener('pointermove', handleMouseMove);
+      document.removeEventListener('pointerup', handleMouseUp);
+    };
+
+    document.addEventListener('pointermove', handleMouseMove);
+    document.addEventListener('pointerup', handleMouseUp);
+  };
 }
 
 export default Thumb;
