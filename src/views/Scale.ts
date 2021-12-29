@@ -100,8 +100,11 @@ class Scale {
     }
   }
 
-  private getClosestThumb(markID: number) {
-    const { fromIndex, toIndex } = this.state;
+  private getClosestThumb(markID: number): ThumbID {
+    const { fromIndex, toIndex, isRange } = this.state;
+
+    if (!isRange) return ThumbID.from;
+
     const distanceToFirst = Math.abs(markID - fromIndex);
     const distanceToSecond = Math.abs(markID - toIndex);
 
@@ -118,16 +121,14 @@ class Scale {
 
     if (!closest) return;
 
-    const ID = Number(target.dataset.id);
-    let closestThumb;
+    const { values } = this.state;
 
-    if (this.state?.isRange) {
-      closestThumb = this.getClosestThumb(ID);
-    } else {
-      closestThumb = ThumbID.from;
-    }
+    const valueIndex = Number(target.dataset.id);
+    const closestThumb = this.getClosestThumb(valueIndex);
 
-    this.scaleClickEvent.notify({ [`${closestThumb}Index`]: ID });
+    const value = values[valueIndex];
+
+    this.scaleClickEvent.notify({ [closestThumb]: value });
   }
 
   private getMarkWidth({
