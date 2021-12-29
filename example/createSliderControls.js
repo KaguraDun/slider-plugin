@@ -5,6 +5,8 @@ function createInputs({ container, items, type }) {
     class: 'slider-controls__inputs-container',
   });
 
+  const inputs = {};
+
   items.forEach(({ name, getValue }) => {
     const inputClasses = `slider-controls__input ${
       type === 'checkbox' ? 'slider-controls__input--checkbox' : ''
@@ -42,6 +44,10 @@ function createInputs({ container, items, type }) {
       [label],
     );
 
+    inputs[name] = {
+      element: input,
+    };
+
     inputsContainer.append(inputContainer);
   });
 
@@ -53,20 +59,25 @@ function createInputs({ container, items, type }) {
   };
 
   inputsContainer.addEventListener('change', handleInputChange);
-
   container.append(inputsContainer);
+
+  return inputs;
 }
 
 function createSliderControls({ container, $slider }) {
-  const numberInputs = [
-    { name: 'min', handler: $slider.setMin, getValue: $slider.getMin },
+  const numberItems = [
+    {
+      name: 'min',
+      handler: $slider.setMin,
+      getValue: $slider.getMin,
+    },
     { name: 'max', handler: $slider.setMax, getValue: $slider.getMax },
     { name: 'step', handler: $slider.setStep, getValue: $slider.getStep },
     { name: 'from', handler: $slider.setFrom, getValue: $slider.getFrom },
     { name: 'to', handler: $slider.setTo, getValue: $slider.getTo },
   ];
 
-  const booleanInputs = [
+  const booleanItems = [
     {
       name: 'vertical',
       handler: $slider.setIsVertical,
@@ -86,16 +97,28 @@ function createSliderControls({ container, $slider }) {
     { name: 'tip', handler: $slider.setShowTip, getValue: $slider.getShowTip },
   ];
 
-  createInputs({
+  const numberInputs = createInputs({
     container,
-    items: numberInputs,
+    items: numberItems,
     type: 'number',
   });
-  createInputs({
+
+  const booleanInputs = createInputs({
     container,
-    items: booleanInputs,
+    items: booleanItems,
     type: 'checkbox',
   });
+
+  const isRangeDefault = booleanInputs.range.element.checked;
+  numberInputs.to.element.disabled = !isRangeDefault;
+
+  const handleIsRangeChange = ({ target }) => {
+    const isRange = target.checked;
+
+    numberInputs.to.element.disabled = !isRange;
+  };
+
+  booleanInputs.range.element.addEventListener('change', handleIsRangeChange);
 }
 
 export default createSliderControls;
