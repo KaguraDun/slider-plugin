@@ -10,11 +10,17 @@ class Presenter {
   observerEvents: ObserverEvents;
   model: Model;
   view: View;
+  fromChangedCallback: () => void;
+  toChangedCallback: () => void;
 
   constructor() {
     this.observerEvents = new ObserverEvents();
     this.model = new Model(this.observerEvents);
     this.view = new View(this.observerEvents);
+    this.fromChangedCallback = () => null;
+    this.toChangedCallback = () => null;
+    this.runFromChangedCallback = this.runFromChangedCallback.bind(this);
+    this.runToChangedCallback = this.runToChangedCallback.bind(this);
   }
 
   createSlider(container: HTMLElement, options?: SliderSettings) {
@@ -37,8 +43,18 @@ class Presenter {
     this.view.init(container, this.model.getState());
 
     this.observerEvents.stateChanged.attach(this.view.update);
+    this.observerEvents.fromChanged.attach(this.runFromChangedCallback);
+    this.observerEvents.toChanged.attach(this.runToChangedCallback);
     this.observerEvents.thumbMoved.attach(this.model.setOptions);
     this.observerEvents.scaleClick.attach(this.model.setOptions);
+  }
+
+  addFromChangedCallback(callback: () => void) {
+    this.fromChangedCallback = callback;
+  }
+
+  addToChangedCallback(callback: () => void) {
+    this.toChangedCallback = callback;
   }
 
   setFrom(from: number) {
@@ -119,6 +135,13 @@ class Presenter {
 
   getStep() {
     return this.model.getStep();
+  }
+  private runFromChangedCallback() {
+    this.fromChangedCallback();
+  }
+
+  private runToChangedCallback() {
+    this.toChangedCallback();
   }
 }
 

@@ -10,6 +10,14 @@ $.fn.createSlider = function (options: SliderSettings) {
   slider.createSlider(container, options);
 
   return {
+    fromChangedEvent(callback: () => void) {
+      slider.addFromChangedCallback(callback);
+      return this;
+    },
+    toChangedEvent(callback: () => void) {
+      slider.addToChangedCallback(callback);
+      return this;
+    },
     setFrom(from: number) {
       slider.setFrom(from);
       return this;
