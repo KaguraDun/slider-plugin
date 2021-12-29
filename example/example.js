@@ -19,18 +19,18 @@ function createSliderExample({ heading, properties }) {
     { class: 'slider-example__heading' },
     [heading],
   );
-  const sliderWrapper = createElement(
-    'div',
-    { class: 'slider-example__wrapper' },
-    [sliderSectionHeading, sliderContainer, sliderControlsContainer],
-  );
+  const sliderWrapper = createElement('div', { class: 'slider-example' }, [
+    sliderSectionHeading,
+    sliderContainer,
+    sliderControlsContainer,
+  ]);
 
   document.body.append(sliderWrapper);
 
   const $slider = $(sliderContainer).createSlider(properties);
   createSliderControls({
     container: sliderControlsContainer,
-    $instance: $slider,
+    $slider,
   });
 
   return $slider;
