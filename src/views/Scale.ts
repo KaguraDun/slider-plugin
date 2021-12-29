@@ -1,4 +1,6 @@
 import createElement from '@/helpers/createElement';
+import { getDirectionLiteral, getSizeLiteral } from '@/helpers/getLiteral';
+import getPercentOfNumber from '@/helpers/getPercentOfNumber';
 import SliderSettings, { SliderState } from '@/models/SliderSetting';
 import ThumbID from '@/models/ThumbID';
 import { Subject } from '@/observer/Observer';
@@ -6,7 +8,7 @@ import { Subject } from '@/observer/Observer';
 interface RenderProps {
   sliderElement: HTMLElement;
   state: SliderState;
-  pxPerMark: number;
+  percentPerMark: number;
   thumbRect: DOMRect;
 }
 
@@ -18,13 +20,14 @@ interface GetMarkWidthProps {
 
 class Scale {
   parent: HTMLElement | null;
-  pxPerMark: number;
+  percentPerMark: number;
   element: HTMLElement;
   private scaleClickEvent: Subject;
   private state: SliderState | null;
+
   constructor(scaleClick: Subject) {
     this.parent = null;
-    this.pxPerMark = 0;
+    this.percentPerMark = 0;
     this.element = createElement('div', {
       class: 'slider__scale',
     });
@@ -33,12 +36,12 @@ class Scale {
     this.state = null;
   }
 
-  render({ sliderElement, state, pxPerMark, thumbRect }: RenderProps) {
+  render({ sliderElement, state, percentPerMark, thumbRect }: RenderProps) {
     const { values, showScale, isVertical } = state;
 
     this.state = state;
     this.parent = sliderElement;
-    this.pxPerMark = pxPerMark;
+    this.percentPerMark = percentPerMark;
     this.element.innerHTML = '';
 
     const markWidth = this.getMarkWidth({
@@ -46,17 +49,20 @@ class Scale {
       maxElement: String(values[values.length - 1]),
       isVertical,
     });
-    const sliderWidth = this.parent.getBoundingClientRect().width;
 
-    const itemsInScale = Math.ceil(sliderWidth / markWidth) - 1;
+    const direction = getDirectionLiteral(isVertical);
+    const size = getSizeLiteral(isVertical);
+
+    const sliderSize = this.parent.getBoundingClientRect()[size];
+
+    const itemsInScale = Math.ceil(sliderSize / markWidth) - 1;
     const step = Math.round(values.length / itemsInScale);
 
-    const direction = isVertical ? 'top' : 'left';
-    const size = isVertical ? 'height' : 'width';
+    const translateX = isVertical ? 0 : thumbRect[size];
+    const translateY = isVertical ? thumbRect[size] : 0;
 
-    const translateX = isVertical ? 0 : thumbRect.width;
-    const translateY = isVertical ? thumbRect.height : 0;
-    const thumbCenter = thumbRect[size] / 2 + markWidth / 2;
+    const thumbOffset = thumbRect[size] / 2 + markWidth / 2;
+    const thumbOffsetPercent = getPercentOfNumber(thumbOffset, sliderSize);
 
     values.forEach((item: number | string, index: number) => {
       const isLastElement = index === values.length - 1;
@@ -65,15 +71,14 @@ class Scale {
       if (!isLastElement) {
         if (!isFitToStep) return;
       }
-
-      const markOffset = index * this.pxPerMark - thumbCenter;
+      const markOffset = index * this.percentPerMark - thumbOffsetPercent;
 
       const mark = createElement(
         'span',
         {
           class: 'slider__scale-mark',
           ['data-id']: String(index),
-          style: `${direction}:${markOffset}px;
+          style: `${direction}:${markOffset}%;
           width: ${markWidth}px;
           transform:translate(${translateX}px,${translateY}px);
           `,

@@ -9,6 +9,13 @@ import Scale from './Scale';
 import Thumb from './Thumb';
 import Track from './Track';
 
+interface UpdateTipsProps {
+  fromValue: number | string;
+  toValue: number | string;
+  isRange: boolean;
+  isVertical: boolean;
+}
+
 class View {
   private observerEvents: ObserverEvents;
   private track: Track;
@@ -60,7 +67,7 @@ class View {
     this.scale.render({
       sliderElement: this.slider,
       state,
-      pxPerMark: this.firstThumb.getPxPerMark(),
+      percentPerMark: this.firstThumb.getPercentPerMark(),
       thumbRect: this.firstThumb.element.getBoundingClientRect(),
     });
 
@@ -105,7 +112,7 @@ class View {
     this.scale.render({
       sliderElement: this.slider,
       state,
-      pxPerMark: this.firstThumb.getPxPerMark(),
+      percentPerMark: this.firstThumb.getPercentPerMark(),
       thumbRect: this.firstThumb.element.getBoundingClientRect(),
     });
 
@@ -123,7 +130,7 @@ class View {
     toValue,
     isRange,
     isVertical,
-  }: SliderSettings) {
+  }: UpdateTipsProps) {
     const isIntersect = Tip.checkIntersection({
       firstTip: this.firstThumb.tip.element,
       secondTip: this.secondThumb.tip.element,

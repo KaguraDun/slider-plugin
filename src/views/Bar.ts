@@ -1,4 +1,10 @@
 import createElement from '@/helpers/createElement';
+import {
+  getDirectionLiteral,
+  getOffsetLiteral,
+  getSizeLiteral,
+} from '@/helpers/getLiteral';
+import getPercentOfNumber from '@/helpers/getPercentOfNumber';
 
 interface UpdateProps {
   firstThumb: HTMLElement;
@@ -24,33 +30,36 @@ class Bar {
     }
   }
 
-  resetSize() {
-    this.element.style.width = '100%';
-    this.element.style.height = '100%';
-    this.element.style.top = '0';
-    this.element.style.left = '0';
-  }
-
   update({ firstThumb, secondThumb, isRange, isVertical }: UpdateProps) {
-    const firstThumbOffset = isVertical
-      ? firstThumb.offsetTop
-      : firstThumb.offsetLeft;
-    const secondThumbOffset = isVertical
-      ? secondThumb.offsetTop
-      : secondThumb.offsetLeft;
-    const direction = isVertical ? 'top' : 'left';
-    const size = isVertical ? 'height' : 'width';
+    const direction = getDirectionLiteral(isVertical);
+    const offset = getOffsetLiteral(isVertical);
+    const size = getSizeLiteral(isVertical);
+
+    const trackSize = this.parent.getBoundingClientRect()[size];
+
+    const firstThumbOffset = getPercentOfNumber(firstThumb[offset], trackSize);
+    const secondThumbOffset = getPercentOfNumber(
+      secondThumb[offset],
+      trackSize,
+    );
 
     this.resetSize();
-
-    this.element.style[size] = `${String(firstThumbOffset)}px`;
 
     if (isRange) {
       const distanceBetween = secondThumbOffset - firstThumbOffset;
 
-      this.element.style[direction] = `${String(firstThumbOffset)}px`;
-      this.element.style[size] = `${String(distanceBetween)}px`;
+      this.element.style[direction] = `${firstThumbOffset}%`;
+      this.element.style[size] = `${distanceBetween}%`;
+    } else {
+      this.element.style[size] = `${firstThumbOffset}%`;
     }
+  }
+
+  private resetSize() {
+    this.element.style.width = '100%';
+    this.element.style.height = '100%';
+    this.element.style.top = '0';
+    this.element.style.left = '0';
   }
 }
 export default Bar;

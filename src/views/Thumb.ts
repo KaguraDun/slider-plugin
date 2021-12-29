@@ -1,4 +1,6 @@
 import createElement from '@/helpers/createElement';
+import { getSizeLiteral } from '@/helpers/getLiteral';
+import getPercentOfNumber from '@/helpers/getPercentOfNumber';
 import SliderSettings from '@/models/SliderSetting';
 import ThumbID from '@/models/ThumbID';
 import { Subject } from '@/observer/Observer';
@@ -24,39 +26,44 @@ class Thumb {
     this.tip = new Tip();
   }
 
-  getPxPerMark() {
+  getPercentPerMark() {
     if (!this.parent) return 0;
+
+    const { isVertical, maxIndex } = this.state;
 
     const thumb = this.element.getBoundingClientRect();
     const track = this.parent.getBoundingClientRect();
+    const size = getSizeLiteral(isVertical);
 
-    const thumbWidth = this.state.isVertical ? thumb.height : thumb.width;
-    const trackWidth = this.state.isVertical ? track.height : track.width;
+    const pxPerMark = (track[size] - thumb[size]) / maxIndex;
+    const movePercent = getPercentOfNumber(pxPerMark, track[size]);
 
-    const pxPerMark = (trackWidth - thumbWidth) / this.state.maxIndex;
-
-    return pxPerMark;
+    return movePercent;
   }
 
   render(parent: HTMLElement, state: SliderSettings) {
     this.parent = parent;
     this.state = state;
 
+    const { isRange, isVertical } = this.state;
+
     this.element.addEventListener('pointerdown', this.handleDragThumb);
     this.element.addEventListener('dragstart', this.handleDragStart);
 
-    this.show(this.state?.isRange);
-    this.move(this.state[`${this.thumbID}Index`], this.state.isVertical);
+    this.show(isRange);
+    this.move(this.state[`${this.thumbID}Index`], isVertical);
   }
 
   move(valueIndex: number, isVertical: boolean) {
-    const movePX = this.getPxPerMark() * valueIndex;
+    if (!this.element.isConnected || !this.parent) return;
+
+    const movePercent = this.getPercentPerMark() * valueIndex;
 
     if (isVertical) {
-      this.element.style.top = `${movePX}px`;
+      this.element.style.top = `${movePercent}%`;
       this.element.style.left = '0';
     } else {
-      this.element.style.left = `${movePX}px`;
+      this.element.style.left = `${movePercent}%`;
       this.element.style.top = '0';
     }
   }
@@ -79,23 +86,32 @@ class Thumb {
     return false;
   }
 
-  private handleDragThumb = (mouseDown: MouseEvent) => {
-    mouseDown.preventDefault();
-    const shiftX = mouseDown.clientX - this.element.offsetLeft;
-    const shiftY = mouseDown.clientY - this.element.offsetTop;
+  private handleDragThumb = (pointerDown: PointerEvent) => {
+    pointerDown.preventDefault();
 
-    const handleMouseMove = (mouseMove: MouseEvent) => {
-      const offsetX = mouseMove.clientX - shiftX;
-      const offsetY = mouseMove.clientY - shiftY;
-      let offset = this.state?.isVertical ? offsetY : offsetX;
+    const shiftX = pointerDown.clientX - this.element.offsetLeft;
+    const shiftY = pointerDown.clientY - this.element.offsetTop;
 
-      if (offset < 0) offset = 0;
+    const handlePointerMove = (pointerMove: PointerEvent) => {
+      if (!this.parent) return;
 
-      let valueIndex = Math.round(offset / this.getPxPerMark());
+      const { isVertical, maxIndex, values } = this.state;
 
-      if (valueIndex > this.state?.maxIndex) valueIndex = this.state?.maxIndex;
+      const offsetX = pointerMove.clientX - shiftX;
+      const offsetY = pointerMove.clientY - shiftY;
+      let offsetPx = isVertical ? offsetY : offsetX;
 
-      const value = this.state?.values[valueIndex];
+      if (offsetPx < 0) offsetPx = 0;
+
+      const size = getSizeLiteral(isVertical);
+      const parentSize = this.parent.getBoundingClientRect()[size];
+
+      const offsetPercent = getPercentOfNumber(offsetPx, parentSize);
+      let valueIndex = Math.round(offsetPercent / this.getPercentPerMark());
+
+      if (valueIndex > maxIndex) valueIndex = maxIndex;
+
+      const value = values[valueIndex];
 
       if (this.thumbID === ThumbID.from) {
         this.moveEvent.notify({ from: value });
@@ -105,11 +121,11 @@ class Thumb {
     };
 
     const handleMouseUp = () => {
-      document.removeEventListener('pointermove', handleMouseMove);
+      document.removeEventListener('pointermove', handlePointerMove);
       document.removeEventListener('pointerup', handleMouseUp);
     };
 
-    document.addEventListener('pointermove', handleMouseMove);
+    document.addEventListener('pointermove', handlePointerMove);
     document.addEventListener('pointerup', handleMouseUp);
   };
 }
