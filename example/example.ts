@@ -2,7 +2,7 @@ import * as $ from 'jquery';
 
 import createElement from '@/helpers/createElement';
 
-import createSliderControls from './createSliderControls';
+import SliderPanel from './components/SliderPanel/SliderPanel';
 
 import './styles/example.scss';
 import '../src/ts/slider';
@@ -28,19 +28,22 @@ function createSliderExample({ heading, properties }) {
   document.body.append(sliderWrapper);
 
   const $slider = $(sliderContainer).createSlider(properties);
-  createSliderControls({
-    container: sliderControlsContainer,
+
+  const sliderPanel = new SliderPanel({
     $slider,
+    container: sliderControlsContainer,
   });
+
+  sliderPanel.render();
 
   return $slider;
 }
 
-const firstSliderProperties = {
-  from: 0,
-  min: -50,
-  max: 50,
-  step: 10,
+const firstSliderSettings = {
+  from: 2,
+  min: -10,
+  max: 10,
+  step: 1,
   showBar: true,
   showScale: true,
   showTip: true,
@@ -50,14 +53,15 @@ const firstSliderProperties = {
 
 const $firstSlider = createSliderExample({
   heading: 'First slider',
-  properties: firstSliderProperties,
+  properties: firstSliderSettings,
 });
 
-const secondSliderProperties = {
-  from: 0,
-  min: -50,
-  max: 50,
-  step: 10,
+const secondSliderSettings = {
+  from: -5000,
+  to: 2500,
+  min: -5000,
+  max: 5000,
+  step: 5,
   showBar: true,
   showScale: true,
   showTip: true,
@@ -67,39 +71,39 @@ const secondSliderProperties = {
 
 const $secondSlider = createSliderExample({
   heading: 'Second slider',
-  properties: secondSliderProperties,
+  properties: secondSliderSettings,
 });
 
-const thirdSliderProperties = {
-  from: 0,
-  min: -50,
-  max: 50,
-  step: 10,
-  showBar: true,
-  showScale: true,
-  showTip: true,
-  isRange: true,
-  isVertical: true,
-};
+// const thirdSliderSettings = {
+//   from: 0,
+//   min: -50,
+//   max: 50,
+//   step: 1,
+//   showBar: true,
+//   showScale: true,
+//   showTip: true,
+//   isRange: true,
+//   isVertical: true,
+// };
 
-const $thirdSlider = createSliderExample({
-  heading: 'Third slider',
-  properties: thirdSliderProperties,
-});
+// const $thirdSlider = createSliderExample({
+//   heading: 'Third slider',
+//   properties: thirdSliderSettings,
+// });
 
-const fourthSliderProperties = {
-  from: 0,
-  min: -50,
-  max: 50,
-  step: 10,
-  showBar: true,
-  showScale: true,
-  showTip: true,
-  isRange: true,
-  isVertical: true,
-};
+// const fourthSliderSettings = {
+//   from: 0,
+//   min: -50,
+//   max: 50,
+//   step: 10,
+//   showBar: true,
+//   showScale: true,
+//   showTip: true,
+//   isRange: true,
+//   isVertical: true,
+// };
 
-const $fourthSlider = createSliderExample({
-  heading: 'Fourth slider',
-  properties: fourthSliderProperties,
-});
+// const $fourthSlider = createSliderExample({
+//   heading: 'Fourth slider',
+//   properties: fourthSliderSettings,
+// });
