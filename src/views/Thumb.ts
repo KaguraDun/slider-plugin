@@ -113,11 +113,7 @@ class Thumb {
 
       const value = values[valueIndex];
 
-      if (this.thumbID === ThumbID.from) {
-        this.moveEvent.notify({ from: value });
-      } else if (this.thumbID === ThumbID.to) {
-        this.moveEvent.notify({ to: value });
-      }
+      this.moveEvent.notify({ [this.thumbID]: value });
     };
 
     const handleMouseUp = () => {
