@@ -50,6 +50,17 @@ class SliderPanel {
     this.$slider.fromChangedEvent(this.updateFrom);
     this.$slider.toChangedEvent(this.updateTo);
 
+    this.inputList.min.addEventListener('change', this.handleMinChange);
+
+    //set min for correct step
+    const min = this.$slider.getMin();
+    this.inputList.from.min = min;
+    this.inputList.to.min = min;
+
+    this.inputList.step.addEventListener('change', this.handleStepChange);
+
+    this.inputList.range.addEventListener('change', this.handleIsRangeChange);
+
     this.container.append(inputsContainer);
   }
 
@@ -116,8 +127,62 @@ class SliderPanel {
 
     let value = Number(target.value);
 
+    if (target.name === 'step') {
+      value = this.validateStep(value);
+      target.value = String(value);
+    }
+
+    if (target.name === 'from') {
+      value = this.validateFrom(value);
+      target.value = String(value);
+    }
+
+    if (target.name === 'to') {
+      value = this.validateTo(value);
+      target.value = String(value);
+    }
+
     if (target.type === 'number') handler(value);
   };
+
+  private validateStep(value: number) {
+    const min = this.$slider.getMin();
+    const max = this.$slider.getMax();
+    const maxStep = Math.abs(max - min);
+    const minStepValue = 1;
+
+    if (value <= 0) return minStepValue;
+    if (value > maxStep) return maxStep;
+
+    return value;
+  }
+
+  private validateFrom(value: number) {
+    const isRange = this.$slider.getIsRange();
+    const to = this.$slider.getTo();
+    const min = this.$slider.getMin();
+    const max = this.$slider.getMax();
+
+    if (value < min) return min;
+
+    if (isRange) {
+      if (value > to) return to;
+    } else {
+      if (value > max) return max;
+    }
+
+    return value;
+  }
+
+  private validateTo(value: number) {
+    const from = this.$slider.getFrom();
+    const max = this.$slider.getMax();
+
+    if (value < from) return from;
+    if (value > max) return max;
+
+    return value;
+  }
 
   private handleIsRangeChange = (changeEvent: Event) => {
     const target = <HTMLInputElement>changeEvent.target;
@@ -125,6 +190,21 @@ class SliderPanel {
 
     this.inputList.to.disabled = !isRange;
   };
+
+  private handleMinChange = (changeEvent: Event) => {
+    const target = <HTMLInputElement>changeEvent.target;
+
+    this.inputList.from.min = target.value;
+    this.inputList.to.min = target.value;
+  };
+
+  private handleStepChange = (changeEvent: Event) => {
+    const target = <HTMLInputElement>changeEvent.target;
+
+    this.inputList.from.step = target.value;
+    this.inputList.to.step = target.value;
+  };
+
   private updateFrom = () => {
     this.inputList.from.value = this.$slider.getFrom();
   };
