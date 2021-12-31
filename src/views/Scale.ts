@@ -54,8 +54,8 @@ class Scale {
     const size = getSizeLiteral(isVertical);
 
     const sliderSize = this.parent.getBoundingClientRect()[size];
-
-    const itemsInScale = Math.ceil(sliderSize / markWidth) - 1;
+    const borderElements = 2;
+    const itemsInScale = Math.ceil(sliderSize / markWidth) - borderElements;
     const step = Math.round(values.length / itemsInScale);
 
     const translateX = isVertical ? 0 : thumbRect[size];
@@ -67,10 +67,12 @@ class Scale {
     values.forEach((item: number | string, index: number) => {
       const isLastElement = index === values.length - 1;
       const isFitToStep = index % step === 0;
+      const isSecondFromEndOverflowLast = index + step / 2 > values.length - 1;
 
       if (!isLastElement) {
-        if (!isFitToStep) return;
+        if (!isFitToStep || isSecondFromEndOverflowLast) return;
       }
+
       const markOffset = index * this.percentPerMark - thumbOffsetPercent;
 
       const mark = createElement(
