@@ -110,11 +110,12 @@ class Scale {
     const distanceToFirst = Math.abs(markID - fromIndex);
     const distanceToSecond = Math.abs(markID - toIndex);
 
-    if (distanceToFirst <= distanceToSecond) {
-      return ThumbID.from;
-    } else {
-      return ThumbID.to;
-    }
+    const isFirstThumb =
+      distanceToFirst < distanceToSecond || markID < fromIndex;
+
+    if (isFirstThumb) return ThumbID.from;
+
+    return ThumbID.to;
   }
 
   private handleScaleClick(clickEvent: MouseEvent) {
