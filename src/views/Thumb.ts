@@ -82,6 +82,10 @@ class Thumb {
     this.tip.render({ parent: this.element, value, showTip });
   }
 
+  toggleTopElement(isTopElement: boolean) {
+    this.element.classList.toggle('slider__thumb_top', isTopElement);
+  }
+
   private handleDragStart() {
     return false;
   }

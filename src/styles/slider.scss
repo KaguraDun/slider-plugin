@@ -25,6 +25,10 @@ $color-black: #121212;
     transform: translateY(-25%);
     cursor: pointer;
     touch-action: none;
+
+    &_top {
+      z-index: 3;
+    }
   }
 
   &__tip {

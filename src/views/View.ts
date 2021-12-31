@@ -87,7 +87,7 @@ class View {
     });
   }
 
-  update(state: SliderSettings) {
+  update(state: SliderState) {
     const {
       fromIndex,
       toIndex,
@@ -131,6 +131,20 @@ class View {
       isVertical,
     });
   }
+
+  setTopThumb = (thumbState: SliderSettings) => {
+    const [thumbID] = Object.keys(thumbState);
+
+    if (thumbID === ThumbID.from) {
+      this.firstThumb.toggleTopElement(true);
+      this.secondThumb.toggleTopElement(false);
+    }
+
+    if (thumbID === ThumbID.to) {
+      this.firstThumb.toggleTopElement(false);
+      this.secondThumb.toggleTopElement(true);
+    }
+  };
 
   private updateTips({
     fromValue,

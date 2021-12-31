@@ -43,8 +43,13 @@ class Presenter {
     this.view.init(container, this.model.getState());
 
     this.observerEvents.stateChanged.attach(this.view.update);
+
     this.observerEvents.fromChanged.attach(this.runFromChangedCallback);
+    this.observerEvents.fromChanged.attach(this.view.setTopThumb);
+
     this.observerEvents.toChanged.attach(this.runToChangedCallback);
+    this.observerEvents.toChanged.attach(this.view.setTopThumb);
+
     this.observerEvents.thumbMoved.attach(this.model.setOptions);
     this.observerEvents.scaleClick.attach(this.model.setOptions);
   }
