@@ -64,6 +64,13 @@ class View {
     this.secondThumb.render(this.track.element, state);
     this.secondThumb.renderTip(values[toIndex], showTip);
 
+    this.updateTips({
+      fromValue: values[fromIndex],
+      toValue: values[toIndex],
+      isRange,
+      isVertical,
+    });
+
     this.scale.render({
       sliderElement: this.slider,
       state,
