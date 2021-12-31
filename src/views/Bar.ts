@@ -36,10 +36,14 @@ class Bar {
     const size = getSizeLiteral(isVertical);
 
     const trackSize = this.parent.getBoundingClientRect()[size];
+    const thumbHalfSize = firstThumb.getBoundingClientRect()[size] / 2;
 
-    const firstThumbOffset = getPercentOfNumber(firstThumb[offset], trackSize);
+    const firstThumbOffset = getPercentOfNumber(
+      firstThumb[offset] + thumbHalfSize,
+      trackSize,
+    );
     const secondThumbOffset = getPercentOfNumber(
-      secondThumb[offset],
+      secondThumb[offset] + thumbHalfSize,
       trackSize,
     );
 
