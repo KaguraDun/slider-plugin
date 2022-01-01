@@ -7,6 +7,11 @@ $color-bg: #cddeff;
   box-sizing: border-box;
 }
 
+html {
+  font-size: 100%;
+  font-family: Helvetica, sans-serif;
+}
+
 body {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(600px, 2fr));
