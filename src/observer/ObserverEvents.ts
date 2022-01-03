@@ -1,11 +1,14 @@
+import SliderSettings from '@/models/SliderSetting';
+import SliderState from '@/models/SliderState';
+
 import { Subject } from './Observer';
 
 class ObserverEvents {
-  stateChanged: Subject;
-  thumbMoved: Subject;
-  scaleClick: Subject;
-  fromChanged: Subject;
-  toChanged: Subject;
+  stateChanged: Subject<SliderState>;
+  thumbMoved: Subject<SliderSettings>;
+  scaleClick: Subject<SliderSettings>;
+  fromChanged: Subject<SliderSettings>;
+  toChanged: Subject<SliderSettings>;
 
   constructor() {
     this.stateChanged = new Subject();

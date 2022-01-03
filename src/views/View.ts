@@ -1,5 +1,6 @@
 import createElement from '@/helpers/createElement';
 import SliderSettings from '@/models/SliderSetting';
+import SliderState from '@/models/SliderState';
 import ThumbID from '@/models/ThumbID';
 import { ObserverEvents } from '@/observer/ObserverEvents';
 import Tip from '@/views/Tip';
@@ -10,8 +11,8 @@ import Thumb from './Thumb';
 import Track from './Track';
 
 interface UpdateTipsProps {
-  fromValue: number | string;
-  toValue: number | string;
+  fromValue: number;
+  toValue: number;
   isRange: boolean;
   isVertical: boolean;
 }
@@ -35,14 +36,13 @@ class View {
     this.secondThumb = new Thumb(ThumbID.to, this.observerEvents.thumbMoved);
     this.scale = new Scale(this.observerEvents.scaleClick);
     this.bar = new Bar(this.track.element);
-    this.update = this.update.bind(this);
   }
 
   toggleSliderVertical(isVertical: boolean) {
-    this.slider.classList.toggle('slider--vertical', isVertical);
+    this.slider.classList.toggle('slider_vertical', isVertical);
   }
 
-  init(container: HTMLElement, state: SliderSettings) {
+  init(container: HTMLElement, state: SliderState) {
     const {
       fromIndex,
       toIndex,
@@ -60,6 +60,7 @@ class View {
 
     this.firstThumb.render(this.track.element, state);
     this.firstThumb.renderTip(values[fromIndex], showTip);
+    this.firstThumb.toggleTopElement(true);
 
     this.secondThumb.render(this.track.element, state);
     this.secondThumb.renderTip(values[toIndex], showTip);
@@ -87,7 +88,7 @@ class View {
     });
   }
 
-  update(state: SliderState) {
+  update = (state: SliderState) => {
     const {
       fromIndex,
       toIndex,
@@ -130,7 +131,7 @@ class View {
       isRange,
       isVertical,
     });
-  }
+  };
 
   setTopThumb = (thumbState: SliderSettings) => {
     const [thumbID] = Object.keys(thumbState);
@@ -169,8 +170,8 @@ class View {
       this.secondThumb.tip.show(false);
       this.firstThumb.tip.update(tipValue);
     } else {
-      this.firstThumb.tip.update(fromValue);
-      this.secondThumb.tip.update(toValue);
+      this.firstThumb.tip.update(String(fromValue));
+      this.secondThumb.tip.update(String(toValue));
     }
   }
 }

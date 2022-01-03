@@ -1,7 +1,8 @@
 import createElement from '@/helpers/createElement';
 import { getDirectionLiteral, getSizeLiteral } from '@/helpers/getLiteral';
 import getPercentOfNumber from '@/helpers/getPercentOfNumber';
-import SliderSettings, { SliderState } from '@/models/SliderSetting';
+import SliderSettings from '@/models/SliderSetting';
+import SliderState from '@/models/SliderState';
 import ThumbID from '@/models/ThumbID';
 import { Subject } from '@/observer/Observer';
 
@@ -18,14 +19,21 @@ interface GetMarkWidthProps {
   isVertical: boolean;
 }
 
+interface GetClosestThumbProps {
+  markID: number;
+  fromIndex: SliderState['fromIndex'];
+  toIndex: SliderState['toIndex'];
+  isRange: SliderState['isRange'];
+}
+
 class Scale {
   parent: HTMLElement | null;
   percentPerMark: number;
   element: HTMLElement;
-  private scaleClickEvent: Subject;
-  private state: SliderState | null;
+  private scaleClickEvent: Subject<SliderSettings>;
+  private state: SliderState | undefined;
 
-  constructor(scaleClick: Subject) {
+  constructor(scaleClick: Subject<SliderSettings>) {
     this.parent = null;
     this.percentPerMark = 0;
     this.element = createElement('div', {
@@ -33,7 +41,7 @@ class Scale {
     });
     this.handleScaleClick = this.handleScaleClick.bind(this);
     this.scaleClickEvent = scaleClick;
-    this.state = null;
+    this.state = undefined;
   }
 
   render({ sliderElement, state, percentPerMark, thumbRect }: RenderProps) {
@@ -102,9 +110,12 @@ class Scale {
     }
   }
 
-  private getClosestThumb(markID: number): ThumbID {
-    const { fromIndex, toIndex, isRange } = this.state;
-
+  private getClosestThumb({
+    markID,
+    fromIndex,
+    toIndex,
+    isRange,
+  }: GetClosestThumbProps): ThumbID {
     if (!isRange) return ThumbID.from;
 
     const distanceToFirst = Math.abs(markID - fromIndex);
@@ -119,15 +130,20 @@ class Scale {
   }
 
   private handleScaleClick(clickEvent: MouseEvent) {
-    const target = <HTMLElement>clickEvent.target;
+    const target = clickEvent.target as HTMLElement;
     const closest = target.closest('.slider__scale-mark');
 
-    if (!closest) return;
+    if (!closest || !this.state) return;
 
-    const { values } = this.state;
+    const { fromIndex, toIndex, isRange, values } = this.state;
 
     const valueIndex = Number(target.dataset.id);
-    const closestThumb = this.getClosestThumb(valueIndex);
+    const closestThumb = this.getClosestThumb({
+      markID: valueIndex,
+      fromIndex,
+      toIndex,
+      isRange,
+    });
 
     const value = values[valueIndex];
 
@@ -153,8 +169,10 @@ class Scale {
     );
 
     this.parent?.append(mark);
+
     const markSizes = mark.getBoundingClientRect();
     const markWidth = isVertical ? markSizes.height : markSizes.width;
+
     mark.remove();
 
     return markWidth;

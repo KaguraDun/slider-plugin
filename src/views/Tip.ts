@@ -2,7 +2,7 @@ import createElement from '@/helpers/createElement';
 
 interface TipProps {
   parent: HTMLElement;
-  value: number | string;
+  value: string;
   showTip: boolean;
 }
 
@@ -28,10 +28,10 @@ class Tip {
     this.show(showTip);
   }
 
-  update(value: number | string) {
+  update(value: string) {
     if (!this.element) return;
 
-    this.element.innerText = String(value);
+    this.element.innerText = value;
   }
 
   show(showTip: boolean) {
@@ -75,7 +75,7 @@ class Tip {
     return isIntersect;
   }
 
-  private static EXPANDED_MODIFIER = 'slider__tip_expanded';
+  static readonly EXPANDED_MODIFIER = 'slider__tip_expanded';
 }
 
 export default Tip;

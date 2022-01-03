@@ -1,13 +1,11 @@
 interface SliderSettings {
-  fromIndex: number;
-  minIndex: number;
+  from?: number;
   min?: number;
-  maxIndex: number;
   max?: number;
-  stepIndex?: number;
-  toIndex?: number;
-  values?: number[] | string[];
-  generatorFn?: () => number[] | string[];
+  step?: number;
+  to?: number;
+  values?: number[];
+  generatorFn?: () => number[];
   showBar?: boolean;
   showScale?: boolean;
   showTip?: boolean;

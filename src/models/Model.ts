@@ -2,21 +2,22 @@ import ThumbID from '@/models/ThumbID';
 import { ObserverEvents } from '@/observer/ObserverEvents';
 
 import sliderErrors from './sliderErrors';
-import SliderSettings, { SliderState } from './SliderSetting';
+import SliderSettings from './SliderSetting';
+import SliderState from './SliderState';
 
 class Model {
   private observerEvents: ObserverEvents;
-  private state: SliderSettings;
+  private state: SliderState;
+
   constructor(observerEvents: ObserverEvents) {
     this.observerEvents = observerEvents;
     this.state = {
       fromIndex: 0,
       min: -10,
-      minIndex: 0,
       max: 10,
       maxIndex: 21,
       stepIndex: 1,
-      toIndex: 5,
+      toIndex: 20,
       values: [],
       generatorFn: this.generateNumberSequence,
       showBar: true,
@@ -25,20 +26,16 @@ class Model {
       isRange: false,
       isVertical: false,
     };
-
-    this.setOptions = this.setOptions.bind(this);
   }
 
   generateNumberSequence() {
     const { maxIndex, min, max, stepIndex } = this.state;
 
-    if (!min || !max || !stepIndex) return;
-
-    const generateFn = (value: null, index: number) =>
+    const generateFn = (_value: null, index: number) =>
       Number(min) + index * Number(stepIndex);
     const sequence = Array.from(Array(maxIndex), generateFn);
 
-    // Add the last value separately because we do not need to adjust the values ​​to the step
+    // Add the last value separately because we don't need to adjust the values ​​to the step
     sequence.push(max);
 
     return sequence;
@@ -46,7 +43,7 @@ class Model {
 
   generateValues() {
     const { min, max, stepIndex, fromIndex, toIndex } = this.state;
-    if (!min || !max || !stepIndex || !toIndex) return;
+
     if (stepIndex <= 0) return;
 
     const maxIndex = Math.abs((max - min) / stepIndex);
@@ -62,26 +59,30 @@ class Model {
     // this.state.values = this.state.generatorFn();
   }
 
-  setOptions(options: SliderSettings) {
-    Object.entries(options).forEach(
-      ([option, value]: [string, number | boolean]) => {
-        if (option === ThumbID.from) {
-          this.setFrom(value);
+  setOptions = (settings: SliderSettings) => {
+    Object.entries(settings).forEach(
+      ([setting, value]: [string, number | boolean]) => {
+        if (setting === ThumbID.from) {
+          this.setFrom(Number(value));
           return;
         }
 
-        if (option === ThumbID.to) {
-          this.setTo(value);
+        if (setting === ThumbID.to) {
+          this.setTo(Number(value));
           return;
         }
 
-        if (this.state.hasOwnProperty(option)) {
-          Object.assign(this.state, { [option]: value });
+        if (this.state.hasOwnProperty(setting)) {
+          this.setState({ [setting]: value });
         }
       },
     );
 
     this.generateValues();
+  };
+
+  setState(newState: Partial<SliderState>) {
+    Object.assign(this.state, newState);
 
     this.observerEvents.stateChanged.notify(this.state);
   }
@@ -91,8 +92,12 @@ class Model {
     this.observerEvents.stateChanged.notify(this.state);
   }
 
+  getState() {
+    return this.state;
+  }
+
   setMin(min: number) {
-    this.setOptions({ min });
+    this.setState({ min });
   }
 
   getMin() {
@@ -100,14 +105,14 @@ class Model {
   }
 
   setMax(max: number) {
-    this.setOptions({ max });
+    this.setState({ max });
   }
 
   getMax() {
     return this.state.max;
   }
 
-  setFrom(from: number | String) {
+  setFrom(from: number) {
     const { min, max, isRange, toIndex } = this.state;
     let fromIndex = this.state.values.indexOf(Number(from));
 
@@ -119,7 +124,10 @@ class Model {
     if (fromIndex > this.state.maxIndex) fromIndex = this.state.maxIndex;
     if (isRange && fromIndex >= toIndex) fromIndex = toIndex;
 
-    this.setOptions({ fromIndex });
+    this.setState({ fromIndex });
+    this.observerEvents.fromChanged.notify({
+      [ThumbID.from]: from,
+    });
   }
 
   getFrom() {
@@ -138,7 +146,10 @@ class Model {
     if (toIndex > this.state.maxIndex) toIndex = this.state.maxIndex;
     if (isRange && toIndex <= fromIndex) toIndex = fromIndex;
 
-    this.setOptions({ toIndex });
+    this.setState({ toIndex });
+    this.observerEvents.toChanged.notify({
+      [ThumbID.to]: to,
+    });
   }
 
   getTo() {
@@ -146,7 +157,7 @@ class Model {
   }
 
   setStep(stepIndex: number) {
-    this.setOptions({ stepIndex });
+    this.setState({ stepIndex });
   }
 
   getStep() {
@@ -154,7 +165,7 @@ class Model {
   }
 
   setShowScale(showScale: boolean) {
-    this.setOptions({ showScale });
+    this.setState({ showScale });
   }
 
   getShowScale() {
@@ -162,7 +173,7 @@ class Model {
   }
 
   setShowTip(showTip: boolean) {
-    this.setOptions({ showTip });
+    this.setState({ showTip });
   }
 
   getShowTip() {
@@ -170,7 +181,7 @@ class Model {
   }
 
   setShowBar(showBar: boolean) {
-    this.setOptions({ showBar });
+    this.setState({ showBar });
   }
 
   getShowBar() {
@@ -178,7 +189,7 @@ class Model {
   }
 
   setIsRange(isRange: boolean) {
-    this.setOptions({ isRange });
+    this.setState({ isRange });
   }
 
   getIsRange() {
@@ -186,7 +197,7 @@ class Model {
   }
 
   setIsVertical(isVertical: boolean) {
-    this.setOptions({ isVertical });
+    this.setState({ isVertical });
   }
 
   getIsVertical() {

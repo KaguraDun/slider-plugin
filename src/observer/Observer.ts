@@ -1,28 +1,20 @@
 // https://refactoring.guru/ru/design-patterns/observer/typescript/example
 
-import SliderSettings from '@/models/SliderSetting';
+type Observer<T> = {
+  (state: T): void;
+};
 
-interface Observer {
-  (state: SliderSettings): void;
-}
+class Subject<T> {
+  private observers: Observer<T>[] = [];
 
-interface Subject {
-  attach(observer: Observer): void;
-  detach(observer: Observer): void;
-  notify(state: SliderSettings): void;
-}
-
-class Subject implements Subject {
-  private observers: Observer[] = [];
-
-  public attach(observer: Observer): void {
+  public attach(observer: Observer<T>): void {
     const isExist = this.observers.includes(observer);
     if (isExist) return;
 
     this.observers.push(observer);
   }
 
-  public detach(observer: Observer): void {
+  public detach(observer: Observer<T>): void {
     const observerIndex = this.observers.indexOf(observer);
 
     if (observerIndex === -1) {
@@ -32,11 +24,12 @@ class Subject implements Subject {
     this.observers.splice(observerIndex, 1);
   }
 
-  public notify(state: any): void {
+  public notify(value: T): void {
     for (const observer of this.observers) {
-      observer(state);
+      observer(value);
     }
   }
 }
 
-export { Observer, Subject };
+export { Subject };
+export type { Observer };

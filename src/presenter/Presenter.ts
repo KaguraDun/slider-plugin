@@ -1,3 +1,4 @@
+import DEFAULT_OPTIONS from '@/models/defaultSettings';
 import Model from '@/models/Model';
 import sliderErrors from '@/models/sliderErrors';
 import SliderSettings from '@/models/SliderSetting';
@@ -19,11 +20,12 @@ class Presenter {
     this.view = new View(this.observerEvents);
     this.fromChangedCallback = () => null;
     this.toChangedCallback = () => null;
-    this.runFromChangedCallback = this.runFromChangedCallback.bind(this);
-    this.runToChangedCallback = this.runToChangedCallback.bind(this);
   }
 
-  createSlider(container: HTMLElement, options?: SliderSettings) {
+  createSlider(
+    container: HTMLElement,
+    options: SliderSettings = DEFAULT_OPTIONS,
+  ) {
     const { from, to, ...restOptions } = options;
 
     if (!container) {
@@ -31,13 +33,13 @@ class Presenter {
       return;
     }
 
-    if (options) {
+    if (options || restOptions) {
       this.model.setOptions(restOptions);
     } else {
       this.model.setDefaultSettings();
     }
 
-    this.model.setFrom(from);
+    if (from) this.model.setFrom(from);
     if (to) this.model.setTo(to);
 
     this.view.init(container, this.model.getState());
@@ -70,7 +72,7 @@ class Presenter {
     return this.model.getFrom();
   }
 
-  setTo(to: number | string) {
+  setTo(to: number) {
     this.model.setTo(to);
   }
 
@@ -141,13 +143,14 @@ class Presenter {
   getStep() {
     return this.model.getStep();
   }
-  private runFromChangedCallback() {
-    this.fromChangedCallback();
-  }
 
-  private runToChangedCallback() {
+  private runFromChangedCallback = () => {
+    this.fromChangedCallback();
+  };
+
+  private runToChangedCallback = () => {
     this.toChangedCallback();
-  }
+  };
 }
 
 export default Presenter;
