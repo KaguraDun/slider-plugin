@@ -15,10 +15,11 @@
     "noEmit": true,
     "noEmitOnError": true,
     "noFallthroughCasesInSwitch": true,
-    "noImplicitAny": true,
     "removeComments": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
     "strict": true,
     "target": "es5",
     "baseUrl": ".",
@@ -46,7 +47,7 @@
       ],
       "@/test/*": [
         "src/test/*"
-      ]
+      ],
     }
   },
   "include": [
