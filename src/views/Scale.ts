@@ -1,10 +1,9 @@
 import createElement from '@/helpers/createElement';
 import { getDirectionLiteral, getSizeLiteral } from '@/helpers/getLiteral';
 import getPercentOfNumber from '@/helpers/getPercentOfNumber';
-import SliderSettings from '@/models/SliderSetting';
 import SliderState from '@/models/SliderState';
 import ThumbID from '@/models/ThumbID';
-import { Subject } from '@/observer/Observer';
+import { ObserverEvents } from '@/observer/ObserverEvents';
 
 interface RenderProps {
   sliderElement: HTMLElement;
@@ -16,7 +15,7 @@ interface RenderProps {
 interface GetMarkWidthProps {
   minElement: string;
   maxElement: string;
-  isVertical: boolean;
+  isVertical: SliderState['isVertical'];
 }
 
 interface GetClosestThumbProps {
@@ -30,17 +29,17 @@ class Scale {
   parent: HTMLElement | null;
   percentPerMark: number;
   element: HTMLElement;
-  private scaleClickEvent: Subject<SliderSettings>;
+  private scaleClickEvent: ObserverEvents['scaleClick'];
   private state: SliderState | undefined;
 
-  constructor(scaleClick: Subject<SliderSettings>) {
+  constructor(observerEvents: ObserverEvents) {
     this.parent = null;
     this.percentPerMark = 0;
     this.element = createElement('div', {
       class: 'slider__scale',
     });
     this.handleScaleClick = this.handleScaleClick.bind(this);
-    this.scaleClickEvent = scaleClick;
+    this.scaleClickEvent = observerEvents.scaleClick;
     this.state = undefined;
   }
 

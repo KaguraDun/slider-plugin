@@ -1,25 +1,24 @@
 import createElement from '@/helpers/createElement';
 import { getSizeLiteral } from '@/helpers/getLiteral';
 import getPercentOfNumber from '@/helpers/getPercentOfNumber';
-import SliderSettings from '@/models/SliderSetting';
 import SliderState from '@/models/SliderState';
 import ThumbID from '@/models/ThumbID';
-import { Subject } from '@/observer/Observer';
+import { ObserverEvents } from '@/observer/ObserverEvents';
 
 import Tip from './Tip';
 
 class Thumb {
   parent: HTMLElement | null;
   thumbID: string;
-  moveEvent: Subject<SliderSettings>;
+  moveEvent: ObserverEvents['thumbMoved'];
   state: SliderState | null;
   element: HTMLElement;
   tip: Tip;
 
-  constructor(thumbID: string, thumbMoved: Subject<SliderSettings>) {
+  constructor(thumbID: string, observerEvents: ObserverEvents) {
     this.parent = null;
     this.thumbID = thumbID;
-    this.moveEvent = thumbMoved;
+    this.moveEvent = observerEvents.thumbMoved;
     this.state = null;
     this.element = createElement('div', {
       class: 'slider__thumb',

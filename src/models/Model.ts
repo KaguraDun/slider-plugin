@@ -27,7 +27,7 @@ class Model {
     };
   }
 
-  setOptions = (settings: SliderSettings) => {
+  setOptions = (settings: Partial<SliderSettings>) => {
     Object.entries(settings).forEach(
       ([setting, value]: [string, number | boolean]) => {
         if (setting === ThumbID.from) {

@@ -32,9 +32,9 @@ class View {
     this.container = null;
     this.slider = createElement('div', { class: 'slider' });
     this.track = new Track();
-    this.firstThumb = new Thumb(ThumbID.from, this.observerEvents.thumbMoved);
-    this.secondThumb = new Thumb(ThumbID.to, this.observerEvents.thumbMoved);
-    this.scale = new Scale(this.observerEvents.scaleClick);
+    this.firstThumb = new Thumb(ThumbID.from, this.observerEvents);
+    this.secondThumb = new Thumb(ThumbID.to, this.observerEvents);
+    this.scale = new Scale(this.observerEvents);
     this.bar = new Bar(this.track.element);
   }
 
@@ -133,7 +133,7 @@ class View {
     });
   };
 
-  setTopThumb = (thumbState: SliderSettings) => {
+  setTopThumb = (thumbState: Partial<Pick<SliderSettings, 'from' | 'to'>>) => {
     const [thumbID] = Object.keys(thumbState);
 
     if (thumbID === ThumbID.from) {
