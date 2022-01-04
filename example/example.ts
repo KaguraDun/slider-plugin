@@ -1,41 +1,16 @@
 import $ from 'jquery';
 
-import createElement from '@/helpers/createElement';
-
+import SliderContainer from './components/SliderContainer/SliderContainer';
 import SliderPanel from './components/SliderPanel/SliderPanel';
 
 import './styles/example.scss';
 import '../src/ts/slider';
 
-function renderSliderContainer(heading: string) {
-  const sliderPanelContainer = createElement('div', {
-    class: 'slider-example__controls-container',
-  });
-  const sliderContainer = createElement('div', {
-    class: 'slider-example__slider-container',
-  });
-  const sliderSectionHeading = createElement(
-    'div',
-    { class: 'slider-example__heading' },
-    [heading],
-  );
-  const sliderWrapper = createElement('div', { class: 'slider-example' }, [
-    sliderSectionHeading,
-    sliderContainer,
-    sliderPanelContainer,
-  ]);
-
-  document.body.append(sliderWrapper);
-
-  return { slider: sliderContainer, panel: sliderPanelContainer };
-}
-
 const firstSliderSettings = {
-  from: 8,
-  to: 8,
-  min: -10,
-  max: 26,
-  step: 1,
+  from: -100,
+  to: 100,
+  min: -100,
+  max: 100,
   showBar: true,
   showScale: true,
   showTip: true,
@@ -43,7 +18,10 @@ const firstSliderSettings = {
   isVertical: false,
 };
 
-const firstSliderContainer = renderSliderContainer('First slider');
+const firstSliderContainer = new SliderContainer('First slider', {
+  width: 'large',
+}).render();
+
 const $firstSlider = $(firstSliderContainer.slider).createSlider(
   firstSliderSettings,
 );
@@ -67,7 +45,7 @@ const secondSliderSettings = {
   isVertical: true,
 };
 
-const secondSliderContainer = renderSliderContainer('Second slider');
+const secondSliderContainer = new SliderContainer('Second slider').render();
 const $secondSlider = $(secondSliderContainer.slider).createSlider(
   secondSliderSettings,
 );
@@ -90,7 +68,7 @@ const thirdSliderSettings = {
   isVertical: false,
 };
 
-const thirdSliderContainer = renderSliderContainer('Third slider');
+const thirdSliderContainer = new SliderContainer('Third slider').render();
 const $thirdSlider = $(thirdSliderContainer.slider).createSlider(
   thirdSliderSettings,
 );
@@ -113,7 +91,7 @@ const fourthSliderSettings = {
   isVertical: true,
 };
 
-const fourthSliderContainer = renderSliderContainer('Fourth slider');
+const fourthSliderContainer = new SliderContainer('Fourth slider').render();
 const $fourthSlider = $(fourthSliderContainer.slider).createSlider(
   fourthSliderSettings,
 );
