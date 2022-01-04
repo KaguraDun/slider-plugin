@@ -1,10 +1,9 @@
 interface SliderSettings {
-  from?: number;
-  min?: number;
-  max?: number;
+  from: number;
+  min: number;
+  max: number;
   step?: number;
   to?: number;
-  values?: number[];
   showBar?: boolean;
   showScale?: boolean;
   showTip?: boolean;

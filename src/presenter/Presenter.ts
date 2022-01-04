@@ -22,17 +22,22 @@ class Presenter {
   }
 
   createSlider(container: HTMLElement, options: SliderSettings) {
-    const { from, to, ...restOptions } = options;
-
     if (!container) {
       sliderErrors.throwContainerNotFound();
       return;
     }
 
-    this.model.setOptions(restOptions);
+    const hasMinimumAmountOfProperties =
+      options.hasOwnProperty('min') ||
+      options.hasOwnProperty('max') ||
+      options.hasOwnProperty('from');
 
-    if (from) this.model.setFrom(from);
-    if (to) this.model.setTo(to);
+    if (!hasMinimumAmountOfProperties) {
+      sliderErrors.throwMinimumOptionsRequired();
+      return;
+    }
+
+    this.model.setOptions(options);
 
     this.view.init(container, this.model.getState());
 
