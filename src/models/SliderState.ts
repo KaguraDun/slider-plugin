@@ -6,7 +6,6 @@ interface SliderState {
   stepIndex: number;
   toIndex: number;
   values: number[];
-  generatorFn: () => number[];
   showBar: boolean;
   showScale: boolean;
   showTip: boolean;

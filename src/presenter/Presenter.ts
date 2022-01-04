@@ -1,4 +1,3 @@
-import DEFAULT_OPTIONS from '@/models/defaultSettings';
 import Model from '@/models/Model';
 import sliderErrors from '@/models/sliderErrors';
 import SliderSettings from '@/models/SliderSetting';
@@ -22,10 +21,7 @@ class Presenter {
     this.toChangedCallback = () => null;
   }
 
-  createSlider(
-    container: HTMLElement,
-    options: SliderSettings = DEFAULT_OPTIONS,
-  ) {
+  createSlider(container: HTMLElement, options: SliderSettings) {
     const { from, to, ...restOptions } = options;
 
     if (!container) {
@@ -33,11 +29,7 @@ class Presenter {
       return;
     }
 
-    if (options || restOptions) {
-      this.model.setOptions(restOptions);
-    } else {
-      this.model.setDefaultSettings();
-    }
+    this.model.setOptions(restOptions);
 
     if (from) this.model.setFrom(from);
     if (to) this.model.setTo(to);

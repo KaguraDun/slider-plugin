@@ -13,49 +13,18 @@ class Model {
     this.observerEvents = observerEvents;
     this.state = {
       fromIndex: 0,
-      min: -10,
-      max: 10,
-      maxIndex: 21,
+      min: 0,
+      max: 0,
+      maxIndex: 0,
       stepIndex: 1,
-      toIndex: 20,
+      toIndex: 0,
       values: [],
-      generatorFn: this.generateNumberSequence,
-      showBar: true,
-      showScale: true,
-      showTip: true,
+      showBar: false,
+      showScale: false,
+      showTip: false,
       isRange: false,
       isVertical: false,
     };
-  }
-
-  generateNumberSequence() {
-    const { maxIndex, min, max, stepIndex } = this.state;
-
-    const generateFn = (_value: null, index: number) =>
-      Number(min) + index * Number(stepIndex);
-    const sequence = Array.from(Array(maxIndex), generateFn);
-
-    // Add the last value separately because we don't need to adjust the values ​​to the step
-    sequence.push(max);
-
-    return sequence;
-  }
-
-  generateValues() {
-
-    if (stepIndex <= 0) return;
-
-    const maxIndex = Math.abs((max - min) / stepIndex);
-    this.state.maxIndex = Math.ceil(maxIndex);
-
-    if (fromIndex > this.state.maxIndex)
-      this.state.fromIndex = this.state.maxIndex;
-    if (toIndex > this.state.maxIndex) this.state.toIndex = this.state.maxIndex;
-
-    this.state.values = this.generateNumberSequence();
-    // if (!this.state.generatorFunction) return;
-
-    // this.state.values = this.state.generatorFn();
   }
 
   setOptions = (settings: SliderSettings) => {
@@ -77,18 +46,6 @@ class Model {
       },
     );
   };
-
-  setState(newState: Partial<SliderState>) {
-    Object.assign(this.state, newState);
-
-    this.observerEvents.stateChanged.notify(this.state);
-    this.generateValues();
-  }
-
-  setDefaultSettings() {
-    this.state.values = this.generateNumberSequence();
-    this.observerEvents.stateChanged.notify(this.state);
-  }
 
   getState() {
     return this.state;
@@ -200,6 +157,46 @@ class Model {
 
   getIsVertical() {
     return this.state.isVertical;
+  }
+
+  private setState(newState: Partial<SliderState>) {
+    Object.assign(this.state, newState);
+
+    this.generateValues();
+    this.observerEvents.stateChanged.notify(this.state);
+  }
+
+  private generateNumberSequence({
+    maxIndex,
+    min,
+    max,
+    stepIndex,
+  }: Pick<SliderState, 'maxIndex' | 'min' | 'max' | 'stepIndex'>) {
+    const generateFn = (_value: null, index: number) =>
+      Number(min) + index * Number(stepIndex);
+
+    const sequence = Array.from(Array(maxIndex), generateFn);
+
+    // Add the last value separately because we don't need to adjust the values ​​to the step
+    sequence.push(max);
+
+    return sequence;
+  }
+
+  private generateValues() {
+    const { min, max, stepIndex } = this.state;
+
+    if (stepIndex <= 0) return;
+
+    const maxIndex = Math.abs((max - min) / stepIndex);
+
+    this.state.maxIndex = Math.ceil(maxIndex);
+    this.state.values = this.generateNumberSequence({
+      maxIndex,
+      min,
+      max,
+      stepIndex,
+    });
   }
 }
 

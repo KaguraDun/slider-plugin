@@ -5,7 +5,6 @@ interface SliderSettings {
   step?: number;
   to?: number;
   values?: number[];
-  generatorFn?: () => number[];
   showBar?: boolean;
   showScale?: boolean;
   showTip?: boolean;
