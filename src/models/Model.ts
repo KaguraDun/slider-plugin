@@ -42,7 +42,6 @@ class Model {
   }
 
   generateValues() {
-    const { min, max, stepIndex, fromIndex, toIndex } = this.state;
 
     if (stepIndex <= 0) return;
 
@@ -77,14 +76,13 @@ class Model {
         }
       },
     );
-
-    this.generateValues();
   };
 
   setState(newState: Partial<SliderState>) {
     Object.assign(this.state, newState);
 
     this.observerEvents.stateChanged.notify(this.state);
+    this.generateValues();
   }
 
   setDefaultSettings() {
