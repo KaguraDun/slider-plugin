@@ -12,7 +12,7 @@ import Track from './Track';
 
 interface UpdateTipsProps {
   fromValue: number;
-  toValue: number;
+  toValue: number | undefined;
   isRange: boolean;
   isVertical: boolean;
 }
@@ -63,11 +63,12 @@ class View {
     this.firstThumb.toggleTopElement(true);
 
     this.secondThumb.render(this.track.element, state);
-    this.secondThumb.renderTip(values[toIndex], showTip);
+    if (toIndex) this.secondThumb.renderTip(values[toIndex], showTip);
 
+    const toValue = toIndex ? values[toIndex] : undefined;
     this.updateTips({
       fromValue: values[fromIndex],
-      toValue: values[toIndex],
+      toValue: toValue,
       isRange,
       isVertical,
     });
@@ -106,12 +107,13 @@ class View {
     this.firstThumb.tip.show(showTip);
 
     this.secondThumb.show(isRange);
-    this.secondThumb.move(toIndex, isVertical);
+    if (toIndex) this.secondThumb.move(toIndex, isVertical);
     this.secondThumb.tip.show(showTip);
 
+    const toValue = toIndex ? values[toIndex] : undefined;
     this.updateTips({
       fromValue: values[fromIndex],
-      toValue: values[toIndex],
+      toValue,
       isRange,
       isVertical,
     });
@@ -162,7 +164,7 @@ class View {
     const toggle = isRange ? isIntersect : false;
     this.firstThumb.tip.toggleExpand(toggle);
 
-    if (isIntersect && isRange) {
+    if (isIntersect && isRange && toValue) {
       const tipValue = isVertical
         ? `${fromValue} ${toValue}`
         : `${fromValue} : ${toValue}`;
@@ -171,7 +173,7 @@ class View {
       this.firstThumb.tip.update(tipValue);
     } else {
       this.firstThumb.tip.update(String(fromValue));
-      this.secondThumb.tip.update(String(toValue));
+      if (toValue) this.secondThumb.tip.update(String(toValue));
     }
   }
 }

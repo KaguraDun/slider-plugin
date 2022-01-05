@@ -1,10 +1,10 @@
 interface SliderState {
   fromIndex: number;
-  min: number;
+  toIndex: number | undefined;
+  min: number | undefined;
+  max: number | undefined;
   maxIndex: number;
-  max: number;
-  stepIndex: number;
-  toIndex: number;
+  step: number;
   values: number[];
   showBar: boolean;
   showScale: boolean;
