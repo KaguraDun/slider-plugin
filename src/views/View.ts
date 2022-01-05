@@ -26,6 +26,7 @@ class View {
   private secondThumb: Thumb;
   private scale: Scale;
   private bar: Bar;
+  private prevState: SliderState | undefined;
 
   constructor(observerEvents: ObserverEvents) {
     this.observerEvents = observerEvents;
@@ -36,6 +37,7 @@ class View {
     this.secondThumb = new Thumb(ThumbID.to, this.observerEvents);
     this.scale = new Scale(this.observerEvents);
     this.bar = new Bar(this.track.element);
+    this.prevState = undefined;
   }
 
   toggleSliderVertical(isVertical: boolean) {
@@ -89,10 +91,15 @@ class View {
       isRange,
       isVertical,
     });
+
+    this.prevState = { ...state };
   }
 
   update = (state: SliderState) => {
     const {
+      min,
+      max,
+      step,
       fromIndex,
       toIndex,
       values,
@@ -102,40 +109,76 @@ class View {
       isRange,
       isVertical,
     } = state;
+
+    if (this.stateParamsChanged({ isVertical })) {
+      this.toggleSliderVertical(isVertical);
+    }
+
+    if (this.stateParamsChanged({ fromIndex, isVertical })) {
+      this.firstThumb.move(fromIndex, isVertical);
+    }
+
+    if (this.stateParamsChanged({ showTip })) {
+      this.firstThumb.tip.show(showTip);
+      this.secondThumb.tip.show(showTip);
+    }
+
+    if (this.stateParamsChanged({ isRange })) {
+      this.secondThumb.show(isRange);
+    }
+
+    if (
+      toIndex !== undefined &&
+      this.stateParamsChanged({ toIndex, isVertical })
+    ) {
+      this.secondThumb.move(toIndex, isVertical);
+    }
+
     const fromValue = values[fromIndex];
     const toValue = toIndex !== undefined ? values[toIndex] : undefined;
 
-    this.toggleSliderVertical(isVertical);
+    if (
+      this.stateParamsChanged({
+        fromIndex,
+        toIndex,
+        isRange,
+        isVertical,
+      })
+    ) {
+      this.updateTips({
+        fromValue,
+        toValue,
+        isRange,
+        isVertical,
+      });
+    }
 
-    this.firstThumb.move(fromIndex, isVertical);
-    this.firstThumb.tip.show(showTip);
+    if (this.stateParamsChanged({ showScale })) {
+      this.scale.show(showScale);
+    }
 
-    this.secondThumb.show(isRange);
-    if (toIndex !== undefined) this.secondThumb.move(toIndex, isVertical);
-    this.secondThumb.tip.show(showTip);
+    if (this.stateParamsChanged({ min, max, step, isVertical })) {
+      this.scale.render({
+        sliderElement: this.slider,
+        state,
+        percentPerMark: this.firstThumb.getPercentPerMark(),
+        thumbRect: this.firstThumb.element.getBoundingClientRect(),
+      });
+    }
 
-    this.updateTips({
-      fromValue,
-      toValue,
-      isRange,
-      isVertical,
-    });
+    if (this.stateParamsChanged({ showBar })) {
+      this.bar.show(showBar);
+    }
 
-    this.scale.show(showScale);
-    this.scale.render({
-      sliderElement: this.slider,
-      state,
-      percentPerMark: this.firstThumb.getPercentPerMark(),
-      thumbRect: this.firstThumb.element.getBoundingClientRect(),
-    });
+    if (this.stateParamsChanged({ fromIndex, toIndex, isRange, isVertical }))
+      this.bar.update({
+        firstThumb: this.firstThumb.element,
+        secondThumb: this.secondThumb.element,
+        isRange,
+        isVertical,
+      });
 
-    this.bar.show(showBar);
-    this.bar.update({
-      firstThumb: this.firstThumb.element,
-      secondThumb: this.secondThumb.element,
-      isRange,
-      isVertical,
-    });
+    this.prevState = { ...state };
   };
 
   setTopThumb = (thumbState: Partial<Pick<SliderSettings, 'from' | 'to'>>) => {
@@ -178,6 +221,19 @@ class View {
       this.firstThumb.tip.update(String(fromValue));
       this.secondThumb.tip.update(String(toValue));
     }
+  }
+
+  private stateParamsChanged(params: Partial<SliderState>) {
+    if (!this.prevState) return;
+    let isChanged = false;
+
+    Object.entries(params).forEach(([name, value]) => {
+      if (this.prevState?.[name as keyof SliderState] !== value) {
+        isChanged = true;
+      }
+    });
+
+    return isChanged;
   }
 }
 
