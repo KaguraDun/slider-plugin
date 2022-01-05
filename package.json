@@ -7,7 +7,10 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix --ext .js,.ts, .",
     "stlint": "stylelint **/*{.css,.scss}",
-    "stlint:fix": "stylelint **/*{.css,.scss} --fix"
+    "stlint:fix": "stylelint **/*{.css,.scss} --fix",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -16,9 +19,13 @@
     "@babel/plugin-transform-runtime": "^7.16.4",
     "@babel/preset-env": "^7.16.4",
     "@babel/preset-typescript": "^7.16.0",
+    "@testing-library/dom": "^8.11.1",
+    "@testing-library/jest-dom": "^5.16.1",
+    "@testing-library/user-event": "^13.5.0",
     "@types/jquery": "^3.5.11",
     "@typescript-eslint/eslint-plugin": "^5.5.0",
     "@typescript-eslint/parser": "^5.5.0",
+    "babel-jest": "^27.4.6",
     "babel-loader": "^8.2.3",
     "clean-webpack-plugin": "^4.0.0",
     "cross-env": "^7.0.3",
@@ -36,6 +43,7 @@
     "eslint-webpack-plugin": "^3.1.1",
     "html-webpack-plugin": "^5.5.0",
     "jest": "^27.4.3",
+    "jest-transform-stub": "^2.0.0",
     "mini-css-extract-plugin": "^2.4.5",
     "node-sass": "^6.0.1",
     "optimize-css-assets-webpack-plugin": "^6.0.1",

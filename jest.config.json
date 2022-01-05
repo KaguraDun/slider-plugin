@@ -1,0 +1,17 @@
+{
+  "collectCoverage": true,
+  "testEnvironment": "jsdom",
+  "collectCoverageFrom": [
+    "src/helpers/**/*.{js,ts}",
+    "src/models/**/*.{js,ts}",
+    "src/observer/**/*.{js,ts}",
+    "src/presenter/**/*.{js,ts}",
+    "src/ts/**/*.{js,ts}",
+    "src/views/**/*.{js,ts}"
+  ],
+  "setupFilesAfterEnv": ["@testing-library/jest-dom/extend-expect"],
+  "transform": {
+    "^.+\\.(js|ts)$": "babel-jest",
+    ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$": "jest-transform-stub"
+  }
+}
