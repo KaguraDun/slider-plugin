@@ -46,7 +46,8 @@ class Scale {
   render({ sliderElement, state, percentPerMark, thumbRect }: RenderProps) {
     const { values, showScale, isVertical } = state;
     console.log('render', state);
-    this.state = { ...state };
+
+    this.state = state;
     this.parent = sliderElement;
     this.percentPerMark = percentPerMark;
     this.element.innerHTML = '';
