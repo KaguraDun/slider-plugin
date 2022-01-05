@@ -67,6 +67,7 @@ class Model {
 
   setMin(min: number) {
     this.setState({ min });
+    this.generateValues();
   }
 
   getMin() {
@@ -75,6 +76,7 @@ class Model {
 
   setMax(max: number) {
     this.setState({ max });
+    this.generateValues();
   }
 
   getMax() {
@@ -131,6 +133,7 @@ class Model {
 
   setStep(step: number) {
     this.setState({ step });
+    this.generateValues();
   }
 
   getStep() {
@@ -180,7 +183,6 @@ class Model {
   private setState(newState: Partial<SliderState>) {
     Object.assign(this.state, newState);
 
-    this.generateValues();
     this.observerEvents.stateChanged.notify(this.state);
   }
 
