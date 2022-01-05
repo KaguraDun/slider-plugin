@@ -45,7 +45,7 @@ class Scale {
 
   render({ sliderElement, state, percentPerMark, thumbRect }: RenderProps) {
     const { values, showScale, isVertical } = state;
-
+    console.log('render', state);
     this.state = { ...state };
     this.parent = sliderElement;
     this.percentPerMark = percentPerMark;
@@ -115,7 +115,7 @@ class Scale {
     toIndex,
     isRange,
   }: GetClosestThumbProps): ThumbID {
-    if (!isRange || !toIndex) return ThumbID.from;
+    if (!isRange) return ThumbID.from;
 
     const distanceToFirst = Math.abs(markID - fromIndex);
     const distanceToSecond = Math.abs(markID - toIndex);

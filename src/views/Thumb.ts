@@ -43,9 +43,9 @@ class Thumb {
 
   render(parent: HTMLElement, state: SliderState) {
     this.parent = parent;
-    this.state = { ...state };
+    this.state = state;
 
-    const { isRange, isVertical, fromIndex, toIndex } = this.state;
+    const { isRange, isVertical } = this.state;
 
     this.element.addEventListener('pointerdown', this.handleDragThumb);
     this.element.addEventListener('dragstart', this.handleDragStart);
@@ -53,9 +53,9 @@ class Thumb {
     this.show(isRange);
 
     if (this.thumbID === ThumbID.from) {
-      this.move(fromIndex, isVertical);
-    } else if (this.thumbID === ThumbID.to && toIndex) {
-      this.move(toIndex, isVertical);
+      this.move(this.state.fromIndex, isVertical);
+    } else if (this.thumbID === ThumbID.to) {
+      this.move(this.state.toIndex, isVertical);
     }
   }
 
@@ -104,7 +104,7 @@ class Thumb {
     const handlePointerMove = (pointerMove: PointerEvent) => {
       if (!this.parent || !this.state) return;
 
-      const { isVertical, values, maxIndex } = this.state;
+      const { isVertical, maxIndex, values } = this.state;
 
       const offsetX = pointerMove.clientX - shiftX;
       const offsetY = pointerMove.clientY - shiftY;
