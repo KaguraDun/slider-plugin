@@ -46,8 +46,8 @@ class Presenter {
     this.observerEvents.toChanged.attach(this.runToChangedCallback);
     this.observerEvents.toChanged.attach(this.view.setTopThumb);
 
-    this.observerEvents.thumbMoved.attach(this.model.setOptions);
-    this.observerEvents.scaleClick.attach(this.model.setOptions);
+    this.observerEvents.thumbMoved.attach(this.model.setThumb);
+    this.observerEvents.scaleClick.attach(this.model.setThumb);
   }
 
   addFromChangedCallback(callback: () => void) {

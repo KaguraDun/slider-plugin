@@ -1,9 +1,9 @@
-import ThumbID from '@/models/ThumbID';
 import { ObserverEvents } from '@/observer/ObserverEvents';
 
 import sliderErrors from './sliderErrors';
 import SliderSettings from './SliderSetting';
 import SliderState from './SliderState';
+import ThumbID from './ThumbID';
 
 class Model {
   private observerEvents: ObserverEvents;
@@ -16,8 +16,8 @@ class Model {
       min: 0,
       max: 0,
       maxIndex: 0,
-      stepIndex: 1,
-      toIndex: 0,
+      step: 1,
+      toIndex: undefined,
       values: [],
       showBar: false,
       showScale: false,
@@ -28,23 +28,37 @@ class Model {
   }
 
   setOptions = (settings: Partial<SliderSettings>) => {
-    Object.entries(settings).forEach(
+    const { from, to, ...rest } = settings;
+
+    Object.entries(rest).forEach(
       ([setting, value]: [string, number | boolean]) => {
-        if (setting === ThumbID.from) {
-          this.setFrom(Number(value));
-          return;
-        }
-
-        if (setting === ThumbID.to) {
-          this.setTo(Number(value));
-          return;
-        }
-
         if (this.state.hasOwnProperty(setting)) {
-          this.setState({ [setting]: value });
+          Object.assign(this.state, { [setting]: value });
         }
       },
     );
+
+    this.generateValues();
+
+    this.setFrom(Number(from));
+
+    const isToIndexSet = this.state.toIndex !== undefined;
+    const isToPassed = to !== undefined;
+
+    if (!isToIndexSet && !isToPassed) this.setTo(Number(this.state.max));
+    if (isToPassed) this.setTo(Number(to));
+
+    this.observerEvents.stateChanged.notify(this.state);
+  };
+
+  setThumb = (thumbID: Partial<SliderSettings>) => {
+    const [thumb] = Object.keys(thumbID);
+
+    if (thumb === ThumbID.from) {
+      this.setFrom(Number(thumbID.from));
+      return;
+    }
+    if (thumb === ThumbID.to) this.setTo(Number(thumbID.to));
   };
 
   getState() {
@@ -77,8 +91,10 @@ class Model {
     }
 
     if (fromIndex > this.state.maxIndex) fromIndex = this.state.maxIndex;
-    if (isRange && fromIndex >= toIndex) fromIndex = toIndex;
 
+    const isToIndexSet = toIndex !== undefined;
+    if (isRange && isToIndexSet && fromIndex > toIndex) fromIndex = toIndex;
+    console.log({ fromIndex });
     this.setState({ fromIndex });
     this.observerEvents.fromChanged.notify({
       [ThumbID.from]: from,
@@ -100,7 +116,7 @@ class Model {
 
     if (toIndex > this.state.maxIndex) toIndex = this.state.maxIndex;
     if (isRange && toIndex <= fromIndex) toIndex = fromIndex;
-
+    console.log({ toIndex });
     this.setState({ toIndex });
     this.observerEvents.toChanged.notify({
       [ThumbID.to]: to,
@@ -108,15 +124,17 @@ class Model {
   }
 
   getTo() {
-    return this.state.values[this.state.toIndex];
+    const { toIndex = this.state.maxIndex } = this.state;
+
+    return this.state.values[toIndex];
   }
 
-  setStep(stepIndex: number) {
-    this.setState({ stepIndex });
+  setStep(step: number) {
+    this.setState({ step });
   }
 
   getStep() {
-    return this.state.stepIndex;
+    return this.state.step;
   }
 
   setShowScale(showScale: boolean) {
@@ -170,10 +188,10 @@ class Model {
     maxIndex,
     min,
     max,
-    stepIndex,
-  }: Pick<SliderState, 'maxIndex' | 'min' | 'max' | 'stepIndex'>) {
+    step,
+  }: Pick<SliderState, 'maxIndex' | 'min' | 'max' | 'step'>) {
     const generateFn = (_value: null, index: number) =>
-      Number(min) + index * Number(stepIndex);
+      Number(min) + index * Number(step);
 
     const sequence = Array.from(Array(maxIndex), generateFn);
 
@@ -184,18 +202,22 @@ class Model {
   }
 
   private generateValues() {
-    const { min, max, stepIndex } = this.state;
+    const { min, max, step, fromIndex, toIndex } = this.state;
 
-    if (stepIndex <= 0) return;
+    if (step <= 0) return;
 
-    const maxIndex = Math.abs((max - min) / stepIndex);
+    const maxIndex = Math.ceil(Math.abs((max - min) / step));
 
-    this.state.maxIndex = Math.ceil(maxIndex);
+    if (fromIndex > maxIndex) this.state.fromIndex = maxIndex;
+    if (toIndex !== undefined && toIndex > maxIndex)
+      this.state.toIndex = maxIndex;
+
+    this.state.maxIndex = maxIndex;
     this.state.values = this.generateNumberSequence({
       maxIndex,
       min,
       max,
-      stepIndex,
+      step,
     });
   }
 }

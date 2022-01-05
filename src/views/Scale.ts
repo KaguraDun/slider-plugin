@@ -71,7 +71,7 @@ class Scale {
     const thumbOffset = thumbRect[size] / 2 + markWidth / 2;
     const thumbOffsetPercent = getPercentOfNumber(thumbOffset, sliderSize);
 
-    values.forEach((item: number | string, index: number) => {
+    values.forEach((item: number, index: number) => {
       const isLastElement = index === values.length - 1;
       const isFitToStep = index % step === 0;
       const isSecondFromEndOverflowLast = index + step / 2 > values.length - 1;
@@ -115,7 +115,7 @@ class Scale {
     toIndex,
     isRange,
   }: GetClosestThumbProps): ThumbID {
-    if (!isRange) return ThumbID.from;
+    if (!isRange || toIndex === undefined) return ThumbID.from;
 
     const distanceToFirst = Math.abs(markID - fromIndex);
     const distanceToSecond = Math.abs(markID - toIndex);

@@ -45,7 +45,7 @@ class Thumb {
     this.parent = parent;
     this.state = state;
 
-    const { isRange, isVertical } = this.state;
+    const { isRange, isVertical, fromIndex, toIndex } = this.state;
 
     this.element.addEventListener('pointerdown', this.handleDragThumb);
     this.element.addEventListener('dragstart', this.handleDragStart);
@@ -53,9 +53,9 @@ class Thumb {
     this.show(isRange);
 
     if (this.thumbID === ThumbID.from) {
-      this.move(this.state.fromIndex, isVertical);
-    } else if (this.thumbID === ThumbID.to) {
-      this.move(this.state.toIndex, isVertical);
+      this.move(fromIndex, isVertical);
+    } else if (this.thumbID === ThumbID.to && toIndex !== undefined) {
+      this.move(toIndex, isVertical);
     }
   }
 

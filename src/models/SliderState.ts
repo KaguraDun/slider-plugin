@@ -3,8 +3,8 @@ interface SliderState {
   min: number;
   maxIndex: number;
   max: number;
-  stepIndex: number;
-  toIndex: number;
+  step: number;
+  toIndex: number | undefined;
   values: number[];
   showBar: boolean;
   showScale: boolean;

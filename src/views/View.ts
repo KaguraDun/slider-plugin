@@ -12,7 +12,7 @@ import Track from './Track';
 
 interface UpdateTipsProps {
   fromValue: number;
-  toValue: number;
+  toValue: number | undefined;
   isRange: boolean;
   isVertical: boolean;
 }
@@ -52,6 +52,9 @@ class View {
       isRange,
       isVertical,
     } = state;
+    const fromValue = values[fromIndex];
+    const toValue = toIndex !== undefined ? values[toIndex] : undefined;
+
     this.toggleSliderVertical(isVertical);
 
     this.container = container;
@@ -59,15 +62,15 @@ class View {
     this.track.render(this.slider);
 
     this.firstThumb.render(this.track.element, state);
-    this.firstThumb.renderTip(values[fromIndex], showTip);
+    this.firstThumb.renderTip(fromValue, showTip);
     this.firstThumb.toggleTopElement(true);
 
     this.secondThumb.render(this.track.element, state);
-    this.secondThumb.renderTip(values[toIndex], showTip);
+    if (toValue !== undefined) this.secondThumb.renderTip(toValue, showTip);
 
     this.updateTips({
-      fromValue: values[fromIndex],
-      toValue: values[toIndex],
+      fromValue,
+      toValue,
       isRange,
       isVertical,
     });
@@ -99,6 +102,8 @@ class View {
       isRange,
       isVertical,
     } = state;
+    const fromValue = values[fromIndex];
+    const toValue = toIndex !== undefined ? values[toIndex] : undefined;
 
     this.toggleSliderVertical(isVertical);
 
@@ -106,12 +111,12 @@ class View {
     this.firstThumb.tip.show(showTip);
 
     this.secondThumb.show(isRange);
-    this.secondThumb.move(toIndex, isVertical);
+    if (toIndex !== undefined) this.secondThumb.move(toIndex, isVertical);
     this.secondThumb.tip.show(showTip);
 
     this.updateTips({
-      fromValue: values[fromIndex],
-      toValue: values[toIndex],
+      fromValue,
+      toValue,
       isRange,
       isVertical,
     });
