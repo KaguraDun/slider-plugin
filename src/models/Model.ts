@@ -94,7 +94,7 @@ class Model {
 
     const isToIndexSet = toIndex !== undefined;
     if (isRange && isToIndexSet && fromIndex > toIndex) fromIndex = toIndex;
-    console.log({ fromIndex });
+
     this.setState({ fromIndex });
     this.observerEvents.fromChanged.notify({
       [ThumbID.from]: from,
@@ -116,7 +116,7 @@ class Model {
 
     if (toIndex > this.state.maxIndex) toIndex = this.state.maxIndex;
     if (isRange && toIndex <= fromIndex) toIndex = fromIndex;
-    console.log({ toIndex });
+
     this.setState({ toIndex });
     this.observerEvents.toChanged.notify({
       [ThumbID.to]: to,
