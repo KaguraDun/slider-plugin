@@ -119,34 +119,58 @@ class SliderPanel {
 
     if (!target) return;
 
-    const { handler }: { handler(val: number | boolean): void } = Object.values(
-      this.panelItems,
-    ).filter(({ name }) => name === target.name)[0];
+    const { handler }: { handler(value: number | boolean): void } =
+      Object.values(this.panelItems).filter(
+        ({ name }) => name === target.name,
+      )[0];
 
     if (target.type === TypeLiterals.checkbox) {
       handler(target.checked);
       return;
     }
 
-    let value = Number(target.value);
+    let value = this.validateNumberInputs(target.name, Number(target.value));
+    target.value = String(value);
 
-    if (target.name === 'step') {
-      value = this.validateStep(value);
-      target.value = String(value);
-    }
-
-    if (target.name === 'from') {
-      value = this.validateFrom(value);
-      target.value = String(value);
-    }
-
-    if (target.name === 'to') {
-      value = this.validateTo(value);
-      target.value = String(value);
-    }
-
-    if (target.type === 'number') handler(value);
+    handler(value);
   };
+
+  private validateNumberInputs(name: string, value: number) {
+    if (name === 'min') {
+      return this.validateMin(value);
+    }
+
+    if (name === 'max') {
+      return this.validateMax(value);
+    }
+
+    if (name === 'step') {
+      return this.validateStep(value);
+    }
+
+    if (name === 'from') {
+      return this.validateFrom(value);
+    }
+
+    if (name === 'to') {
+      return this.validateTo(value);
+    }
+
+    return 0;
+  }
+
+  private validateMin(value: number) {
+    const max = this.$slider.getMax() - 1;
+    if (value >= max) return max;
+
+    return value;
+  }
+
+  private validateMax(value: number) {
+    const min = this.$slider.getMin() + 1;
+    if (value <= min) return min;
+    return value;
+  }
 
   private validateStep(value: number) {
     const min = this.$slider.getMin();
