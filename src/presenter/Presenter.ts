@@ -4,6 +4,8 @@ import SliderSettings from '@/models/SliderSetting';
 import { ObserverEvents } from '@/observer/ObserverEvents';
 import View from '@/views/View';
 
+import hasAllProperties from './../helpers/hasAllProperties';
+
 import '@/styles/slider.scss';
 
 class Presenter {
@@ -27,12 +29,7 @@ class Presenter {
       return;
     }
 
-    const hasMinimumAmountOfProperties =
-      options.hasOwnProperty('min') ||
-      options.hasOwnProperty('max') ||
-      options.hasOwnProperty('from');
-
-    if (!hasMinimumAmountOfProperties) {
+    if (!hasAllProperties(options, ['min', 'max', 'from'])) {
       sliderErrors.throwMinimumOptionsRequired();
       return;
     }
