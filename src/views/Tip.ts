@@ -53,15 +53,14 @@ class Tip {
   }: CheckIntersectionProps) {
     const firstTipRect = firstTip.getBoundingClientRect();
     const secondTipRect = secondTip.getBoundingClientRect();
-
     const isExpanded = firstTip.classList.contains(Tip.EXPANDED_MODIFIER);
 
     enum MatchSizes {
       unExpanded = 1,
       expanded = 2,
     }
-    const matchSize = isExpanded ? MatchSizes.expanded : MatchSizes.unExpanded;
 
+    const matchSize = isExpanded ? MatchSizes.expanded : MatchSizes.unExpanded;
     let isIntersect = false;
 
     if (isVertical) {

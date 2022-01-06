@@ -118,11 +118,6 @@ class View {
       this.firstThumb.move(fromIndex, isVertical);
     }
 
-    if (this.stateParamsChanged({ showTip })) {
-      this.firstThumb.tip.show(showTip);
-      this.secondThumb.tip.show(showTip);
-    }
-
     if (this.stateParamsChanged({ isRange })) {
       this.secondThumb.show(isRange);
     }
@@ -143,8 +138,12 @@ class View {
         toIndex,
         isRange,
         isVertical,
+        showTip,
       })
     ) {
+      this.firstThumb.tip.show(showTip);
+      this.secondThumb.tip.show(showTip);
+
       this.updateTips({
         fromValue,
         toValue,
@@ -170,13 +169,14 @@ class View {
       this.bar.show(showBar);
     }
 
-    if (this.stateParamsChanged({ fromIndex, toIndex, isRange, isVertical }))
+    if (this.stateParamsChanged({ fromIndex, toIndex, isRange, isVertical })) {
       this.bar.update({
         firstThumb: this.firstThumb.element,
         secondThumb: this.secondThumb.element,
         isRange,
         isVertical,
       });
+    }
 
     this.prevState = { ...state };
   };
@@ -206,7 +206,6 @@ class View {
       secondTip: this.secondThumb.tip.element,
       isVertical,
     });
-
     const toggle = isRange ? isIntersect : false;
     this.firstThumb.tip.toggleExpand(toggle);
 
