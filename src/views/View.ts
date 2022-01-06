@@ -45,19 +45,9 @@ class View {
   }
 
   init(container: HTMLElement, state: SliderState) {
-    const {
-      fromIndex,
-      toIndex,
-      values,
-      showTip,
-      showBar,
-      isRange,
-      isVertical,
-    } = state;
+    const { fromIndex, toIndex, values, showTip } = state;
     const fromValue = values[fromIndex];
     const toValue = toIndex !== undefined ? values[toIndex] : undefined;
-
-    this.toggleSliderVertical(isVertical);
 
     this.container = container;
     this.container.append(this.slider);
@@ -70,28 +60,7 @@ class View {
     this.secondThumb.render(this.track.element, state);
     if (toValue !== undefined) this.secondThumb.renderTip(toValue, showTip);
 
-    this.updateTips({
-      fromValue,
-      toValue,
-      isRange,
-      isVertical,
-    });
-
-    this.scale.render({
-      sliderElement: this.slider,
-      state,
-      percentPerMark: this.firstThumb.getPercentPerMark(),
-      thumbRect: this.firstThumb.element.getBoundingClientRect(),
-    });
-
-    this.bar.show(showBar);
-    this.bar.update({
-      firstThumb: this.firstThumb.element,
-      secondThumb: this.secondThumb.element,
-      isRange,
-      isVertical,
-    });
-
+    this.update(state);
     this.prevState = { ...state };
   }
 
@@ -170,15 +139,10 @@ class View {
     }
 
     if (this.stateParamsChanged({ fromIndex, toIndex, isRange, isVertical })) {
-      this.bar.update({
-        firstThumb: this.firstThumb.element,
-        secondThumb: this.secondThumb.element,
-        isRange,
-        isVertical,
-      });
-    }
+      this.bar.update({ ...this.getThumbParams(), isRange, isVertical });
 
-    this.prevState = { ...state };
+      this.prevState = { ...state };
+    }
   };
 
   setTopThumb = (thumbState: Partial<Pick<SliderSettings, 'from' | 'to'>>) => {
@@ -223,7 +187,7 @@ class View {
   }
 
   private stateParamsChanged(params: Partial<SliderState>) {
-    if (!this.prevState) return;
+    if (!this.prevState) return true;
     let isChanged = false;
 
     Object.entries(params).forEach(([name, value]) => {
@@ -233,6 +197,23 @@ class View {
     });
 
     return isChanged;
+  }
+
+  private getThumbParams() {
+    return {
+      firstThumbOffset: {
+        offsetLeft: this.firstThumb.element.offsetLeft,
+        offsetTop: this.firstThumb.element.offsetTop,
+      },
+      secondThumbOffset: {
+        offsetLeft: this.secondThumb.element.offsetLeft,
+        offsetTop: this.secondThumb.element.offsetTop,
+      },
+      thumbSize: {
+        width: this.firstThumb.element.getBoundingClientRect().width,
+        height: this.firstThumb.element.getBoundingClientRect().height,
+      },
+    };
   }
 }
 
