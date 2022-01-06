@@ -6,9 +6,20 @@ import {
 } from '@/helpers/getLiteral';
 import getPercentOfNumber from '@/helpers/getPercentOfNumber';
 
+interface ThumbOffset {
+  offsetLeft: number;
+  offsetTop: number;
+}
+
+interface ThumbSize {
+  width: number;
+  height: number;
+}
+
 interface UpdateProps {
-  firstThumb: HTMLElement;
-  secondThumb: HTMLElement;
+  firstThumbOffset: ThumbOffset;
+  secondThumbOffset: ThumbOffset;
+  thumbSize: ThumbSize;
   isRange: boolean;
   isVertical: boolean;
 }
@@ -30,32 +41,39 @@ class Bar {
     }
   }
 
-  update({ firstThumb, secondThumb, isRange, isVertical }: UpdateProps) {
+  update({
+    firstThumbOffset,
+    secondThumbOffset,
+    thumbSize,
+    isRange,
+    isVertical,
+  }: UpdateProps) {
     const direction = getDirectionLiteral(isVertical);
     const offset = getOffsetLiteral(isVertical);
     const size = getSizeLiteral(isVertical);
 
     const trackSize = this.parent.getBoundingClientRect()[size];
-    const thumbHalfSize = firstThumb.getBoundingClientRect()[size] / 2;
+    const thumbHalfSize = thumbSize[size] / 2;
 
-    const firstThumbOffset = getPercentOfNumber(
-      firstThumb[offset] + thumbHalfSize,
+    const firstThumbOffsetPercent = getPercentOfNumber(
+      firstThumbOffset[offset] + thumbHalfSize,
       trackSize,
     );
-    const secondThumbOffset = getPercentOfNumber(
-      secondThumb[offset] + thumbHalfSize,
+    const secondThumbOffsetPercent = getPercentOfNumber(
+      secondThumbOffset[offset] + thumbHalfSize,
       trackSize,
     );
 
     this.resetSize();
 
     if (isRange) {
-      const distanceBetween = secondThumbOffset - firstThumbOffset;
+      const distanceBetween =
+        secondThumbOffsetPercent - firstThumbOffsetPercent;
 
-      this.element.style[direction] = `${firstThumbOffset}%`;
+      this.element.style[direction] = `${firstThumbOffsetPercent}%`;
       this.element.style[size] = `${distanceBetween}%`;
     } else {
-      this.element.style[size] = `${firstThumbOffset}%`;
+      this.element.style[size] = `${firstThumbOffsetPercent}%`;
     }
   }
 
