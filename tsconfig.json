@@ -52,6 +52,7 @@
   },
   "include": [
     "example/**/*",
-    "src/**/*"
+    "src/**/*",
+    "./jest-setup.ts"
   ]
 }
