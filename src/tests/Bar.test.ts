@@ -1,4 +1,3 @@
-import createElement from '@/helpers/createElement';
 import Bar from '@/views/Bar';
 
 describe('Bar', () => {
@@ -6,14 +5,9 @@ describe('Bar', () => {
   let track: HTMLElement | null = null;
 
   beforeEach(() => {
-    track = createElement('div', {
-      class: 'slider__track',
-      style: `width: 280px;
-              height: 20px;
-              position: absolute;`,
-    });
-
+    track = document.createElement('div');
     document.body.append(track);
+
     bar = new Bar(track);
   });
 
