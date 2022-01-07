@@ -91,15 +91,14 @@ class View {
       this.secondThumb.show(isRange);
     }
 
-    if (
-      toIndex !== undefined &&
-      this.stateParamsChanged({ toIndex, isVertical })
-    ) {
+    const isToIndex = toIndex !== undefined;
+
+    if (isToIndex && this.stateParamsChanged({ toIndex, isVertical })) {
       this.secondThumb.move(toIndex, isVertical);
     }
 
     const fromValue = values[fromIndex];
-    const toValue = toIndex !== undefined ? values[toIndex] : undefined;
+    const toValue = isToIndex ? values[toIndex] : undefined;
 
     if (
       this.stateParamsChanged({
@@ -140,9 +139,9 @@ class View {
 
     if (this.stateParamsChanged({ fromIndex, toIndex, isRange, isVertical })) {
       this.bar.update({ ...this.getThumbParams(), isRange, isVertical });
-
-      this.prevState = { ...state };
     }
+
+    this.prevState = { ...state };
   };
 
   setTopThumb = (thumbState: Partial<Pick<SliderSettings, 'from' | 'to'>>) => {
