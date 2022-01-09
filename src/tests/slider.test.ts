@@ -7,7 +7,7 @@ import '@/ts/slider';
 describe('Slider', () => {
   let $slider: SliderMethods | null = null;
 
-  it('show error message when parent not found', () => {
+  it('show error message in console when parent not found', () => {
     window.console.log = jest.fn(() => true);
 
     const sliderOptions = {
