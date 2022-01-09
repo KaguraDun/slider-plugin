@@ -1,6 +1,7 @@
-# JQuery Slider plugin
+# jQuery Slider plugin
 
-[Example](https://kd-slider-plugin.netlify.app/example)
+[Example page](https://kd-slider-plugin.netlify.app/example)
+
 Slider with MVP architecture. Data transfer by Observer pattern.
 ### Main features
 * Change step
@@ -16,7 +17,6 @@ Slider with MVP architecture. Data transfer by Observer pattern.
 ## API
 ### Usage Example
 ```js
-// import jQuery and slider from dist
    import $ from  'jquery';
    import './dist/slider';
    
