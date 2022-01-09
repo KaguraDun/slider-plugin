@@ -21,22 +21,22 @@ Slider with MVP architecture. Data transfer by Observer pattern.
    import './dist/slider';
    
    const sliderSettings  = {
-		from: -5000,
-		to: 2500,
-		min: -5000,
-		max: 5000,
-		step: 5,
-		showBar: true,
-		showScale: true,
-		showTip: true,
-		isRange: true,
-		isVertical: true,
-	};
+      from: -5000,
+      to: 2500,
+      min: -5000,
+      max: 5000,
+      step: 5,
+      showBar: true,
+      showScale: true,
+      showTip: true,
+      isRange: true,
+      isVertical: true,
+      };
 
-	const $slider = $(sliderContainer).createSlider(sliderSettings);
+   const $slider = $(sliderContainer).createSlider(sliderSettings);
 
-	// chaining
-	$slider.setMin(-100).setMax(100);
+   // chaining
+   $slider.setMin(-100).setMax(100);
 ```
 ### Settings
 |name|type|info|
