@@ -106,6 +106,7 @@ class Scale {
       this.element.addEventListener('click', this.handleScaleClick);
     } else {
       this.element.remove();
+      this.element.removeEventListener('click', this.handleScaleClick);
     }
   }
 
