@@ -68,6 +68,7 @@ class Model {
   setMin(min: number) {
     this.setState({ min });
     this.generateValues();
+    this.checkThumbSwap();
   }
 
   getMin() {
@@ -77,6 +78,7 @@ class Model {
   setMax(max: number) {
     this.setState({ max });
     this.generateValues();
+    this.checkThumbSwap();
   }
 
   getMax() {
@@ -165,6 +167,8 @@ class Model {
   }
 
   setIsRange(isRange: boolean) {
+    this.checkThumbSwap();
+
     this.setState({ isRange });
   }
 
@@ -178,6 +182,23 @@ class Model {
 
   getIsVertical() {
     return this.state.isVertical;
+  }
+
+  private checkThumbSwap() {
+    if (
+      this.state.toIndex !== undefined &&
+      this.state.toIndex < this.state.fromIndex
+    ) {
+      this.swapThumbValues();
+    }
+  }
+
+  private swapThumbValues() {
+    const { values, fromIndex, toIndex } = this.state;
+    if (toIndex === undefined) return;
+
+    this.setTo(values[fromIndex]);
+    this.setFrom(values[toIndex]);
   }
 
   private setState(newState: Partial<SliderState>) {
@@ -215,12 +236,15 @@ class Model {
       this.state.toIndex = maxIndex;
 
     this.state.maxIndex = maxIndex;
-    this.state.values = this.generateNumberSequence({
+
+    const values = this.generateNumberSequence({
       maxIndex,
       min,
       max,
       step,
     });
+
+    this.setState({ values });
   }
 }
 
