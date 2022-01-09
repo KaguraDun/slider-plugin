@@ -39,14 +39,13 @@ class Model {
     );
 
     this.generateValues();
-
     this.setFrom(Number(from));
 
-    const isToIndexSet = this.state.toIndex !== undefined;
-    const isToPassed = to !== undefined;
-
-    if (!isToIndexSet && !isToPassed) this.setTo(Number(this.state.max));
-    if (isToPassed) this.setTo(Number(to));
+    if (to !== undefined) {
+      this.setTo(Number(to));
+    } else {
+      this.setTo(Number(this.state.max));
+    }
 
     this.observerEvents.stateChanged.notify(this.state);
   };
@@ -58,6 +57,7 @@ class Model {
       this.setFrom(Number(thumbID.from));
       return;
     }
+
     if (thumb === ThumbID.to) this.setTo(Number(thumbID.to));
   };
 
