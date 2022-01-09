@@ -124,10 +124,10 @@ class View {
       this.scale.show(showScale);
     }
 
-    if (this.stateParamsChanged({ min, max, step, isVertical })) {
+    if (this.stateParamsChanged({ min, max, step, isVertical, values })) {
       this.scale.render({
         sliderElement: this.slider,
-        state,
+        state: { ...state },
         percentPerMark: this.firstThumb.getPercentPerMark(),
         thumbRect: this.firstThumb.element.getBoundingClientRect(),
       });
