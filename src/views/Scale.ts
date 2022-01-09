@@ -64,7 +64,7 @@ class Scale {
     const borderElements = 2;
     const itemsInScale = Math.ceil(sliderSize / markWidth) - borderElements;
     const step = Math.round(values.length / itemsInScale);
-    console.log(itemsInScale);
+
     const translateX = isVertical ? 0 : thumbRect[size];
     const translateY = isVertical ? thumbRect[size] : 0;
 
