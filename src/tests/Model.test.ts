@@ -85,6 +85,14 @@ describe('Model', () => {
 
     expect(model?.getTo()).toEqual(5);
   });
-});
 
-//test setThumb
+  it('should swap thumbs when from < to and isRange changed', () => {
+    model?.setIsRange(false);
+    model?.setTo(-10);
+
+    model?.setIsRange(true);
+
+    expect(model?.getTo()).toEqual(0);
+    expect(model?.getFrom()).toEqual(-10);
+  });
+});
