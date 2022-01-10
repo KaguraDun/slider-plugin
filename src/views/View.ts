@@ -75,21 +75,21 @@ class View {
       isVertical,
     } = state;
 
-    if (this.stateParamsChanged({ isVertical })) {
+    if (this.hasStateChanged({ isVertical })) {
       this.slider.toggleVertical(isVertical);
     }
 
-    if (this.stateParamsChanged({ fromIndex, isVertical })) {
+    if (this.hasStateChanged({ fromIndex, isVertical })) {
       this.firstThumb.move(fromIndex, isVertical);
     }
 
-    if (this.stateParamsChanged({ isRange })) {
+    if (this.hasStateChanged({ isRange })) {
       this.secondThumb.show(isRange);
     }
 
     const isToIndex = toIndex !== undefined;
 
-    if (isToIndex && this.stateParamsChanged({ toIndex, isVertical })) {
+    if (isToIndex && this.hasStateChanged({ toIndex, isVertical })) {
       this.secondThumb.move(toIndex, isVertical);
     }
 
@@ -97,7 +97,7 @@ class View {
     const toValue = isToIndex ? values[toIndex] : undefined;
 
     if (
-      this.stateParamsChanged({
+      this.hasStateChanged({
         fromIndex,
         toIndex,
         isRange,
@@ -116,11 +116,11 @@ class View {
       });
     }
 
-    if (this.stateParamsChanged({ showScale })) {
+    if (this.hasStateChanged({ showScale })) {
       this.scale.show(showScale);
     }
 
-    if (this.stateParamsChanged({ min, max, step, isVertical, values })) {
+    if (this.hasStateChanged({ min, max, step, isVertical, values })) {
       this.scale.render({
         sliderElement: this.slider.element,
         state: { ...state },
@@ -129,11 +129,11 @@ class View {
       });
     }
 
-    if (this.stateParamsChanged({ showBar })) {
+    if (this.hasStateChanged({ showBar })) {
       this.bar.show(showBar);
     }
 
-    if (this.stateParamsChanged({ fromIndex, toIndex, isRange, isVertical })) {
+    if (this.hasStateChanged({ fromIndex, toIndex, isRange, isVertical })) {
       this.bar.update({ ...this.getThumbParams(), isRange, isVertical });
     }
 
@@ -181,11 +181,11 @@ class View {
     }
   }
 
-  private stateParamsChanged(params: Partial<SliderState>) {
+  private hasStateChanged(stateValues: Partial<SliderState>) {
     if (!this.prevState) return true;
     let isChanged = false;
 
-    Object.entries(params).forEach(([name, value]) => {
+    Object.entries(stateValues).forEach(([name, value]) => {
       if (this.prevState?.[name as keyof SliderState] !== value) {
         isChanged = true;
       }
