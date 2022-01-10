@@ -3,6 +3,10 @@
 [Example page](https://kd-slider-plugin.netlify.app/example)
 
 Slider with MVP architecture. Data transfer by Observer pattern.
+
+UML diagram
+![jQery slider plugin (1)](https://user-images.githubusercontent.com/54976219/148756009-6b2d532a-1a4d-4446-9add-04b0d9cd2b72.png)
+
 ### Main features
 * Change step
 * Vertical / horizontal view
@@ -78,7 +82,6 @@ setIsVertical(isVertical)
 getIsVertical();
 ```
 
-
 ## Use tips
 Use  first
 ```bash
@@ -112,4 +115,5 @@ npm run test:coverage
 ```
 
 ## Dependencies
+* node: 14.18.1
 * jQuery: 3.6.0
