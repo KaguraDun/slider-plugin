@@ -38,7 +38,6 @@ class Scale {
     this.element = createElement('div', {
       class: 'slider__scale',
     });
-    this.handleScaleClick = this.handleScaleClick.bind(this);
     this.scaleClickEvent = observerEvents.scaleClick;
     this.state = undefined;
   }
@@ -129,7 +128,7 @@ class Scale {
     return ThumbID.to;
   }
 
-  private handleScaleClick(clickEvent: MouseEvent) {
+  private handleScaleClick = (clickEvent: MouseEvent) => {
     const target = clickEvent.target as HTMLElement;
     const closest = target.closest('.slider__scale-mark');
 
@@ -148,7 +147,7 @@ class Scale {
     const value = values[valueIndex];
 
     this.scaleClickEvent.notify({ [closestThumb]: value });
-  }
+  };
 
   private getMarkWidth({
     minElement,
