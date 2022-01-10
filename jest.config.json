@@ -1,0 +1,27 @@
+{
+  "collectCoverage": true,
+  "testEnvironment": "jsdom",
+  "collectCoverageFrom": [
+    "src/helpers/**/*.{js,ts}",
+    "src/models/**/*.{js,ts}",
+    "src/observer/**/*.{js,ts}",
+    "src/presenter/**/*.{js,ts}",
+    "src/ts/**/*.{js,ts}",
+    "src/views/**/*.{js,ts}"
+  ],
+  "setupFilesAfterEnv": ["@testing-library/jest-dom/extend-expect","./jest.setup.ts"],
+  "transform": {
+    "^.+\\.(js|ts)$": "babel-jest",
+    ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$": "jest-transform-stub"
+  },
+  "moduleNameMapper": {
+    "@/helpers/(.*)": "<rootDir>/src/helpers/$1",
+    "@/models/(.*)": "<rootDir>/src/models/$1",
+    "@/observer/(.*)": "<rootDir>/src/observer/$1",
+    "@/presenter/(.*)": "<rootDir>/src/presenter/$1",
+    "@/styles/(.*)": "<rootDir>/src/styles/$1",
+    "@/tests/(.*)": "<rootDir>/src/tests/$1",
+    "@/ts/(.*)": "<rootDir>/src/ts/$1",
+    "@/views/(.*)": "<rootDir>/src/views/$1"
+  }
+}

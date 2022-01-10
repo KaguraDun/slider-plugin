@@ -1,10 +1,12 @@
-@import '~normalize-scss/sass/normalize';
-@include normalize();
-
 $color-bg: #cddeff;
 
 * {
   box-sizing: border-box;
+}
+
+html {
+  font-size: 100%;
+  font-family: Helvetica, sans-serif;
 }
 
 body {
@@ -13,30 +15,4 @@ body {
   gap: 50px;
   justify-items: center;
   background: $color-bg;
-}
-
-.slider-example {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  &__heading {
-    font-size: 40px;
-  }
-
-  &__controls-container {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  &__slider-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 300px;
-    height: 300px;
-    padding: 10px;
-  }
 }

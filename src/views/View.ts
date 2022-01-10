@@ -1,17 +1,18 @@
-import createElement from '@/helpers/createElement';
 import SliderSettings from '@/models/SliderSetting';
+import SliderState from '@/models/SliderState';
 import ThumbID from '@/models/ThumbID';
 import { ObserverEvents } from '@/observer/ObserverEvents';
 import Tip from '@/views/Tip';
 
 import Bar from './Bar';
 import Scale from './Scale';
+import Slider from './Slider';
 import Thumb from './Thumb';
 import Track from './Track';
 
 interface UpdateTipsProps {
-  fromValue: number | string;
-  toValue: number | string;
+  fromValue: number;
+  toValue: number | undefined;
   isRange: boolean;
   isVertical: boolean;
 }
@@ -20,75 +21,50 @@ class View {
   private observerEvents: ObserverEvents;
   private track: Track;
   private container: HTMLElement | null;
-  private slider: HTMLElement;
+  private slider: Slider;
   private firstThumb: Thumb;
   private secondThumb: Thumb;
   private scale: Scale;
   private bar: Bar;
+  private prevState: SliderState | undefined;
 
   constructor(observerEvents: ObserverEvents) {
     this.observerEvents = observerEvents;
     this.container = null;
-    this.slider = createElement('div', { class: 'slider' });
+    this.slider = new Slider();
     this.track = new Track();
-    this.firstThumb = new Thumb(ThumbID.from, this.observerEvents.thumbMoved);
-    this.secondThumb = new Thumb(ThumbID.to, this.observerEvents.thumbMoved);
-    this.scale = new Scale(this.observerEvents.scaleClick);
+    this.firstThumb = new Thumb(ThumbID.from, this.observerEvents);
+    this.secondThumb = new Thumb(ThumbID.to, this.observerEvents);
+    this.scale = new Scale(this.observerEvents);
     this.bar = new Bar(this.track.element);
-    this.update = this.update.bind(this);
+    this.prevState = undefined;
   }
 
-  toggleSliderVertical(isVertical: boolean) {
-    this.slider.classList.toggle('slider--vertical', isVertical);
-  }
-
-  init(container: HTMLElement, state: SliderSettings) {
-    const {
-      fromIndex,
-      toIndex,
-      values,
-      showTip,
-      showBar,
-      isRange,
-      isVertical,
-    } = state;
-    this.toggleSliderVertical(isVertical);
+  init(container: HTMLElement, state: SliderState) {
+    const { fromIndex, toIndex, values, showTip } = state;
+    const fromValue = values[fromIndex];
+    const toValue = toIndex !== undefined ? values[toIndex] : undefined;
 
     this.container = container;
-    this.container.append(this.slider);
-    this.track.render(this.slider);
+    this.slider.render(this.container);
+    this.track.render(this.slider.element);
 
     this.firstThumb.render(this.track.element, state);
-    this.firstThumb.renderTip(values[fromIndex], showTip);
+    this.firstThumb.renderTip(fromValue, showTip);
+    this.firstThumb.toggleTopElement(true);
 
     this.secondThumb.render(this.track.element, state);
-    this.secondThumb.renderTip(values[toIndex], showTip);
+    if (toValue !== undefined) this.secondThumb.renderTip(toValue, showTip);
 
-    this.updateTips({
-      fromValue: values[fromIndex],
-      toValue: values[toIndex],
-      isRange,
-      isVertical,
-    });
-
-    this.scale.render({
-      sliderElement: this.slider,
-      state,
-      percentPerMark: this.firstThumb.getPercentPerMark(),
-      thumbRect: this.firstThumb.element.getBoundingClientRect(),
-    });
-
-    this.bar.show(showBar);
-    this.bar.update({
-      firstThumb: this.firstThumb.element,
-      secondThumb: this.secondThumb.element,
-      isRange,
-      isVertical,
-    });
+    this.update(state);
+    this.prevState = { ...state };
   }
 
-  update(state: SliderState) {
+  update = (state: SliderState) => {
     const {
+      min,
+      max,
+      step,
       fromIndex,
       toIndex,
       values,
@@ -99,40 +75,72 @@ class View {
       isVertical,
     } = state;
 
-    this.toggleSliderVertical(isVertical);
+    if (this.hasStateChanged({ isVertical })) {
+      this.slider.toggleVertical(isVertical);
+    }
 
-    this.firstThumb.move(fromIndex, isVertical);
-    this.firstThumb.tip.show(showTip);
+    if (this.hasStateChanged({ fromIndex, isVertical })) {
+      this.firstThumb.move(fromIndex, isVertical);
+    }
 
-    this.secondThumb.show(isRange);
-    this.secondThumb.move(toIndex, isVertical);
-    this.secondThumb.tip.show(showTip);
+    if (this.hasStateChanged({ isRange })) {
+      this.secondThumb.show(isRange);
+    }
 
-    this.updateTips({
-      fromValue: values[fromIndex],
-      toValue: values[toIndex],
-      isRange,
-      isVertical,
-    });
+    const isToIndex = toIndex !== undefined;
 
-    this.scale.show(showScale);
-    this.scale.render({
-      sliderElement: this.slider,
-      state,
-      percentPerMark: this.firstThumb.getPercentPerMark(),
-      thumbRect: this.firstThumb.element.getBoundingClientRect(),
-    });
+    if (isToIndex && this.hasStateChanged({ toIndex, isVertical })) {
+      this.secondThumb.move(toIndex, isVertical);
+    }
 
-    this.bar.show(showBar);
-    this.bar.update({
-      firstThumb: this.firstThumb.element,
-      secondThumb: this.secondThumb.element,
-      isRange,
-      isVertical,
-    });
-  }
+    const fromValue = values[fromIndex];
+    const toValue = isToIndex ? values[toIndex] : undefined;
 
-  setTopThumb = (thumbState: SliderSettings) => {
+    if (
+      this.hasStateChanged({
+        fromIndex,
+        toIndex,
+        isRange,
+        isVertical,
+        showTip,
+      })
+    ) {
+      this.firstThumb.tip.show(showTip);
+      this.secondThumb.tip.show(showTip);
+
+      this.updateTips({
+        fromValue,
+        toValue,
+        isRange,
+        isVertical,
+      });
+    }
+
+    if (this.hasStateChanged({ showScale })) {
+      this.scale.show(showScale);
+    }
+
+    if (this.hasStateChanged({ min, max, step, isVertical, values })) {
+      this.scale.render({
+        sliderElement: this.slider.element,
+        state: { ...state },
+        percentPerMark: this.firstThumb.getPercentPerMark(),
+        thumbRect: this.firstThumb.element.getBoundingClientRect(),
+      });
+    }
+
+    if (this.hasStateChanged({ showBar })) {
+      this.bar.show(showBar);
+    }
+
+    if (this.hasStateChanged({ fromIndex, toIndex, isRange, isVertical })) {
+      this.bar.update({ ...this.getThumbParams(), isRange, isVertical });
+    }
+
+    this.prevState = { ...state };
+  };
+
+  setTopThumb = (thumbState: Partial<Pick<SliderSettings, 'from' | 'to'>>) => {
     const [thumbID] = Object.keys(thumbState);
 
     if (thumbID === ThumbID.from) {
@@ -157,7 +165,6 @@ class View {
       secondTip: this.secondThumb.tip.element,
       isVertical,
     });
-
     const toggle = isRange ? isIntersect : false;
     this.firstThumb.tip.toggleExpand(toggle);
 
@@ -169,9 +176,39 @@ class View {
       this.secondThumb.tip.show(false);
       this.firstThumb.tip.update(tipValue);
     } else {
-      this.firstThumb.tip.update(fromValue);
-      this.secondThumb.tip.update(toValue);
+      this.firstThumb.tip.update(String(fromValue));
+      this.secondThumb.tip.update(String(toValue));
     }
+  }
+
+  private hasStateChanged(stateValues: Partial<SliderState>) {
+    if (!this.prevState) return true;
+    let isChanged = false;
+
+    Object.entries(stateValues).forEach(([name, value]) => {
+      if (this.prevState?.[name as keyof SliderState] !== value) {
+        isChanged = true;
+      }
+    });
+
+    return isChanged;
+  }
+
+  private getThumbParams() {
+    return {
+      firstThumbOffset: {
+        offsetLeft: this.firstThumb.element.offsetLeft,
+        offsetTop: this.firstThumb.element.offsetTop,
+      },
+      secondThumbOffset: {
+        offsetLeft: this.secondThumb.element.offsetLeft,
+        offsetTop: this.secondThumb.element.offsetTop,
+      },
+      thumbSize: {
+        width: this.firstThumb.element.getBoundingClientRect().width,
+        height: this.firstThumb.element.getBoundingClientRect().height,
+      },
+    };
   }
 }
 

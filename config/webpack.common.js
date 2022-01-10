@@ -123,12 +123,15 @@ module.exports = {
       '@/helpers': `${paths.src}/helpers`,
       '@/images': `${paths.src}/images`,
       '@/models': `${paths.src}/models`,
+      '@/observer': `${paths.src}/observer`,
       '@/presenter': `${paths.src}/presenter`,
       '@/styles': `${paths.src}/styles`,
+      '@/tests': `${paths.src}/tests`,
+      '@/ts': `${paths.src}/ts`,
       '@/views': `${paths.src}/views`,
     },
   },
-  optimization: {
+  optimization: { 
     splitChunks: {
       cacheGroups: {
         vendor: {

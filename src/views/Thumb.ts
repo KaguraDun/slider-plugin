@@ -1,24 +1,24 @@
 import createElement from '@/helpers/createElement';
 import { getSizeLiteral } from '@/helpers/getLiteral';
 import getPercentOfNumber from '@/helpers/getPercentOfNumber';
-import SliderSettings from '@/models/SliderSetting';
+import SliderState from '@/models/SliderState';
 import ThumbID from '@/models/ThumbID';
-import { Subject } from '@/observer/Observer';
+import { ObserverEvents } from '@/observer/ObserverEvents';
 
 import Tip from './Tip';
 
 class Thumb {
   parent: HTMLElement | null;
   thumbID: string;
-  moveEvent: Subject;
-  state: SliderSettings | null;
+  moveEvent: ObserverEvents['thumbMoved'];
+  state: SliderState | null;
   element: HTMLElement;
   tip: Tip;
 
-  constructor(thumbID: string, thumbMoved: Subject) {
+  constructor(thumbID: string, observerEvents: ObserverEvents) {
     this.parent = null;
     this.thumbID = thumbID;
-    this.moveEvent = thumbMoved;
+    this.moveEvent = observerEvents.thumbMoved;
     this.state = null;
     this.element = createElement('div', {
       class: 'slider__thumb',
@@ -27,7 +27,7 @@ class Thumb {
   }
 
   getPercentPerMark() {
-    if (!this.parent) return 0;
+    if (!this.parent || !this.state) return 0;
 
     const { isVertical, maxIndex } = this.state;
 
@@ -41,17 +41,22 @@ class Thumb {
     return movePercent;
   }
 
-  render(parent: HTMLElement, state: SliderSettings) {
+  render(parent: HTMLElement, state: SliderState) {
     this.parent = parent;
     this.state = state;
 
-    const { isRange, isVertical } = this.state;
+    const { isRange, isVertical, fromIndex, toIndex } = this.state;
 
     this.element.addEventListener('pointerdown', this.handleDragThumb);
     this.element.addEventListener('dragstart', this.handleDragStart);
 
     this.show(isRange);
-    this.move(this.state[`${this.thumbID}Index`], isVertical);
+
+    if (this.thumbID === ThumbID.from) {
+      this.move(fromIndex, isVertical);
+    } else if (this.thumbID === ThumbID.to && toIndex !== undefined) {
+      this.move(toIndex, isVertical);
+    }
   }
 
   move(valueIndex: number, isVertical: boolean) {
@@ -79,7 +84,7 @@ class Thumb {
   }
 
   renderTip(value: number, showTip: boolean) {
-    this.tip.render({ parent: this.element, value, showTip });
+    this.tip.render({ parent: this.element, value: String(value), showTip });
   }
 
   toggleTopElement(isTopElement: boolean) {
@@ -97,7 +102,7 @@ class Thumb {
     const shiftY = pointerDown.clientY - this.element.offsetTop;
 
     const handlePointerMove = (pointerMove: PointerEvent) => {
-      if (!this.parent) return;
+      if (!this.parent || !this.state) return;
 
       const { isVertical, maxIndex, values } = this.state;
 

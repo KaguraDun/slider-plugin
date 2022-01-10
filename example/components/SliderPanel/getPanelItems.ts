@@ -1,9 +1,20 @@
+import SliderMethods from '@/types/SliderMethods';
+
 enum TypeLiterals {
   number = 'number',
   checkbox = 'checkbox',
 }
 
-function getPanelItems($slider: any) {
+interface PanelItem {
+  type: TypeLiterals;
+  name: string;
+  handler: ((value: number) => void) | ((value: boolean) => void);
+  getValue: () => number | boolean;
+}
+
+type PanelItems = Record<string, PanelItem>;
+
+function getPanelItems($slider: SliderMethods): PanelItems {
   return {
     min: {
       type: TypeLiterals.number,
@@ -69,3 +80,4 @@ function getPanelItems($slider: any) {
 }
 
 export { getPanelItems, TypeLiterals };
+export type { PanelItem, PanelItems };

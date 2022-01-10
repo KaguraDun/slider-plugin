@@ -4,6 +4,8 @@ import SliderSettings from '@/models/SliderSetting';
 import { ObserverEvents } from '@/observer/ObserverEvents';
 import View from '@/views/View';
 
+import hasAllProperties from './../helpers/hasAllProperties';
+
 import '@/styles/slider.scss';
 
 class Presenter {
@@ -19,26 +21,20 @@ class Presenter {
     this.view = new View(this.observerEvents);
     this.fromChangedCallback = () => null;
     this.toChangedCallback = () => null;
-    this.runFromChangedCallback = this.runFromChangedCallback.bind(this);
-    this.runToChangedCallback = this.runToChangedCallback.bind(this);
   }
 
-  createSlider(container: HTMLElement, options?: SliderSettings) {
-    const { from, to, ...restOptions } = options;
-
+  createSlider(container: HTMLElement, options: SliderSettings) {
     if (!container) {
       sliderErrors.throwContainerNotFound();
       return;
     }
 
-    if (options) {
-      this.model.setOptions(restOptions);
-    } else {
-      this.model.setDefaultSettings();
+    if (!hasAllProperties(options, ['min', 'max', 'from'])) {
+      sliderErrors.throwMinimumOptionsRequired();
+      return;
     }
 
-    this.model.setFrom(from);
-    if (to) this.model.setTo(to);
+    this.model.setOptions(options);
 
     this.view.init(container, this.model.getState());
 
@@ -50,8 +46,8 @@ class Presenter {
     this.observerEvents.toChanged.attach(this.runToChangedCallback);
     this.observerEvents.toChanged.attach(this.view.setTopThumb);
 
-    this.observerEvents.thumbMoved.attach(this.model.setOptions);
-    this.observerEvents.scaleClick.attach(this.model.setOptions);
+    this.observerEvents.thumbMoved.attach(this.model.setThumb);
+    this.observerEvents.scaleClick.attach(this.model.setThumb);
   }
 
   addFromChangedCallback(callback: () => void) {
@@ -70,7 +66,7 @@ class Presenter {
     return this.model.getFrom();
   }
 
-  setTo(to: number | string) {
+  setTo(to: number) {
     this.model.setTo(to);
   }
 
@@ -141,13 +137,14 @@ class Presenter {
   getStep() {
     return this.model.getStep();
   }
-  private runFromChangedCallback() {
-    this.fromChangedCallback();
-  }
 
-  private runToChangedCallback() {
+  private runFromChangedCallback = () => {
+    this.fromChangedCallback();
+  };
+
+  private runToChangedCallback = () => {
     this.toChangedCallback();
-  }
+  };
 }
 
 export default Presenter;

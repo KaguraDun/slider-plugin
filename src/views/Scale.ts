@@ -1,9 +1,9 @@
 import createElement from '@/helpers/createElement';
 import { getDirectionLiteral, getSizeLiteral } from '@/helpers/getLiteral';
 import getPercentOfNumber from '@/helpers/getPercentOfNumber';
-import SliderSettings, { SliderState } from '@/models/SliderSetting';
+import SliderState from '@/models/SliderState';
 import ThumbID from '@/models/ThumbID';
-import { Subject } from '@/observer/Observer';
+import { ObserverEvents } from '@/observer/ObserverEvents';
 
 interface RenderProps {
   sliderElement: HTMLElement;
@@ -15,25 +15,31 @@ interface RenderProps {
 interface GetMarkWidthProps {
   minElement: string;
   maxElement: string;
-  isVertical: boolean;
+  isVertical: SliderState['isVertical'];
+}
+
+interface GetClosestThumbProps {
+  markID: number;
+  fromIndex: SliderState['fromIndex'];
+  toIndex: SliderState['toIndex'];
+  isRange: SliderState['isRange'];
 }
 
 class Scale {
   parent: HTMLElement | null;
   percentPerMark: number;
   element: HTMLElement;
-  private scaleClickEvent: Subject;
-  private state: SliderState | null;
+  private scaleClickEvent: ObserverEvents['scaleClick'];
+  private state: SliderState | undefined;
 
-  constructor(scaleClick: Subject) {
+  constructor(observerEvents: ObserverEvents) {
     this.parent = null;
     this.percentPerMark = 0;
     this.element = createElement('div', {
       class: 'slider__scale',
     });
-    this.handleScaleClick = this.handleScaleClick.bind(this);
-    this.scaleClickEvent = scaleClick;
-    this.state = null;
+    this.scaleClickEvent = observerEvents.scaleClick;
+    this.state = undefined;
   }
 
   render({ sliderElement, state, percentPerMark, thumbRect }: RenderProps) {
@@ -64,7 +70,7 @@ class Scale {
     const thumbOffset = thumbRect[size] / 2 + markWidth / 2;
     const thumbOffsetPercent = getPercentOfNumber(thumbOffset, sliderSize);
 
-    values.forEach((item: number | string, index: number) => {
+    values.forEach((item: number, index: number) => {
       const isLastElement = index === values.length - 1;
       const isFitToStep = index % step === 0;
       const isSecondFromEndOverflowLast = index + step / 2 > values.length - 1;
@@ -99,13 +105,17 @@ class Scale {
       this.element.addEventListener('click', this.handleScaleClick);
     } else {
       this.element.remove();
+      this.element.removeEventListener('click', this.handleScaleClick);
     }
   }
 
-  private getClosestThumb(markID: number): ThumbID {
-    const { fromIndex, toIndex, isRange } = this.state;
-
-    if (!isRange) return ThumbID.from;
+  private getClosestThumb({
+    markID,
+    fromIndex,
+    toIndex,
+    isRange,
+  }: GetClosestThumbProps): ThumbID {
+    if (!isRange || toIndex === undefined) return ThumbID.from;
 
     const distanceToFirst = Math.abs(markID - fromIndex);
     const distanceToSecond = Math.abs(markID - toIndex);
@@ -118,21 +128,26 @@ class Scale {
     return ThumbID.to;
   }
 
-  private handleScaleClick(clickEvent: MouseEvent) {
-    const target = <HTMLElement>clickEvent.target;
+  private handleScaleClick = (clickEvent: MouseEvent) => {
+    const target = clickEvent.target as HTMLElement;
     const closest = target.closest('.slider__scale-mark');
 
-    if (!closest) return;
+    if (!closest || !this.state) return;
 
-    const { values } = this.state;
+    const { fromIndex, toIndex, isRange, values } = this.state;
 
     const valueIndex = Number(target.dataset.id);
-    const closestThumb = this.getClosestThumb(valueIndex);
+    const closestThumb = this.getClosestThumb({
+      markID: valueIndex,
+      fromIndex,
+      toIndex,
+      isRange,
+    });
 
     const value = values[valueIndex];
 
     this.scaleClickEvent.notify({ [closestThumb]: value });
-  }
+  };
 
   private getMarkWidth({
     minElement,
@@ -153,8 +168,10 @@ class Scale {
     );
 
     this.parent?.append(mark);
+
     const markSizes = mark.getBoundingClientRect();
     const markWidth = isVertical ? markSizes.height : markSizes.width;
+
     mark.remove();
 
     return markWidth;

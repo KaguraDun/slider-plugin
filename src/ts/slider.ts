@@ -1,10 +1,10 @@
-import * as $ from 'jquery';
+import $ from 'jquery';
 
 import SliderSettings from '@/models/SliderSetting';
 import Presenter from '@/presenter/Presenter';
 
 $.fn.createSlider = function (options: SliderSettings) {
-  const [container] = $(this);
+  const container = this[0];
   const slider = new Presenter();
 
   slider.createSlider(container, options);
@@ -25,7 +25,7 @@ $.fn.createSlider = function (options: SliderSettings) {
     getFrom() {
       return slider.getFrom();
     },
-    setTo(to: number | string) {
+    setTo(to: number) {
       slider.setTo(to);
       return this;
     },
@@ -41,12 +41,14 @@ $.fn.createSlider = function (options: SliderSettings) {
     },
     setMin(min: number) {
       slider.setMin(min);
+      return this;
     },
     getMin() {
       return slider.getMin();
     },
     setMax(max: number) {
       slider.setMax(max);
+      return this;
     },
     getMax() {
       return slider.getMax();

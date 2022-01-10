@@ -1,25 +1,26 @@
 import createElement from '@/helpers/createElement';
+import SliderMethods from '@/types/SliderMethods';
 
-import { getPanelItems, TypeLiterals } from './getPanelItems';
+import { getPanelItems, PanelItems, TypeLiterals } from './getPanelItems';
 
 import './SliderPanel.scss';
 
 interface SliderPanelProps {
-  $slider: any;
+  $slider: SliderMethods;
   container: HTMLElement;
 }
 
 interface CreateInputProps {
   name: string;
   type: TypeLiterals.number | TypeLiterals.checkbox;
-  getValue: () => number | string;
+  getValue: () => number | string | boolean;
 }
 
 class SliderPanel {
-  $slider: any;
+  $slider: SliderMethods;
   container: HTMLElement;
   className: string;
-  panelItems: any;
+  panelItems: PanelItems;
   inputList: Record<string, HTMLInputElement>;
 
   constructor({ $slider, container }: SliderPanelProps) {
@@ -53,12 +54,12 @@ class SliderPanel {
     this.inputList.min.addEventListener('change', this.handleMinChange);
 
     //set min for correct step
-    const min = this.$slider.getMin();
+    const min = String(this.$slider.getMin());
+
     this.inputList.from.min = min;
     this.inputList.to.min = min;
 
     this.inputList.step.addEventListener('change', this.handleStepChange);
-
     this.inputList.range.addEventListener('change', this.handleIsRangeChange);
 
     this.container.append(inputsContainer);
@@ -72,7 +73,9 @@ class SliderPanel {
 
     const isChecked = getValue() && { checked: 'checked' };
     const checkbox = type === TypeLiterals.checkbox && isChecked;
-    const number = type === TypeLiterals.number && { value: getValue() };
+    const number = type === TypeLiterals.number && {
+      value: String(getValue()),
+    };
 
     const input = createElement('input', {
       class: inputClassNames.join(' '),
@@ -106,44 +109,68 @@ class SliderPanel {
       [label],
     );
 
-    this.inputList[name] = input;
+    this.inputList[name] = input as HTMLInputElement;
 
     return inputContainer;
   }
 
   private handleInputChange = (changeEvent: Event) => {
-    const target = <HTMLInputElement>changeEvent.target;
+    const target = changeEvent.target as HTMLInputElement;
 
     if (!target) return;
 
-    const { handler } = Object.values(this.panelItems).filter(
-      ({ name }) => name === target.name,
-    )[0];
+    const { handler }: { handler(value: number | boolean): void } =
+      Object.values(this.panelItems).filter(
+        ({ name }) => name === target.name,
+      )[0];
 
     if (target.type === TypeLiterals.checkbox) {
       handler(target.checked);
       return;
     }
 
-    let value = Number(target.value);
+    let value = this.validateNumberInputs(target.name, Number(target.value));
+    target.value = String(value);
 
-    if (target.name === 'step') {
-      value = this.validateStep(value);
-      target.value = String(value);
-    }
-
-    if (target.name === 'from') {
-      value = this.validateFrom(value);
-      target.value = String(value);
-    }
-
-    if (target.name === 'to') {
-      value = this.validateTo(value);
-      target.value = String(value);
-    }
-
-    if (target.type === 'number') handler(value);
+    handler(value);
   };
+
+  private validateNumberInputs(name: string, value: number) {
+    if (name === 'min') {
+      return this.validateMin(value);
+    }
+
+    if (name === 'max') {
+      return this.validateMax(value);
+    }
+
+    if (name === 'step') {
+      return this.validateStep(value);
+    }
+
+    if (name === 'from') {
+      return this.validateFrom(value);
+    }
+
+    if (name === 'to') {
+      return this.validateTo(value);
+    }
+
+    return 0;
+  }
+
+  private validateMin(value: number) {
+    const max = this.$slider.getMax() - 1;
+    if (value >= max) return max;
+
+    return value;
+  }
+
+  private validateMax(value: number) {
+    const min = this.$slider.getMin() + 1;
+    if (value <= min) return min;
+    return value;
+  }
 
   private validateStep(value: number) {
     const min = this.$slider.getMin();
@@ -185,32 +212,32 @@ class SliderPanel {
   }
 
   private handleIsRangeChange = (changeEvent: Event) => {
-    const target = <HTMLInputElement>changeEvent.target;
+    const target = changeEvent.target as HTMLInputElement;
     const isRange = target.checked;
 
     this.inputList.to.disabled = !isRange;
   };
 
   private handleMinChange = (changeEvent: Event) => {
-    const target = <HTMLInputElement>changeEvent.target;
+    const target = changeEvent.target as HTMLInputElement;
 
     this.inputList.from.min = target.value;
     this.inputList.to.min = target.value;
   };
 
   private handleStepChange = (changeEvent: Event) => {
-    const target = <HTMLInputElement>changeEvent.target;
+    const target = changeEvent.target as HTMLInputElement;
 
     this.inputList.from.step = target.value;
     this.inputList.to.step = target.value;
   };
 
   private updateFrom = () => {
-    this.inputList.from.value = this.$slider.getFrom();
+    this.inputList.from.value = String(this.$slider.getFrom());
   };
 
   private updateTo = () => {
-    this.inputList.to.value = this.$slider.getTo();
+    this.inputList.to.value = String(this.$slider.getTo());
   };
 }
 
