@@ -66,10 +66,10 @@ describe('Thumb', () => {
   });
 
   it('should render two thumb when isRange = true', () => {
-    mockState = { ...mockState, isRange: true, toIndex: 10 };
+    const newMockState = { ...mockState, isRange: true, toIndex: 10 };
 
-    firstThumb?.render(track!, mockState);
-    secondThumb?.render(track!, mockState);
+    firstThumb?.render(track!, newMockState);
+    secondThumb?.render(track!, newMockState);
 
     expect(firstThumb?.element).toBeInTheDocument();
     expect(secondThumb?.element).toBeInTheDocument();
@@ -94,9 +94,9 @@ describe('Thumb', () => {
   });
 
   it('should handle second thumb drag', () => {
-    mockState = { ...mockState, isRange: true, toIndex: 10 };
+    const newMockState = { ...mockState, isRange: true, toIndex: 10 };
 
-    secondThumb?.render(track!, mockState);
+    secondThumb?.render(track!, newMockState);
 
     fireEvent.pointerDown(secondThumb!.element);
     fireEvent.pointerMove(secondThumb!.element, { clientX: 10, clientY: 10 });
