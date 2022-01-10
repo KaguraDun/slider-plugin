@@ -7,14 +7,14 @@ type Observer<T> = {
 class Subject<T> {
   private observers: Observer<T>[] = [];
 
-  public attach(observer: Observer<T>): void {
+  attach(observer: Observer<T>): void {
     const isExist = this.observers.includes(observer);
     if (isExist) return;
 
     this.observers.push(observer);
   }
 
-  public detach(observer: Observer<T>): void {
+  detach(observer: Observer<T>): void {
     const observerIndex = this.observers.indexOf(observer);
 
     if (observerIndex === -1) {
@@ -24,7 +24,7 @@ class Subject<T> {
     this.observers.splice(observerIndex, 1);
   }
 
-  public notify(value: T): void {
+  notify(value: T): void {
     for (const observer of this.observers) {
       observer(value);
     }
