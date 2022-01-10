@@ -1,4 +1,3 @@
-import createElement from '@/helpers/createElement';
 import SliderSettings from '@/models/SliderSetting';
 import SliderState from '@/models/SliderState';
 import ThumbID from '@/models/ThumbID';
@@ -7,6 +6,7 @@ import Tip from '@/views/Tip';
 
 import Bar from './Bar';
 import Scale from './Scale';
+import Slider from './Slider';
 import Thumb from './Thumb';
 import Track from './Track';
 
@@ -21,7 +21,7 @@ class View {
   private observerEvents: ObserverEvents;
   private track: Track;
   private container: HTMLElement | null;
-  private slider: HTMLElement;
+  private slider: Slider;
   private firstThumb: Thumb;
   private secondThumb: Thumb;
   private scale: Scale;
@@ -31,7 +31,7 @@ class View {
   constructor(observerEvents: ObserverEvents) {
     this.observerEvents = observerEvents;
     this.container = null;
-    this.slider = createElement('div', { class: 'slider' });
+    this.slider = new Slider();
     this.track = new Track();
     this.firstThumb = new Thumb(ThumbID.from, this.observerEvents);
     this.secondThumb = new Thumb(ThumbID.to, this.observerEvents);
@@ -40,18 +40,14 @@ class View {
     this.prevState = undefined;
   }
 
-  toggleSliderVertical(isVertical: boolean) {
-    this.slider.classList.toggle('slider_vertical', isVertical);
-  }
-
   init(container: HTMLElement, state: SliderState) {
     const { fromIndex, toIndex, values, showTip } = state;
     const fromValue = values[fromIndex];
     const toValue = toIndex !== undefined ? values[toIndex] : undefined;
 
     this.container = container;
-    this.container.append(this.slider);
-    this.track.render(this.slider);
+    this.slider.render(this.container);
+    this.track.render(this.slider.element);
 
     this.firstThumb.render(this.track.element, state);
     this.firstThumb.renderTip(fromValue, showTip);
@@ -80,7 +76,7 @@ class View {
     } = state;
 
     if (this.stateParamsChanged({ isVertical })) {
-      this.toggleSliderVertical(isVertical);
+      this.slider.toggleVertical(isVertical);
     }
 
     if (this.stateParamsChanged({ fromIndex, isVertical })) {
@@ -126,7 +122,7 @@ class View {
 
     if (this.stateParamsChanged({ min, max, step, isVertical, values })) {
       this.scale.render({
-        sliderElement: this.slider,
+        sliderElement: this.slider.element,
         state: { ...state },
         percentPerMark: this.firstThumb.getPercentPerMark(),
         thumbRect: this.firstThumb.element.getBoundingClientRect(),
