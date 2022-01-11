@@ -36,8 +36,18 @@ describe('Scale', () => {
     },
   };
 
+  const sliderRect: DOMRect = {
+    ...document.createElement('div').getBoundingClientRect(),
+    ...{
+      height: 20,
+      width: 280,
+    },
+  };
+
   beforeEach(() => {
     slider = document.createElement('div');
+    slider.getBoundingClientRect = jest.fn(() => sliderRect);
+
     document.body.append(slider);
 
     scale = new Scale(observerEventsMock);
@@ -80,7 +90,12 @@ describe('Scale', () => {
     });
 
     fireEvent.click(scale!.element.childNodes[0]);
+    expect(observerEventsMock.scaleClick.notify).toBeCalledWith({ from: -5 });
 
+    fireEvent.click(scale!.element.childNodes[5]);
+    expect(observerEventsMock.scaleClick.notify).toBeCalledWith({ from: 0 });
+
+    fireEvent.click(scale!.element.childNodes[10]);
     expect(observerEventsMock.scaleClick.notify).toBeCalledWith({ from: 5 });
   });
 });

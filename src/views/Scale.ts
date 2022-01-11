@@ -12,10 +12,16 @@ interface RenderProps {
   thumbRect: DOMRect;
 }
 
-interface GetMarkWidthProps {
+interface GetMarkSizeProps {
   minElement: string;
   maxElement: string;
-  isVertical: SliderState['isVertical'];
+  size: 'height' | 'width';
+}
+
+interface GetStepProps {
+  sliderSize: number;
+  markSize: number;
+  valuesLength: number;
 }
 
 interface GetClosestThumbProps {
@@ -50,24 +56,26 @@ class Scale {
     this.percentPerMark = percentPerMark;
     this.element.innerHTML = '';
 
-    const markWidth = this.getMarkWidth({
-      minElement: String(values[0]),
-      maxElement: String(values[values.length - 1]),
-      isVertical,
-    });
-
     const direction = getDirectionLiteral(isVertical);
     const size = getSizeLiteral(isVertical);
 
+    const markSize = this.getMarkSize({
+      minElement: String(values[0]),
+      maxElement: String(values[values.length - 1]),
+      size,
+    });
+
     const sliderSize = this.parent.getBoundingClientRect()[size];
-    const borderElements = 2;
-    const itemsInScale = Math.ceil(sliderSize / markWidth) - borderElements;
-    const step = Math.round(values.length / itemsInScale);
+    const step = this.getStep({
+      sliderSize,
+      markSize,
+      valuesLength: values.length,
+    });
 
     const translateX = isVertical ? 0 : thumbRect[size];
     const translateY = isVertical ? thumbRect[size] : 0;
 
-    const thumbOffset = thumbRect[size] / 2 + markWidth / 2;
+    const thumbOffset = thumbRect[size] / 2 + markSize / 2;
     const thumbOffsetPercent = getPercentOfNumber(thumbOffset, sliderSize);
 
     values.forEach((item: number, index: number) => {
@@ -87,7 +95,7 @@ class Scale {
           class: 'slider__scale-mark',
           ['data-id']: String(index),
           style: `${direction}:${markOffset}%;
-          width: ${markWidth}px;
+          width: ${markSize}px;
           transform:translate(${translateX}px,${translateY}px);
           `,
         },
@@ -107,6 +115,15 @@ class Scale {
       this.element.remove();
       this.element.removeEventListener('click', this.handleScaleClick);
     }
+  }
+
+  private getStep({ sliderSize, markSize, valuesLength }: GetStepProps) {
+    const itemsInScale = Math.ceil(sliderSize / markSize) - 1;
+    let step = Math.round(valuesLength / itemsInScale);
+
+    if (step <= 0) step = 1;
+
+    return step;
   }
 
   private getClosestThumb({
@@ -149,11 +166,7 @@ class Scale {
     this.scaleClickEvent.notify({ [closestThumb]: value });
   };
 
-  private getMarkWidth({
-    minElement,
-    maxElement,
-    isVertical,
-  }: GetMarkWidthProps) {
+  private getMarkSize({ minElement, maxElement, size }: GetMarkSizeProps) {
     const widerElement =
       minElement.length >= maxElement.length ? minElement : maxElement;
 
@@ -169,12 +182,10 @@ class Scale {
 
     this.parent?.append(mark);
 
-    const markSizes = mark.getBoundingClientRect();
-    const markWidth = isVertical ? markSizes.height : markSizes.width;
-
+    const markSize = mark.getBoundingClientRect()[size];
     mark.remove();
 
-    return markWidth;
+    return markSize;
   }
 }
 
