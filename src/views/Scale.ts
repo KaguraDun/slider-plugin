@@ -18,6 +18,12 @@ interface GetMarkWidthProps {
   isVertical: SliderState['isVertical'];
 }
 
+interface GetStepProps {
+  sliderSize: number;
+  markWidth: number;
+  valuesLength: number;
+}
+
 interface GetClosestThumbProps {
   markID: number;
   fromIndex: SliderState['fromIndex'];
@@ -60,9 +66,11 @@ class Scale {
     const size = getSizeLiteral(isVertical);
 
     const sliderSize = this.parent.getBoundingClientRect()[size];
-    const borderElements = 2;
-    const itemsInScale = Math.ceil(sliderSize / markWidth) - borderElements;
-    const step = Math.round(values.length / itemsInScale);
+    const step = this.getStep({
+      sliderSize,
+      markWidth,
+      valuesLength: values.length,
+    });
 
     const translateX = isVertical ? 0 : thumbRect[size];
     const translateY = isVertical ? thumbRect[size] : 0;
@@ -107,6 +115,15 @@ class Scale {
       this.element.remove();
       this.element.removeEventListener('click', this.handleScaleClick);
     }
+  }
+
+  private getStep({ sliderSize, markWidth, valuesLength }: GetStepProps) {
+    const itemsInScale = Math.ceil(sliderSize / markWidth) - 1;
+    let step = Math.round(valuesLength / itemsInScale);
+
+    if (step <= 0) step = 1;
+
+    return step;
   }
 
   private getClosestThumb({
