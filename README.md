@@ -2,7 +2,15 @@
 
 [Example page](https://kd-slider-plugin.netlify.app/example)
 
-Slider with MVP architecture. Data transfer by Observer pattern.
+Slider use MVP architecture and Typescript. 
+
+The Model is responsible for managing slider state: getting, updating and validating values.
+
+The View render initial position of the slider and updates it by passing the necessary data to the subviews. Each subview is responsible for certain part of slider. 
+
+The Observer pattern is used to pass data between Model and View. 
+
+The Presenter create Model and View and attach observer events to them. The presenter contains an interface with functions for getting/setting slider properties and from/to modified callbacks for a jQuery slider instance.
 
 UML diagram
 ![jQery slider plugin (1)](https://user-images.githubusercontent.com/54976219/148756009-6b2d532a-1a4d-4446-9add-04b0d9cd2b72.png)
