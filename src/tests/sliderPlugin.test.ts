@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-import SliderMethods from '@/types/SliderMethods';
+import SliderMethods from '@/ts/SliderMethods';
 
 import '@/ts/slider';
 

@@ -1,5 +1,5 @@
 import createElement from '@/helpers/createElement';
-import SliderMethods from '@/types/SliderMethods';
+import SliderMethods from '@/ts/SliderMethods';
 
 import { getPanelItems, PanelItems, TypeLiterals } from './getPanelItems';
 
