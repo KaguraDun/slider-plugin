@@ -53,6 +53,6 @@
   "include": [
     "example/**/*",
     "src/**/*",
-    "./jest-setup.ts"
+    ".eslintrc"
   ]
 }

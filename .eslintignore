@@ -1,3 +1,6 @@
 /coverage
+/config
 node_modules
 postcss.config.js
+.eslintrc.js
+jest.setup.ts

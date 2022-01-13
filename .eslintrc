@@ -24,25 +24,23 @@
       "lines-between-class-members": "off",
       "@typescript-eslint/lines-between-class-members": ["off"],
       "react/jsx-filename-extension": [0],
-      "simple-import-sort/imports": [
+      "import/order": [
         "error",
         {
           "groups": [
-          // Packages.
-          // Things that start with a letter (or digit or underscore), or `@` followed by a letter.
-          ["^@?\\w"],
-          // Absolute imports and other imports such as Vue-style `@/foo`.
-          // Anything not matched in another group.
-          ["^"],
-          // Relative imports.
-          // Anything that starts with a dot.
-          ["^\\."],
-          // Side effect imports.   
-          ["^\\u0000"] 
-          ]
+            "builtin",
+            "unknown",
+            "external",
+            "internal",
+            "parent",
+            "sibling",
+            "index"
+          ],
+          "newlines-between": "always",
+          "warnOnUnassignedImports": true
         }
       ],
-      "simple-import-sort/exports": "error"
+      "import/newline-after-import": "error"
     },
     "settings": {
       "import/extensions": [".js", ".ts"],
@@ -63,13 +61,14 @@
       "import",
       "jest",
       "@typescript-eslint",
-      "prettier",
-      "simple-import-sort"
+      "prettier"
     ],
     "extends": [
       "airbnb-typescript",
       "plugin:jest/recommended",
-      "plugin:import/typescript",
-      "plugin:prettier/recommended"
+      "plugin:prettier/recommended",
+      "plugin:import/errors",
+      "plugin:import/warnings",
+      "plugin:import/typescript"
     ]
 }
