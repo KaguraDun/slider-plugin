@@ -1,6 +1,6 @@
 import createElement from '@/helpers/createElement';
-import { getSizeLiteral } from '@/helpers/getLiteral';
 import getPercentOfNumber from '@/helpers/getPercentOfNumber';
+import { getSizeLiteral } from '@/helpers/getLiteral';
 import SliderState from '@/models/SliderState';
 import ThumbID from '@/models/ThumbID';
 import { ObserverEvents } from '@/observer/ObserverEvents';

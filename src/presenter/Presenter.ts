@@ -1,11 +1,9 @@
+import hasAllProperties from '@/helpers/hasAllProperties';
 import Model from '@/models/Model';
 import sliderErrors from '@/models/sliderErrors';
 import SliderSettings from '@/models/SliderSetting';
-import { ObserverEvents } from '@/observer/ObserverEvents';
 import View from '@/views/View';
-
-import hasAllProperties from './../helpers/hasAllProperties';
-
+import { ObserverEvents } from '@/observer/ObserverEvents';
 import '@/styles/slider.scss';
 
 class Presenter {

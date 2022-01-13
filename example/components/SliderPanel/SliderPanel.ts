@@ -2,7 +2,6 @@ import createElement from '@/helpers/createElement';
 import SliderMethods from '@/ts/SliderMethods';
 
 import { getPanelItems, PanelItems, TypeLiterals } from './getPanelItems';
-
 import './SliderPanel.scss';
 
 interface SliderPanelProps {

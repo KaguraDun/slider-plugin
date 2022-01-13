@@ -1,7 +1,6 @@
 import $ from 'jquery';
 
 import SliderMethods from '@/ts/SliderMethods';
-
 import '@/ts/slider';
 
 describe('Slider', () => {
