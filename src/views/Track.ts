@@ -1,4 +1,4 @@
-import createElement from '@/helpers/createElement';
+import createElement from '@/assets/helpers/createElement';
 
 class Track {
   element: HTMLElement;

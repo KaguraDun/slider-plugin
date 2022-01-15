@@ -4,7 +4,7 @@ import '@/ts/slider';
 
 import SliderContainer from './components/SliderContainer/SliderContainer';
 import SliderPanel from './components/SliderPanel/SliderPanel';
-import './styles/example.scss';
+import './assets/styles/example.scss';
 
 const firstSliderSettings = {
   from: -100,

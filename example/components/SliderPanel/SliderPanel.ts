@@ -1,4 +1,4 @@
-import createElement from '@/helpers/createElement';
+import createElement from '@/assets/helpers/createElement';
 import SliderMethods from '@/ts/SliderMethods';
 
 import { getPanelItems, PanelItems, TypeLiterals } from './getPanelItems';
