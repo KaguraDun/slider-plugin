@@ -1,5 +1,5 @@
 import SliderSettings from '@/models/SliderSetting';
-import SliderMethods from '@/types/SliderMethods';
+import SliderMethods from '@/ts/SliderMethods';
 
 declare global {
   interface JQuery {

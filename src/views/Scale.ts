@@ -1,6 +1,9 @@
-import createElement from '@/helpers/createElement';
-import { getDirectionLiteral, getSizeLiteral } from '@/helpers/getLiteral';
-import getPercentOfNumber from '@/helpers/getPercentOfNumber';
+import createElement from '@/assets/helpers/createElement';
+import getPercentOfNumber from '@/assets/helpers/getPercentOfNumber';
+import {
+  getDirectionLiteral,
+  getSizeLiteral,
+} from '@/assets/helpers/getLiteral';
 import SliderState from '@/models/SliderState';
 import ThumbID from '@/models/ThumbID';
 import { ObserverEvents } from '@/observer/ObserverEvents';

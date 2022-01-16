@@ -1,13 +1,13 @@
 import SliderSettings from '@/models/SliderSetting';
 import SliderState from '@/models/SliderState';
 
-import { Subject } from './Observer';
+import { ObserverSubject } from './ObserverSubject';
 
-type StateChanged = Subject<SliderState>;
-type ThumbMoved = Subject<Partial<SliderSettings>>;
-type ScaleClick = Subject<Partial<SliderSettings>>;
-type FromChanged = Subject<Pick<SliderSettings, 'from'>>;
-type ToChanged = Subject<Pick<SliderSettings, 'to'>>;
+type StateChanged = ObserverSubject<SliderState>;
+type ThumbMoved = ObserverSubject<Partial<SliderSettings>>;
+type ScaleClick = ObserverSubject<Partial<SliderSettings>>;
+type FromChanged = ObserverSubject<Pick<SliderSettings, 'from'>>;
+type ToChanged = ObserverSubject<Pick<SliderSettings, 'to'>>;
 
 class ObserverEvents {
   stateChanged: StateChanged;
@@ -17,11 +17,11 @@ class ObserverEvents {
   toChanged: ToChanged;
 
   constructor() {
-    this.stateChanged = new Subject();
-    this.thumbMoved = new Subject();
-    this.scaleClick = new Subject();
-    this.fromChanged = new Subject();
-    this.toChanged = new Subject();
+    this.stateChanged = new ObserverSubject();
+    this.thumbMoved = new ObserverSubject();
+    this.scaleClick = new ObserverSubject();
+    this.fromChanged = new ObserverSubject();
+    this.toChanged = new ObserverSubject();
   }
 }
 

@@ -1,10 +1,8 @@
-// https://refactoring.guru/ru/design-patterns/observer/typescript/example
-
 type Observer<T> = {
   (state: T): void;
 };
 
-class Subject<T> {
+class ObserverSubject<T> {
   private observers: Observer<T>[] = [];
 
   attach(observer: Observer<T>): void {
@@ -31,5 +29,5 @@ class Subject<T> {
   }
 }
 
-export { Subject };
+export { ObserverSubject };
 export type { Observer };

@@ -1,8 +1,8 @@
 import SliderSettings from '@/models/SliderSetting';
 import SliderState from '@/models/SliderState';
 import ThumbID from '@/models/ThumbID';
-import { ObserverEvents } from '@/observer/ObserverEvents';
 import Tip from '@/views/Tip';
+import { ObserverEvents } from '@/observer/ObserverEvents';
 
 import Bar from './Bar';
 import Scale from './Scale';

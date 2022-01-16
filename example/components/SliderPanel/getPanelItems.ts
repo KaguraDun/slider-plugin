@@ -1,4 +1,4 @@
-import SliderMethods from '@/types/SliderMethods';
+import SliderMethods from '@/ts/SliderMethods';
 
 enum TypeLiterals {
   number = 'number',
