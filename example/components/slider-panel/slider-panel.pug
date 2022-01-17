@@ -1,0 +1,55 @@
+mixin slider-panel
+  -
+    const panelItems = [
+      {
+        type: 'number',
+        name: 'min',
+      },
+      {
+        type: 'number',
+        name: 'max',
+      },
+      {
+        type: 'number',
+        name: 'step',
+      },
+      {
+        type: 'number',
+        name: 'from',
+      },
+      {
+        type: 'number',
+        name: 'to',
+      },
+      {
+        type: 'checkbox',
+        name: 'vertical',
+      },
+      {
+        type: 'checkbox',
+        name: 'range',
+      },
+      {
+        type: 'checkbox',
+        name: 'scale',
+      },
+      {
+        type: 'checkbox',
+        name: 'bar',
+      },
+      {
+        type: 'checkbox',
+        name: 'tip',
+      },
+    ]
+
+  .slider-panel.js-slider-panel
+    each item in panelItems
+      .slider-panel__input-container
+        label.slider-panel__input-label
+          span.slider-panel__input-label-text #{ item.name }
+          input(
+            class=`slider-panel__input js-slider-panel__input slider-panel__input_type_${item.type}`,
+            type=item.type,
+            name=item.name
+          )

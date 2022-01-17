@@ -1,0 +1,15 @@
+include /components/slider-panel/slider-panel.pug
+
+mixin slider-example({heading, width='normal'})
+  -
+    const widthOptions = {
+      normal: 'slider-example__slider-container_width_normal',
+      large: 'slider-example__slider-container_width_large',
+    }
+
+  .slider-example
+    h2.slider-example__heading #{ heading }
+    div(
+      class=`slider-example__slider-container js-slider-example__slider-container ${widthOptions[width]}`
+    )
+    +slider-panel

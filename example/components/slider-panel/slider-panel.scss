@@ -1,11 +1,9 @@
 .slider-panel {
-  &__inputs-container {
     display: grid;
     grid-template-rows: 1fr 1fr;
     grid-template-columns: repeat(5, 1fr);
     gap: 10px;
     justify-content: center;
-  }
 
   &__input-container {
     display: flex;
@@ -30,7 +28,7 @@
     font-size: inherit;
   }
 
-  &__input_checkbox {
+  &__input_type_checkbox {
     width: 30px;
     height: 30px;
   }

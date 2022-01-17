@@ -9,7 +9,7 @@ html {
   font-family: Helvetica, sans-serif;
 }
 
-body {
+.example {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(600px, 2fr));
   gap: 50px;
