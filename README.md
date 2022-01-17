@@ -122,6 +122,11 @@ npm run test
 npm run test:coverage
 ```
 
+### Prettify pug
+```bash
+npm run pug:fix
+```
+
 ## Dependencies
 * node: 14.18.1
 * jQuery: 3.6.0
