@@ -50,7 +50,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       chunks: ['example'],
       favicon: `${paths.src}/assets/images/favicon.png`,
-      template: `${paths.src}/template.html`, // template file
+      template: `${paths.example}/example.pug`, // template file
       filename: 'example.html', // output file
     }),
   ],
@@ -113,11 +113,22 @@ module.exports = {
           filename: 'assets/audio/[name][contenthash][[ext]',
         },
       },
+      {
+        test: /\.pug$/,
+        use: [
+          {
+            loader: 'pug-loader',
+            options: {
+              root: paths.example,
+            },
+          },
+        ],
+      },
     ],
   },
   resolve: {
     modules: [paths.src, 'node_modules'],
-    extensions: ['.js', '.ts', '.json'],
+    extensions: ['.js', '.ts', '.json', '.pug'],
     alias: {
       '@': paths.src,
       '@/assets': `${paths.src}/assets`,
