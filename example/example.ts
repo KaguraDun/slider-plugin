@@ -2,9 +2,15 @@ import $ from 'jquery';
 
 import '@/ts/slider';
 
-import SliderContainer from './components/SliderContainer/SliderContainer';
-import SliderPanel from './components/SliderPanel/SliderPanel';
+import SliderPanel from './components/slider-panel/SliderPanel';
+import './components/slider-example/slider-example';
 import './assets/styles/example.scss';
+
+const sliderContainers = document.querySelectorAll(
+  '.js-slider-example__slider-container',
+);
+
+const sliderPanels = document.querySelectorAll('.js-slider-panel');
 
 const firstSliderSettings = {
   from: -100,
@@ -18,19 +24,12 @@ const firstSliderSettings = {
   isVertical: false,
 };
 
-const firstSliderContainer = new SliderContainer('First slider', {
-  width: 'large',
-}).render();
-
-const $firstSlider = $(firstSliderContainer.slider).createSlider(
-  firstSliderSettings,
-);
-
+const $firstSlider = $(sliderContainers[0]).createSlider(firstSliderSettings);
 const firstSliderPanel = new SliderPanel({
   $slider: $firstSlider,
-  container: firstSliderContainer.panel,
+  container: sliderPanels[0],
 });
-firstSliderPanel.render();
+firstSliderPanel.attachEvents();
 
 const secondSliderSettings = {
   from: -5000,
@@ -45,16 +44,12 @@ const secondSliderSettings = {
   isVertical: true,
 };
 
-const secondSliderContainer = new SliderContainer('Second slider').render();
-const $secondSlider = $(secondSliderContainer.slider).createSlider(
-  secondSliderSettings,
-);
-
+const $secondSlider = $(sliderContainers[1]).createSlider(secondSliderSettings);
 const secondSliderPanel = new SliderPanel({
   $slider: $secondSlider,
-  container: secondSliderContainer.panel,
+  container: sliderPanels[1],
 });
-secondSliderPanel.render();
+secondSliderPanel.attachEvents();
 
 const thirdSliderSettings = {
   from: 0,
@@ -68,16 +63,12 @@ const thirdSliderSettings = {
   isVertical: false,
 };
 
-const thirdSliderContainer = new SliderContainer('Third slider').render();
-const $thirdSlider = $(thirdSliderContainer.slider).createSlider(
-  thirdSliderSettings,
-);
-
+const $thirdSlider = $(sliderContainers[2]).createSlider(thirdSliderSettings);
 const thirdSliderPanel = new SliderPanel({
   $slider: $thirdSlider,
-  container: thirdSliderContainer.panel,
+  container: sliderPanels[2],
 });
-thirdSliderPanel.render();
+thirdSliderPanel.attachEvents();
 
 const fourthSliderSettings = {
   from: 0,
@@ -91,13 +82,9 @@ const fourthSliderSettings = {
   isVertical: true,
 };
 
-const fourthSliderContainer = new SliderContainer('Fourth slider').render();
-const $fourthSlider = $(fourthSliderContainer.slider).createSlider(
-  fourthSliderSettings,
-);
-
+const $fourthSlider = $(sliderContainers[3]).createSlider(fourthSliderSettings);
 const fourthSliderPanel = new SliderPanel({
   $slider: $fourthSlider,
-  container: fourthSliderContainer.panel,
+  container: sliderPanels[3],
 });
-fourthSliderPanel.render();
+fourthSliderPanel.attachEvents();

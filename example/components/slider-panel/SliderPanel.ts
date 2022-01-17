@@ -1,48 +1,63 @@
-import createElement from '@/assets/helpers/createElement';
 import SliderMethods from '@/ts/SliderMethods';
 
-import { getPanelItems, PanelItems, TypeLiterals } from './getPanelItems';
-import './SliderPanel.scss';
+import { getPanelItems, PanelItems, TypeLiterals } from './get-panel-items';
+import './slider-panel.scss';
 
 interface SliderPanelProps {
   $slider: SliderMethods;
-  container: HTMLElement;
-}
-
-interface CreateInputProps {
-  name: string;
-  type: TypeLiterals.number | TypeLiterals.checkbox;
-  getValue: () => number | string | boolean;
+  container: Element;
 }
 
 class SliderPanel {
   $slider: SliderMethods;
-  container: HTMLElement;
-  className: string;
+  container: Element;
   panelItems: PanelItems;
   inputList: Record<string, HTMLInputElement>;
 
   constructor({ $slider, container }: SliderPanelProps) {
     this.$slider = $slider;
     this.container = container;
-    this.className = 'slider-panel';
     this.panelItems = getPanelItems($slider);
     this.inputList = {};
   }
 
-  render() {
-    const inputsContainer = createElement('div', {
-      class: `${this.className}__inputs-container`,
+  getInputList() {
+    const inputs: Record<string, HTMLInputElement> = {};
+    Array.from(this.container.children).forEach((element) => {
+      const input: HTMLInputElement | null = element.querySelector(
+        '.js-slider-panel__input',
+      );
+      const name = input?.name;
+
+      if (name) {
+        inputs[name] = input;
+      }
     });
 
-    Object.values(this.panelItems).forEach((item) => {
-      const { name, type, getValue } = item;
-      const input = this.createInput({ name, type, getValue });
+    return inputs;
+  }
 
-      inputsContainer.append(input);
+  setInputValues() {
+    Object.values(this.inputList).forEach((input) => {
+      const name = input.name;
+      const value = this.panelItems[name].getValue();
+
+      if (input.type === TypeLiterals.checkbox && value === true) {
+        input.checked = true;
+        return;
+      }
+
+      input.value = String(value);
     });
+  }
 
-    inputsContainer.addEventListener('change', this.handleInputChange);
+  attachEvents() {
+    if (!this.container) return;
+
+    this.inputList = { ...this.getInputList() };
+    this.setInputValues();
+
+    this.container.addEventListener('change', this.handleInputChange);
 
     const isRange = this.$slider.getIsRange();
     this.inputList.to.disabled = !isRange;
@@ -60,57 +75,6 @@ class SliderPanel {
 
     this.inputList.step.addEventListener('change', this.handleStepChange);
     this.inputList.range.addEventListener('change', this.handleIsRangeChange);
-
-    this.container.append(inputsContainer);
-  }
-
-  private createInput({ name, type, getValue }: CreateInputProps) {
-    const inputClassNames = [`${this.className}__input`];
-
-    if (type === TypeLiterals.checkbox)
-      inputClassNames.push(`${this.className}__input_checkbox`);
-
-    const isChecked = getValue() && { checked: 'checked' };
-    const checkbox = type === TypeLiterals.checkbox && isChecked;
-    const number = type === TypeLiterals.number && {
-      value: String(getValue()),
-    };
-
-    const input = createElement('input', {
-      class: inputClassNames.join(' '),
-      type,
-      name,
-      ...checkbox,
-      ...number,
-    });
-
-    const labelText = createElement(
-      'span',
-      {
-        class: `${this.className}__input-label-text`,
-      },
-      [name],
-    );
-
-    const label = createElement(
-      'label',
-      {
-        class: `${this.className}__input-label`,
-      },
-      [labelText, input],
-    );
-
-    const inputContainer = createElement(
-      'div',
-      {
-        class: `${this.className}__input-container`,
-      },
-      [label],
-    );
-
-    this.inputList[name] = input as HTMLInputElement;
-
-    return inputContainer;
   }
 
   private handleInputChange = (changeEvent: Event) => {
