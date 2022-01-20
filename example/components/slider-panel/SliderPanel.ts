@@ -25,7 +25,7 @@ class SliderPanel {
     const inputs: Record<string, HTMLInputElement> = {};
     Array.from(this.container.children).forEach((element) => {
       const input: HTMLInputElement | null = element.querySelector(
-        '.js-slider-panel__input',
+        '.js-slider-panel-input',
       );
       const name = input?.name;
 

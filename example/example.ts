@@ -7,7 +7,7 @@ import './components/slider-example/slider-example';
 import './styles/example.scss';
 
 const sliderContainers = document.querySelectorAll(
-  '.js-slider-example__slider-container',
+  '.js-slider-example-slider-container',
 );
 
 const sliderPanels = document.querySelectorAll('.js-slider-panel');
