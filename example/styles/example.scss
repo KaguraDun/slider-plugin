@@ -1,4 +1,4 @@
-$color-bg: #cddeff;
+$bg-primary: #cddeff;
 
 * {
   box-sizing: border-box;
@@ -14,5 +14,5 @@ html {
   grid-template-columns: repeat(auto-fill, minmax(600px, 2fr));
   gap: 50px;
   justify-items: center;
-  background: $color-bg;
+  background: $bg-primary;
 }

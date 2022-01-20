@@ -1,7 +1,10 @@
-$color-light: #f5f5f5;
-$color-red: #f05454;
-$color-dark-blue: #30475e;
-$color-black: #121212;
+$text-tip: #f5f5f5;
+$text-scale: #121212;
+
+$bg-track: #f5f5f5;
+$bg-tip: #f05454;
+$bg-thumb: #f05454;
+$bg-bar: #30475e;
 
 .slider {
   position: relative;
@@ -17,7 +20,7 @@ $color-black: #121212;
     z-index: 2;
     width: 15px;
     height: 40px;
-    background: $color-red;
+    background: $bg-thumb;
     border-radius: 2px;
     transform: translateY(-25%);
     cursor: pointer;
@@ -38,9 +41,9 @@ $color-black: #121212;
     min-width: 25px;
     height: 25px;
     padding: 5px;
-    color: $color-light;
+    color: $text-tip;
     font-size: 18px;
-    background: $color-red;
+    background: $bg-tip;
     border-radius: 2px;
     transform: translateX(-50%);
     cursor: pointer;
@@ -60,7 +63,7 @@ $color-black: #121212;
   &__scale-mark {
     position: absolute;
     padding: 0 5px;
-    color: $color-black;
+    color: $text-scale;
     font-weight: bold;
     font-size: 18px;
     text-align: center;
@@ -70,7 +73,7 @@ $color-black: #121212;
   &__bar {
     position: absolute;
     z-index: 1;
-    background: $color-dark-blue;
+    background: $bg-bar;
   }
 
   &__track {
@@ -79,7 +82,7 @@ $color-black: #121212;
     width: 100%;
     height: 20px;
     margin-bottom: 25px;
-    background: $color-light;
+    background: $bg-track;
   }
 
   &_vertical {
