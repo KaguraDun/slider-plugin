@@ -168,7 +168,8 @@ class View {
     const toggle = isRange ? isIntersect : false;
     this.firstThumb.tip.toggleExpand(toggle);
 
-    if (isIntersect && isRange) {
+    const shouldUpdateExpandedTip = isIntersect && isRange;
+    if (shouldUpdateExpandedTip) {
       const tipValue = isVertical
         ? `${fromValue} ${toValue}`
         : `${fromValue} : ${toValue}`;

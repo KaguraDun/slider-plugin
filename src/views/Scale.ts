@@ -83,8 +83,11 @@ class Scale {
       const isFitToStep = index % step === 0;
       const isSecondFromEndOverflowLast = index + step / 2 > values.length - 1;
 
-      if (!isLastElement) {
-        if (!isFitToStep || isSecondFromEndOverflowLast) return;
+      const shouldSkip =
+        !isLastElement && (!isFitToStep || isSecondFromEndOverflowLast);
+
+      if (shouldSkip) {
+        return;
       }
 
       const markOffset = index * this.percentPerMark - thumbOffsetPercent;
@@ -132,7 +135,8 @@ class Scale {
     toIndex,
     isRange,
   }: GetClosestThumbProps): ThumbID {
-    if (!isRange || toIndex === undefined) return ThumbID.from;
+    const isToExist = isRange && toIndex !== undefined;
+    if (!isToExist) return ThumbID.from;
 
     const distanceToFirst = Math.abs(markID - fromIndex);
     const distanceToSecond = Math.abs(markID - toIndex);
@@ -149,9 +153,10 @@ class Scale {
     const target = clickEvent.target as HTMLElement;
     const closest = target.closest('.slider__scale-mark');
 
-    if (!closest || !this.state) return;
+    const isAvailableToClick = closest && this.state;
+    if (!isAvailableToClick) return;
 
-    const { fromIndex, toIndex, isRange, values } = this.state;
+    const { fromIndex, toIndex, isRange, values } = this.state!;
 
     const valueIndex = Number(target.dataset.id);
     const closestThumb = this.getClosestThumb({

@@ -35,7 +35,9 @@ class Tip {
   }
 
   show(showTip: boolean) {
-    if (showTip && this.parent) {
+    if (!this.parent) return;
+
+    if (showTip) {
       this.parent.append(this.element);
     } else {
       this.element.remove();

@@ -42,7 +42,10 @@ class SliderPanel {
       const name = input.name;
       const value = this.panelItems[name].getValue();
 
-      if (input.type === TypeLiterals.checkbox && value === true) {
+      const isCheckbox = input.type === TypeLiterals.checkbox;
+      const shouldChecked = isCheckbox && value === true;
+
+      if (shouldChecked) {
         input.checked = true;
         return;
       }

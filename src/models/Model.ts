@@ -96,8 +96,9 @@ class Model {
 
     if (fromIndex > this.state.maxIndex) fromIndex = this.state.maxIndex;
 
-    const isToIndexSet = toIndex !== undefined;
-    if (isRange && isToIndexSet && fromIndex > toIndex) fromIndex = toIndex;
+    const isToIndexSet = isRange && toIndex !== undefined;
+    const shouldEqualizeFromWithTo = isToIndexSet && fromIndex > toIndex;
+    if (shouldEqualizeFromWithTo) fromIndex = toIndex;
 
     this.setState({ fromIndex });
     this.observerEvents.fromChanged.notify({
@@ -119,7 +120,9 @@ class Model {
     }
 
     if (toIndex > this.state.maxIndex) toIndex = this.state.maxIndex;
-    if (isRange && toIndex <= fromIndex) toIndex = fromIndex;
+
+    const shouldEqualizeToWithFrom = isRange && toIndex <= fromIndex;
+    if (shouldEqualizeToWithFrom) toIndex = fromIndex;
 
     this.setState({ toIndex });
     this.observerEvents.toChanged.notify({
@@ -185,10 +188,11 @@ class Model {
   }
 
   private checkThumbSwap() {
-    if (
+    const shouldSwapThumbs =
       this.state.toIndex !== undefined &&
-      this.state.toIndex < this.state.fromIndex
-    ) {
+      this.state.toIndex < this.state.fromIndex;
+
+    if (shouldSwapThumbs) {
       this.swapThumbValues();
     }
   }
@@ -232,8 +236,11 @@ class Model {
     const maxIndex = Math.ceil(Math.abs((max - min) / step));
 
     if (fromIndex > maxIndex) this.state.fromIndex = maxIndex;
-    if (toIndex !== undefined && toIndex > maxIndex)
+
+    const shouldEqualizeToWithMax = toIndex !== undefined && toIndex > maxIndex;
+    if (shouldEqualizeToWithMax) {
       this.state.toIndex = maxIndex;
+    }
 
     this.state.maxIndex = maxIndex;
 
