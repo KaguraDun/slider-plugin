@@ -4,7 +4,7 @@ import '@/ts/slider';
 
 import SliderPanel from './components/slider-panel/SliderPanel';
 import './components/slider-example/slider-example';
-import './assets/styles/example.scss';
+import './styles/example.scss';
 
 const sliderContainers = document.querySelectorAll(
   '.js-slider-example__slider-container',

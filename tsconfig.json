@@ -27,14 +27,17 @@
       "@/*": [
         "src/*"
       ],
-      "@/assets*": [
-        "src/assets/*"
+      "@/helpers/*": [
+        "src/helpers/*"
       ],
       "@/models/*": [
         "src/models/*"
       ],
       "@/presenter/*": [
         "src/presenter/*"
+      ],
+      "@/styles/*": [
+        "src/styles/*"
       ],
       "@/views/*": [
         "src/views/*"
