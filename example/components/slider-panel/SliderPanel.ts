@@ -21,7 +21,25 @@ class SliderPanel {
     this.inputList = {};
   }
 
-  getInputList() {
+  attachEvents() {
+    if (!this.container) return;
+
+    this.inputList = { ...this.getInputList() };
+
+    this.setInputValues();
+    this.setDefaultRangeParameters();
+
+    this.container.addEventListener('change', this.handleInputChange);
+
+    this.$slider.fromChangedEvent(this.updateFrom);
+    this.$slider.toChangedEvent(this.updateTo);
+
+    this.inputList.min.addEventListener('change', this.handleMinChange);
+    this.inputList.step.addEventListener('change', this.handleStepChange);
+    this.inputList.range.addEventListener('change', this.handleIsRangeChange);
+  }
+
+  private getInputList() {
     const inputs: Record<string, HTMLInputElement> = {};
     Array.from(this.container.children).forEach((element) => {
       const input: HTMLInputElement | null = element.querySelector(
@@ -37,7 +55,7 @@ class SliderPanel {
     return inputs;
   }
 
-  setInputValues() {
+  private setInputValues() {
     Object.values(this.inputList).forEach((input) => {
       const name = input.name;
       const value = this.panelItems[name].getValue();
@@ -54,30 +72,18 @@ class SliderPanel {
     });
   }
 
-  attachEvents() {
-    if (!this.container) return;
-
-    this.inputList = { ...this.getInputList() };
-    this.setInputValues();
-
-    this.container.addEventListener('change', this.handleInputChange);
-
-    const isRange = this.$slider.getIsRange();
-    this.inputList.to.disabled = !isRange;
-
-    this.$slider.fromChangedEvent(this.updateFrom);
-    this.$slider.toChangedEvent(this.updateTo);
-
-    this.inputList.min.addEventListener('change', this.handleMinChange);
-
-    //set min for correct step
+  private setDefaultRangeParameters() {
     const min = String(this.$slider.getMin());
+    const step = String(this.$slider.getStep());
+    const isRange = this.$slider.getIsRange();
+
+    this.inputList.to.disabled = !isRange;
 
     this.inputList.from.min = min;
     this.inputList.to.min = min;
 
-    this.inputList.step.addEventListener('change', this.handleStepChange);
-    this.inputList.range.addEventListener('change', this.handleIsRangeChange);
+    this.inputList.from.step = step;
+    this.inputList.to.step = step;
   }
 
   private handleInputChange = (changeEvent: Event) => {
