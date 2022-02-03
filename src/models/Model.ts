@@ -91,7 +91,7 @@ class Model {
 
     if (fromIndex === -1) {
       sliderErrors.throwOptionOutOfRange(ThumbID.from, min, max);
-      return;
+      fromIndex = min;
     }
 
     if (fromIndex > this.state.maxIndex) fromIndex = this.state.maxIndex;
@@ -116,7 +116,7 @@ class Model {
 
     if (toIndex === -1) {
       sliderErrors.throwOptionOutOfRange(ThumbID.to, min, max);
-      return;
+      toIndex = max;
     }
 
     if (toIndex > this.state.maxIndex) toIndex = this.state.maxIndex;
