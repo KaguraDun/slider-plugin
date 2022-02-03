@@ -49,7 +49,7 @@ module.exports = {
     // Generates deprecation warning: https://github.com/jantimon/html-webpack-plugin/issues/1501
     new HtmlWebpackPlugin({
       chunks: ['example'],
-      favicon: `${paths.assets}/images/favicon.png`,
+      favicon: `${paths.public}/images/favicon.png`,
       template: `${paths.example}/example.pug`, // template file
       filename: 'example.html', // output file
     }),
