@@ -66,10 +66,10 @@ class Scale {
     });
 
     const sliderSize = this.parent.getBoundingClientRect()[size];
-    const step = this.getStep({
+    const stepArray = this.getStepArray({
       sliderSize,
       markSize,
-      valuesLength: values.length,
+      valuesLength: values.length - 1,
     });
 
     const translateX = isVertical ? 0 : thumbRect[size];
@@ -78,32 +78,22 @@ class Scale {
     const thumbOffset = thumbRect[size] / 2 + markSize / 2;
     const thumbOffsetPercent = getPercentOfNumber(thumbOffset, sliderSize);
 
-    values.forEach((item: number, index: number) => {
-      const isLastElement = index === values.length - 1;
-      const isFitToStep = index % step === 0;
-      const isSecondFromEndOverflowLast = index + step / 2 > values.length - 1;
-
-      const shouldSkip =
-        !isLastElement && (!isFitToStep || isSecondFromEndOverflowLast);
-
-      if (shouldSkip) {
-        return;
-      }
-
-      const markOffset = index * this.percentPerMark - thumbOffsetPercent;
+    stepArray.forEach((item: number) => {
+      const markOffset = item * this.percentPerMark - thumbOffsetPercent;
 
       const mark = createElement(
         'span',
         {
           class: 'slider__scale-mark',
-          ['data-id']: String(index),
-          style: `${direction}:${markOffset}%;
+          ['data-id']: String(item),
+          style: `${direction}: ${markOffset}%;
           width: ${markSize}px;
-          transform:translate(${translateX}px,${translateY}px);
+          transform:translate(${translateX}px, ${translateY}px);
           `,
         },
-        [String(item)],
+        [String(values[item])],
       );
+
       this.element?.append(mark);
     });
 
@@ -120,13 +110,16 @@ class Scale {
     }
   }
 
-  private getStep({ sliderSize, markSize, valuesLength }: GetStepProps) {
-    const itemsInScale = Math.ceil(sliderSize / markSize) - 1;
-    let step = Math.round(valuesLength / itemsInScale);
+  private getStepArray({ sliderSize, markSize, valuesLength }: GetStepProps) {
+    let maxMarksInScale = Math.floor(sliderSize / markSize);
+    let step = valuesLength / maxMarksInScale;
+    const stepArray = [];
 
-    if (step <= 0) step = 1;
+    for (let i = 0; i <= maxMarksInScale; i += 1) {
+      stepArray.push(Math.round(step * i));
+    }
 
-    return step;
+    return Array.from(new Set(stepArray));
   }
 
   private getClosestThumb({
@@ -176,19 +169,19 @@ class Scale {
       minElement.length >= maxElement.length ? minElement : maxElement;
 
     // create fake mark to access element width
-    const mark = createElement(
+    const singleMark = createElement(
       'span',
       {
         class: 'slider__scale-mark',
-        style: 'position: absolute; opacity:0',
+        style: 'position: absolute; opacity: 0',
       },
-      [`${widerElement}`],
+      [widerElement],
     );
 
-    this.parent?.append(mark);
+    this.parent?.append(singleMark);
 
-    const markSize = mark.getBoundingClientRect()[size];
-    mark.remove();
+    const markSize = singleMark.getBoundingClientRect()[size];
+    singleMark.remove();
 
     return markSize;
   }
