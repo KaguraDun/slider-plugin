@@ -79,7 +79,7 @@ class View {
       this.slider.toggleVertical(isVertical);
     }
 
-    if (this.hasStateChanged({ fromIndex, isVertical })) {
+    if (this.hasStateChanged({ fromIndex, isVertical, min, max })) {
       this.firstThumb.move(fromIndex, isVertical);
     }
 
@@ -88,8 +88,10 @@ class View {
     }
 
     const isToIndex = toIndex !== undefined;
+    const shouldUpdateSecondTip =
+      isToIndex && this.hasStateChanged({ toIndex, isVertical, min, max });
 
-    if (isToIndex && this.hasStateChanged({ toIndex, isVertical })) {
+    if (shouldUpdateSecondTip) {
       this.secondThumb.move(toIndex, isVertical);
     }
 
@@ -103,6 +105,8 @@ class View {
         isRange,
         isVertical,
         showTip,
+        min,
+        max,
       })
     ) {
       this.firstThumb.tip.show(showTip);
@@ -133,7 +137,16 @@ class View {
       this.bar.show(showBar);
     }
 
-    if (this.hasStateChanged({ fromIndex, toIndex, isRange, isVertical })) {
+    if (
+      this.hasStateChanged({
+        fromIndex,
+        toIndex,
+        isRange,
+        isVertical,
+        min,
+        max,
+      })
+    ) {
       this.bar.update({ ...this.getThumbParams(), isRange, isVertical });
     }
 
