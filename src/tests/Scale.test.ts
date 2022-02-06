@@ -90,12 +90,60 @@ describe('Scale', () => {
     });
 
     fireEvent.click(scale!.element.childNodes[0]);
-    expect(observerEventsMock.scaleClick.notify).toBeCalledWith({ from: -5 });
+    expect(observerEventsMock.scaleClick.notify).toHaveBeenLastCalledWith({ from: -5 });
 
     fireEvent.click(scale!.element.childNodes[5]);
-    expect(observerEventsMock.scaleClick.notify).toBeCalledWith({ from: 0 });
+    expect(observerEventsMock.scaleClick.notify).toHaveBeenLastCalledWith({ from: 0 });
 
     fireEvent.click(scale!.element.childNodes[10]);
-    expect(observerEventsMock.scaleClick.notify).toBeCalledWith({ from: 5 });
+    expect(observerEventsMock.scaleClick.notify).toHaveBeenLastCalledWith({ from: 5 });
+  });
+
+  it('should choose first thumb as closest', () => {
+    const newMockState = { ...mockState, isRange: true, toIndex: 10 };
+
+    scale?.render({
+      sliderElement: slider!,
+      state: newMockState,
+      percentPerMark: 6.309,
+      thumbRect,
+    });
+
+    fireEvent.click(scale!.element.childNodes[1]);
+    expect(observerEventsMock.scaleClick.notify).toHaveBeenCalledWith({
+      from: -4
+    });
+  });
+
+  it('should choose second thumb as closest', () => {
+    const newMockState = { ...mockState, isRange: true, fromIndex: 1, toIndex: 10 };
+
+    scale?.render({
+      sliderElement: slider!,
+      state: newMockState,
+      percentPerMark: 6.309,
+      thumbRect,
+    });
+
+    fireEvent.click(scale!.element.childNodes[9]);
+    expect(observerEventsMock.scaleClick.notify).toHaveBeenCalledWith({
+      to: 4
+    });
+  });
+
+  it('should choose second thumb as closest', () => {
+    const newMockState = { ...mockState, isRange: true, fromIndex: 1, toIndex: 9 };
+
+    scale?.render({
+      sliderElement: slider!,
+      state: newMockState,
+      percentPerMark: 6.309,
+      thumbRect,
+    });
+
+    fireEvent.click(scale!.element.childNodes[5]);
+    expect(observerEventsMock.scaleClick.notify).toHaveBeenCalledWith({
+      to: 0
+    });
   });
 });
