@@ -181,6 +181,7 @@ class Scale {
     this.parent?.append(singleMark);
 
     const markSize = singleMark.getBoundingClientRect()[size];
+    const DEFAULT_MARK_SIZE = 10;
     singleMark.remove();
 
     return markSize;
