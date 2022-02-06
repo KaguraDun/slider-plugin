@@ -131,8 +131,8 @@ class Scale {
     const isToExist = isRange && toIndex !== undefined;
     if (!isToExist) return ThumbID.from;
 
-    const distanceToFirst = Math.abs(markID - fromIndex);
-    const distanceToSecond = Math.abs(markID - toIndex);
+    const distanceToFirst = Math.abs(fromIndex - markID);
+    const distanceToSecond = Math.abs(toIndex - markID);
 
     const isFirstThumb =
       distanceToFirst < distanceToSecond || markID < fromIndex;
@@ -146,7 +146,7 @@ class Scale {
     const target = clickEvent.target as HTMLElement;
     const closest = target.closest('.slider__scale-mark');
 
-    const isAvailableToClick = closest && this.state;
+    const isAvailableToClick = closest && this.state !== undefined;
     if (!isAvailableToClick) return;
 
     const { fromIndex, toIndex, isRange, values } = this.state!;
@@ -160,7 +160,6 @@ class Scale {
     });
 
     const value = values[valueIndex];
-
     this.scaleClickEvent.notify({ [closestThumb]: value });
   };
 
