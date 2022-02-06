@@ -180,9 +180,14 @@ class Scale {
 
     this.parent?.append(singleMark);
 
-    const markSize = singleMark.getBoundingClientRect()[size];
     const DEFAULT_MARK_SIZE = 10;
+
+    let markSize = singleMark.getBoundingClientRect()[size];
     singleMark.remove();
+
+    if (markSize <= 0) {
+      markSize = DEFAULT_MARK_SIZE;
+    }
 
     return markSize;
   }
