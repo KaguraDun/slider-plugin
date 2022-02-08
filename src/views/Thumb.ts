@@ -1,6 +1,6 @@
-import createElement from '@/assets/helpers/createElement';
-import getPercentOfNumber from '@/assets/helpers/getPercentOfNumber';
-import { getSizeLiteral } from '@/assets/helpers/getLiteral';
+import createElement from '@/helpers/createElement';
+import getPercentOfNumber from '@/helpers/getPercentOfNumber';
+import { getSizeLiteral } from '@/helpers/getLiteral';
 import SliderState from '@/models/SliderState';
 import ThumbID from '@/models/ThumbID';
 import { ObserverEvents } from '@/observer/ObserverEvents';
@@ -27,9 +27,9 @@ class Thumb {
   }
 
   getPercentPerMark() {
-    if (!this.parent || !this.state) return 0;
+    if (!this.parent) return 0;
 
-    const { isVertical, maxIndex } = this.state;
+    const { isVertical, maxIndex } = this.state!;
 
     const thumb = this.element.getBoundingClientRect();
     const track = this.parent.getBoundingClientRect();
@@ -54,13 +54,19 @@ class Thumb {
 
     if (this.thumbID === ThumbID.from) {
       this.move(fromIndex, isVertical);
-    } else if (this.thumbID === ThumbID.to && toIndex !== undefined) {
+      return;
+    }
+
+    const shouldMoveTo = this.thumbID === ThumbID.to && toIndex !== undefined;
+    if (shouldMoveTo) {
       this.move(toIndex, isVertical);
+      return;
     }
   }
 
   move(valueIndex: number, isVertical: boolean) {
-    if (!this.element.isConnected || !this.parent) return;
+    const isElementExist = this.element.isConnected && this.parent;
+    if (!isElementExist) return;
 
     const movePercent = this.getPercentPerMark() * valueIndex;
 
@@ -76,7 +82,7 @@ class Thumb {
   show(isRange: boolean) {
     if (!this.parent) return;
 
-    if (!isRange && this.thumbID === ThumbID.to) {
+    if (!isRange) {
       this.element.remove();
     } else {
       this.parent.append(this.element);
@@ -102,9 +108,9 @@ class Thumb {
     const shiftY = pointerDown.clientY - this.element.offsetTop;
 
     const handlePointerMove = (pointerMove: PointerEvent) => {
-      if (!this.parent || !this.state) return;
+      if (!this.parent) return;
 
-      const { isVertical, maxIndex, values } = this.state;
+      const { isVertical, maxIndex, values } = this.state!;
 
       const offsetX = pointerMove.clientX - shiftX;
       const offsetY = pointerMove.clientY - shiftY;

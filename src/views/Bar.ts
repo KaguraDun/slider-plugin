@@ -1,10 +1,10 @@
-import createElement from '@/assets/helpers/createElement';
-import getPercentOfNumber from '@/assets/helpers/getPercentOfNumber';
+import createElement from '@/helpers/createElement';
+import getPercentOfNumber from '@/helpers/getPercentOfNumber';
 import {
   getDirectionLiteral,
   getOffsetLiteral,
   getSizeLiteral,
-} from '@/assets/helpers/getLiteral';
+} from '@/helpers/getLiteral';
 
 interface ThumbOffset {
   offsetLeft: number;
