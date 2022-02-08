@@ -1,9 +1,9 @@
 .slider-panel {
-    display: grid;
-    grid-template-rows: 1fr 1fr;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
-    justify-content: center;
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  justify-content: center;
 
   &__input-container {
     display: flex;
