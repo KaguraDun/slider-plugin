@@ -242,21 +242,11 @@ class Model {
   }
 
   private generateValues() {
-    const { min, max, step, fromIndex, toIndex } = this.state;
+    const { min, max, step } = this.state;
 
     if (step <= 0) return;
 
     const maxIndex = Math.ceil(Math.abs((max - min) / step));
-
-    if (fromIndex > maxIndex) this.state.fromIndex = maxIndex;
-
-    const shouldEqualizeToWithMax = toIndex !== undefined && toIndex > maxIndex;
-    if (shouldEqualizeToWithMax) {
-      this.state.toIndex = maxIndex;
-    }
-
-    this.state.maxIndex = maxIndex;
-
     const values = this.generateNumberSequence({
       maxIndex,
       min,
@@ -264,6 +254,7 @@ class Model {
       step,
     });
 
+    this.setState({ maxIndex });
     this.setState({ values });
   }
 }
