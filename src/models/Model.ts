@@ -68,6 +68,7 @@ class Model {
   setMin(min: number) {
     this.setState({ min });
     this.generateValues();
+    this.updateRangeValues();
     this.checkThumbSwap();
   }
 
@@ -78,6 +79,7 @@ class Model {
   setMax(max: number) {
     this.setState({ max });
     this.generateValues();
+    this.updateRangeValues();
     this.checkThumbSwap();
   }
 
@@ -185,6 +187,17 @@ class Model {
 
   getIsVertical() {
     return this.state.isVertical;
+  }
+
+  private updateRangeValues() {
+    const { isRange, values, fromIndex, toIndex } = this.state;
+
+    this.setFrom(values[fromIndex]);
+
+    const shouldUpdateTo = isRange && toIndex !== undefined;
+    if (shouldUpdateTo) {
+      this.setTo(values[toIndex]);
+    }
   }
 
   private checkThumbSwap() {
