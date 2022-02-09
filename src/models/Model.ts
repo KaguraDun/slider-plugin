@@ -190,13 +190,15 @@ class Model {
   }
 
   private updateRangeValues() {
-    const { isRange, values, fromIndex, toIndex } = this.state;
+    const { isRange, values, fromIndex, toIndex, maxIndex } = this.state;
 
-    this.setFrom(values[fromIndex]);
+    let from = fromIndex > maxIndex ? maxIndex : fromIndex;
+    this.setFrom(values[from]);
 
     const shouldUpdateTo = isRange && toIndex !== undefined;
     if (shouldUpdateTo) {
-      this.setTo(values[toIndex]);
+      let to = toIndex > maxIndex ? maxIndex : toIndex;
+      this.setTo(values[to]);
     }
   }
 
