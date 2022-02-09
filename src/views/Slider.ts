@@ -1,7 +1,7 @@
 import createElement from '@/helpers/createElement';
 
 class Slider {
-  element: HTMLElement;
+  readonly element: HTMLElement;
 
   constructor() {
     this.element = createElement('div', { class: 'slider' });

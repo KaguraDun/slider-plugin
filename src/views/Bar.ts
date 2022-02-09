@@ -25,8 +25,8 @@ interface UpdateProps {
 }
 
 class Bar {
-  parent: HTMLElement;
-  element: HTMLElement;
+  readonly parent: HTMLElement;
+  readonly element: HTMLElement;
 
   constructor(parent: HTMLElement) {
     this.parent = parent;

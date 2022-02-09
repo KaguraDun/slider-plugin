@@ -9,14 +9,14 @@ interface SliderPanelProps {
 }
 
 class SliderPanel {
-  $slider: SliderMethods;
-  container: Element;
-  panelItems: PanelItems;
-  inputList: Record<string, HTMLInputElement>;
+  readonly container: Element;
+  private $slider: SliderMethods;
+  private panelItems: PanelItems;
+  private inputList: Record<string, HTMLInputElement>;
 
-  constructor({ $slider, container }: SliderPanelProps) {
-    this.$slider = $slider;
+  constructor({ container, $slider }: SliderPanelProps) {
     this.container = container;
+    this.$slider = $slider;
     this.panelItems = getPanelItems($slider);
     this.inputList = {};
   }
