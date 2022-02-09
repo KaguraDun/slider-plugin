@@ -1,7 +1,7 @@
 import createElement from '@/helpers/createElement';
 
 class Track {
-  element: HTMLElement;
+  readonly element: HTMLElement;
 
   constructor() {
     this.element = createElement('div', { class: 'slider__track' });

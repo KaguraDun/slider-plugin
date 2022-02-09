@@ -7,23 +7,29 @@ import { ObserverEvents } from '@/observer/ObserverEvents';
 
 import Tip from './Tip';
 
-class Thumb {
-  parent: HTMLElement | null;
+interface ThumbProperties {
+  parent: HTMLElement;
   thumbID: string;
-  moveEvent: ObserverEvents['thumbMoved'];
-  state: SliderState | null;
-  element: HTMLElement;
-  tip: Tip;
+  observerEvents: ObserverEvents;
+}
 
-  constructor(thumbID: string, observerEvents: ObserverEvents) {
-    this.parent = null;
+class Thumb {
+  readonly parent: HTMLElement;
+  readonly thumbID: string;
+  readonly element: HTMLElement;
+  readonly tip: Tip;
+  private moveEvent: ObserverEvents['thumbMoved'];
+  private state: SliderState | null;
+
+  constructor({ parent, thumbID, observerEvents }: ThumbProperties) {
+    this.parent = parent;
     this.thumbID = thumbID;
-    this.moveEvent = observerEvents.thumbMoved;
-    this.state = null;
     this.element = createElement('div', {
       class: 'slider__thumb',
     });
-    this.tip = new Tip();
+    this.tip = new Tip(this.element);
+    this.moveEvent = observerEvents.thumbMoved;
+    this.state = null;
   }
 
   getPercentPerMark() {
@@ -41,8 +47,7 @@ class Thumb {
     return movePercent;
   }
 
-  render(parent: HTMLElement, state: SliderState) {
-    this.parent = parent;
+  render(state: SliderState) {
     this.state = state;
 
     const { isRange, isVertical, fromIndex, toIndex } = this.state;
@@ -65,8 +70,7 @@ class Thumb {
   }
 
   move(valueIndex: number, isVertical: boolean) {
-    const isElementExist = this.element.isConnected && this.parent;
-    if (!isElementExist) return;
+    if (!this.element.isConnected) return;
 
     const movePercent = this.getPercentPerMark() * valueIndex;
 
@@ -80,8 +84,6 @@ class Thumb {
   }
 
   show(isRange: boolean) {
-    if (!this.parent) return;
-
     if (!isRange) {
       this.element.remove();
     } else {
@@ -90,7 +92,7 @@ class Thumb {
   }
 
   renderTip(value: number, showTip: boolean) {
-    this.tip.render({ parent: this.element, value: String(value), showTip });
+    this.tip.render({ value: String(value), showTip });
   }
 
   toggleTopElement(isTopElement: boolean) {
@@ -108,8 +110,6 @@ class Thumb {
     const shiftY = pointerDown.clientY - this.element.offsetTop;
 
     const handlePointerMove = (pointerMove: PointerEvent) => {
-      if (!this.parent) return;
-
       const { isVertical, maxIndex, values } = this.state!;
 
       const offsetX = pointerMove.clientX - shiftX;

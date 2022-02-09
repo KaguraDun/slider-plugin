@@ -6,7 +6,6 @@ import ThumbID from '@/models/ThumbID';
 import { ObserverEvents } from '@/observer/ObserverEvents';
 
 interface RenderProps {
-  sliderElement: HTMLElement;
   state: SliderState;
   percentPerMark: number;
   thumbRect: DOMRect;
@@ -32,27 +31,26 @@ interface GetClosestThumbProps {
 }
 
 class Scale {
-  parent: HTMLElement | null;
-  percentPerMark: number;
-  element: HTMLElement;
+  readonly parent: HTMLElement;
+  readonly element: HTMLElement;
+  private percentPerMark: number;
   private scaleClickEvent: ObserverEvents['scaleClick'];
   private state: SliderState | undefined;
 
-  constructor(observerEvents: ObserverEvents) {
-    this.parent = null;
-    this.percentPerMark = 0;
+  constructor(parent: HTMLElement, observerEvents: ObserverEvents) {
+    this.parent = parent;
     this.element = createElement('div', {
       class: 'slider__scale',
     });
+    this.percentPerMark = 0;
     this.scaleClickEvent = observerEvents.scaleClick;
     this.state = undefined;
   }
 
-  render({ sliderElement, state, percentPerMark, thumbRect }: RenderProps) {
+  render({ state, percentPerMark, thumbRect }: RenderProps) {
     const { values, showScale, isVertical } = state;
 
     this.state = state;
-    this.parent = sliderElement;
     this.percentPerMark = percentPerMark;
     this.element.innerHTML = '';
 
@@ -65,7 +63,8 @@ class Scale {
       size,
     });
 
-    const sliderSize = this.parent.getBoundingClientRect()[size];
+    const sliderSize =
+      this.parent.getBoundingClientRect()[size] + thumbRect[size];
     const stepArray = this.getStepArray({
       sliderSize,
       markSize,
@@ -87,7 +86,7 @@ class Scale {
           class: 'slider__scale-mark',
           ['data-id']: String(item),
           style: `${direction}: ${markOffset}%;
-          width: ${markSize}px;
+          ${size}: ${markSize}px;
           transform:translate(${translateX}px, ${translateY}px);
           `,
         },
@@ -102,7 +101,7 @@ class Scale {
 
   show(showScale: boolean) {
     if (showScale) {
-      this.parent?.append(this.element);
+      this.parent.append(this.element);
       this.element.addEventListener('click', this.handleScaleClick);
     } else {
       this.element.remove();
@@ -112,6 +111,13 @@ class Scale {
 
   private getStepArray({ sliderSize, markSize, valuesLength }: GetStepProps) {
     let maxMarksInScale = Math.floor(sliderSize / markSize);
+
+    if (valuesLength - maxMarksInScale === 1) {
+      maxMarksInScale += 1;
+    } else {
+      maxMarksInScale -= 1;
+    }
+
     let step = valuesLength / maxMarksInScale;
     const stepArray = [];
 
@@ -177,7 +183,7 @@ class Scale {
       [widerElement],
     );
 
-    this.parent?.append(singleMark);
+    this.parent.append(singleMark);
 
     const DEFAULT_MARK_SIZE = 10;
 

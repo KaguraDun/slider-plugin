@@ -7,11 +7,11 @@ import { ObserverEvents } from '@/observer/ObserverEvents';
 import '@/styles/slider.scss';
 
 class Presenter {
-  observerEvents: ObserverEvents;
-  model: Model;
-  view: View;
-  fromChangedCallback: () => void;
-  toChangedCallback: () => void;
+  private observerEvents: ObserverEvents;
+  private model: Model;
+  private view: View;
+  private fromChangedCallback: () => void;
+  private toChangedCallback: () => void;
 
   constructor() {
     this.observerEvents = new ObserverEvents();

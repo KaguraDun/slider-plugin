@@ -60,6 +60,7 @@
     "plugins": [
       "import",
       "jest",
+      "testing-library",
       "@typescript-eslint",
       "prettier"
     ],
@@ -69,6 +70,7 @@
       "plugin:prettier/recommended",
       "plugin:import/errors",
       "plugin:import/warnings",
-      "plugin:import/typescript"
+      "plugin:import/typescript",
+      "plugin:testing-library/dom"
     ]
 }

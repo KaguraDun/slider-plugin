@@ -33,11 +33,11 @@ describe('Thumb', () => {
       },
     };
 
-    track = document.createElement('div');
+    track = document.createElement('div'); 
     document.body.append(track);
 
-    firstThumb = new Thumb(ThumbID.from, observerEventsMock);
-    secondThumb = new Thumb(ThumbID.to, observerEventsMock);
+    firstThumb = new Thumb({parent: track, thumbID: ThumbID.from, observerEvents: observerEventsMock});
+    secondThumb = new Thumb({parent: track, thumbID: ThumbID.to, observerEvents: observerEventsMock});
 
     const firstThumbRect: DOMRect = {
       ...track!.getBoundingClientRect(),
@@ -60,7 +60,7 @@ describe('Thumb', () => {
   });
 
   it('should render first thumb', () => {
-    firstThumb?.render(track!, mockState);
+    firstThumb?.render(mockState);
 
     expect(firstThumb?.element).toBeInTheDocument();
   });
@@ -68,16 +68,16 @@ describe('Thumb', () => {
   it('should render two thumb when isRange = true', () => {
     const newMockState = { ...mockState, isRange: true, toIndex: 10 };
 
-    firstThumb?.render(track!, newMockState);
-    secondThumb?.render(track!, newMockState);
+    firstThumb?.render(newMockState);
+    secondThumb?.render(newMockState);
 
     expect(firstThumb?.element).toBeInTheDocument();
     expect(secondThumb?.element).toBeInTheDocument();
   });
 
   it('should get percent per mark', () => {
-    firstThumb?.render(track!, mockState);
-    secondThumb?.render(track!, mockState);
+    firstThumb?.render(mockState);
+    secondThumb?.render(mockState);
 
     const percentPerMark = Number(firstThumb?.getPercentPerMark().toFixed(2));
 
@@ -85,7 +85,7 @@ describe('Thumb', () => {
   });
 
   it('should handle first thumb drag', () => {
-    firstThumb?.render(track!, mockState);
+    firstThumb?.render(mockState);
 
     fireEvent.pointerDown(firstThumb!.element);
     fireEvent.pointerMove(firstThumb!.element);
@@ -96,7 +96,7 @@ describe('Thumb', () => {
   it('should handle second thumb drag', () => {
     const newMockState = { ...mockState, isRange: true, toIndex: 10 };
 
-    secondThumb?.render(track!, newMockState);
+    secondThumb?.render(newMockState);
 
     fireEvent.pointerDown(secondThumb!.element);
     fireEvent.pointerMove(secondThumb!.element, { clientX: 10, clientY: 10 });
@@ -105,10 +105,41 @@ describe('Thumb', () => {
   });
 
   it('should move thumb when isVertical = false', () => {
-    firstThumb?.render(track!, mockState);
+    firstThumb?.render(mockState);
     firstThumb?.move(5, false);
 
     const firstThumbLeft = Number.parseInt(firstThumb!.element.style.left, 10);
     expect(firstThumbLeft).toEqual(47);
+  });
+
+  it('should move thumb when isVertical = true', () => {
+    const newMockState = { ...mockState, isVertical: true };
+    firstThumb?.render(newMockState);
+    firstThumb?.move(5, true);
+
+    const firstThumbRectVertical: DOMRect = {
+      ...track!.getBoundingClientRect(),
+      ...{
+        height: 15,
+        width: 40,
+      },
+    };
+
+    const parentRectVertical: DOMRect = {
+      ...track!.getBoundingClientRect(),
+      ...{
+        height: 280,
+        width: 20,
+      },
+    };
+
+    firstThumb!.element.getBoundingClientRect = jest.fn(
+      () => firstThumbRectVertical,
+    );
+
+    track!.getBoundingClientRect = jest.fn(() => parentRectVertical);
+
+    const firstThumbTop = Number.parseInt(firstThumb!.element.style.top, 10);
+    expect(firstThumbTop).toEqual(47);
   });
 });

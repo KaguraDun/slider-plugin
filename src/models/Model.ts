@@ -68,6 +68,7 @@ class Model {
   setMin(min: number) {
     this.setState({ min });
     this.generateValues();
+    this.updateRangeValues();
     this.checkThumbSwap();
   }
 
@@ -78,6 +79,7 @@ class Model {
   setMax(max: number) {
     this.setState({ max });
     this.generateValues();
+    this.updateRangeValues();
     this.checkThumbSwap();
   }
 
@@ -91,7 +93,7 @@ class Model {
 
     if (fromIndex === -1) {
       sliderErrors.throwOptionOutOfRange(ThumbID.from, min, max);
-      fromIndex = min;
+      fromIndex = 0;
     }
 
     if (fromIndex > this.state.maxIndex) fromIndex = this.state.maxIndex;
@@ -111,12 +113,12 @@ class Model {
   }
 
   setTo(to: number) {
-    const { min, max, isRange, fromIndex } = this.state;
+    const { min, max, isRange, fromIndex, maxIndex } = this.state;
     let toIndex = this.state.values.indexOf(Number(to));
 
     if (toIndex === -1) {
       sliderErrors.throwOptionOutOfRange(ThumbID.to, min, max);
-      toIndex = max;
+      toIndex = maxIndex;
     }
 
     if (toIndex > this.state.maxIndex) toIndex = this.state.maxIndex;
@@ -187,6 +189,19 @@ class Model {
     return this.state.isVertical;
   }
 
+  private updateRangeValues() {
+    const { isRange, values, fromIndex, toIndex, maxIndex } = this.state;
+
+    let from = fromIndex > maxIndex ? maxIndex : fromIndex;
+    this.setFrom(values[from]);
+
+    const shouldUpdateTo = isRange && toIndex !== undefined;
+    if (shouldUpdateTo) {
+      let to = toIndex > maxIndex ? maxIndex : toIndex;
+      this.setTo(values[to]);
+    }
+  }
+
   private checkThumbSwap() {
     const shouldSwapThumbs =
       this.state.toIndex !== undefined &&
@@ -229,21 +244,11 @@ class Model {
   }
 
   private generateValues() {
-    const { min, max, step, fromIndex, toIndex } = this.state;
+    const { min, max, step } = this.state;
 
     if (step <= 0) return;
 
     const maxIndex = Math.ceil(Math.abs((max - min) / step));
-
-    if (fromIndex > maxIndex) this.state.fromIndex = maxIndex;
-
-    const shouldEqualizeToWithMax = toIndex !== undefined && toIndex > maxIndex;
-    if (shouldEqualizeToWithMax) {
-      this.state.toIndex = maxIndex;
-    }
-
-    this.state.maxIndex = maxIndex;
-
     const values = this.generateNumberSequence({
       maxIndex,
       min,
@@ -251,6 +256,7 @@ class Model {
       step,
     });
 
+    this.setState({ maxIndex });
     this.setState({ values });
   }
 }

@@ -19,9 +19,9 @@ interface UpdateTipsProps {
 
 class View {
   private observerEvents: ObserverEvents;
-  private track: Track;
   private container: HTMLElement | null;
   private slider: Slider;
+  private track: Track;
   private firstThumb: Thumb;
   private secondThumb: Thumb;
   private scale: Scale;
@@ -33,9 +33,17 @@ class View {
     this.container = null;
     this.slider = new Slider();
     this.track = new Track();
-    this.firstThumb = new Thumb(ThumbID.from, this.observerEvents);
-    this.secondThumb = new Thumb(ThumbID.to, this.observerEvents);
-    this.scale = new Scale(this.observerEvents);
+    this.firstThumb = new Thumb({
+      parent: this.track.element,
+      thumbID: ThumbID.from,
+      observerEvents: this.observerEvents,
+    });
+    this.secondThumb = new Thumb({
+      parent: this.track.element,
+      thumbID: ThumbID.to,
+      observerEvents: this.observerEvents,
+    });
+    this.scale = new Scale(this.slider.element, this.observerEvents);
     this.bar = new Bar(this.track.element);
     this.prevState = undefined;
   }
@@ -49,11 +57,11 @@ class View {
     this.slider.render(this.container);
     this.track.render(this.slider.element);
 
-    this.firstThumb.render(this.track.element, state);
+    this.firstThumb.render(state);
     this.firstThumb.renderTip(fromValue, showTip);
     this.firstThumb.toggleTopElement(true);
 
-    this.secondThumb.render(this.track.element, state);
+    this.secondThumb.render(state);
     if (toValue !== undefined) this.secondThumb.renderTip(toValue, showTip);
 
     this.update(state);
@@ -136,7 +144,6 @@ class View {
       })
     ) {
       this.scale.render({
-        sliderElement: this.slider.element,
         state,
         percentPerMark: this.firstThumb.getPercentPerMark(),
         thumbRect: this.firstThumb.element.getBoundingClientRect(),

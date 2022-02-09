@@ -9,7 +9,6 @@ describe('Slider', () => {
   beforeEach(() => {
     slider = new Slider();
   });
-
   afterEach(() => {
     container.innerHTML = '';
   });

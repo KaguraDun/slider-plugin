@@ -7,7 +7,7 @@ describe('Tip', () => {
   beforeEach(() => {
     firstThumb = document.createElement('div');
     document.body.append(firstThumb);
-    firstTip = new Tip();
+    firstTip = new Tip(firstThumb);
   });
 
   afterEach(() => {
@@ -15,20 +15,20 @@ describe('Tip', () => {
   });
 
   it('should render', () => {
-    firstTip!.render({ parent: firstThumb!, value: '100', showTip: true });
+    firstTip!.render({ value: '100', showTip: true });
 
     expect(firstTip!.element).toBeInTheDocument();
     expect(firstTip!.element.innerText).toEqual('100');
   });
 
   it('should not render', () => {
-    firstTip!.render({ parent: firstThumb!, value: '100', showTip: false });
+    firstTip!.render({ value: '100', showTip: false });
 
     expect(firstTip!.element).not.toBeInTheDocument();
   });
 
   it('should update', () => {
-    firstTip!.render({ parent: firstThumb!, value: '100', showTip: true });
+    firstTip!.render({ value: '100', showTip: true });
 
     expect(firstTip!.element.innerText).toEqual('100');
     firstTip!.update('200');
@@ -36,13 +36,12 @@ describe('Tip', () => {
   });
 
   it('should check tip intersection when horizontal slider as true', () => {
-    firstTip!.render({ parent: firstThumb!, value: '100', showTip: true });
+    firstTip!.render({ value: '100', showTip: true });
 
     const secondThumb = document.createElement('div');
-    const secondTip = new Tip();
+    const secondTip = new Tip(secondThumb);
 
     secondTip.render({
-      parent: secondThumb,
       value: '101',
       showTip: true,
     });
@@ -80,19 +79,18 @@ describe('Tip', () => {
       isVertical: false,
     });
 
-    firstTip!.render({ parent: firstThumb!, value: '100', showTip: true });
+    firstTip!.render({  value: '100', showTip: true });
 
     expect(isExpanded).toEqual(true);
   });
 
   it('should check tip intersection when horizontal slider as false', () => {
-    firstTip!.render({ parent: firstThumb!, value: '100', showTip: true });
+    firstTip!.render({  value: '100', showTip: true });
 
     const secondThumb = document.createElement('div');
-    const secondTip = new Tip();
+    const secondTip = new Tip(secondThumb);
 
     secondTip.render({
-      parent: secondThumb,
       value: '150',
       showTip: true,
     });
@@ -130,19 +128,18 @@ describe('Tip', () => {
       isVertical: false,
     });
 
-    firstTip!.render({ parent: firstThumb!, value: '100', showTip: true });
+    firstTip!.render({  value: '100', showTip: true });
 
     expect(isExpanded).toEqual(false);
   });
 
   it('should check tip intersection when vertical slider as true', () => {
-    firstTip!.render({ parent: firstThumb!, value: '100', showTip: true });
+    firstTip!.render({  value: '100', showTip: true });
 
     const secondThumb = document.createElement('div');
-    const secondTip = new Tip();
+    const secondTip = new Tip(secondThumb);
 
     secondTip.render({
-      parent: secondThumb,
       value: '101',
       showTip: true,
     });
@@ -180,19 +177,18 @@ describe('Tip', () => {
       isVertical: true,
     });
 
-    firstTip!.render({ parent: firstThumb!, value: '100', showTip: true });
+    firstTip!.render({  value: '100', showTip: true });
 
     expect(isExpanded).toEqual(true);
   });
 
   it('should check tip intersection when vertical slider as false', () => {
-    firstTip!.render({ parent: firstThumb!, value: '100', showTip: true });
+    firstTip!.render({  value: '100', showTip: true });
 
     const secondThumb = document.createElement('div');
-    const secondTip = new Tip();
+    const secondTip = new Tip(secondThumb);
 
     secondTip.render({
-      parent: secondThumb,
       value: '150',
       showTip: true,
     });
@@ -230,7 +226,7 @@ describe('Tip', () => {
       isVertical: true,
     });
 
-    firstTip!.render({ parent: firstThumb!, value: '100', showTip: true });
+    firstTip!.render({  value: '100', showTip: true });
 
     expect(isExpanded).toEqual(false);
   });

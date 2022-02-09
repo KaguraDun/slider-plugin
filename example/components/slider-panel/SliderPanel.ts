@@ -9,14 +9,14 @@ interface SliderPanelProps {
 }
 
 class SliderPanel {
-  $slider: SliderMethods;
-  container: Element;
-  panelItems: PanelItems;
-  inputList: Record<string, HTMLInputElement>;
+  readonly container: Element;
+  private $slider: SliderMethods;
+  private panelItems: PanelItems;
+  private inputList: Record<string, HTMLInputElement>;
 
-  constructor({ $slider, container }: SliderPanelProps) {
-    this.$slider = $slider;
+  constructor({ container, $slider }: SliderPanelProps) {
     this.container = container;
+    this.$slider = $slider;
     this.panelItems = getPanelItems($slider);
     this.inputList = {};
   }
@@ -41,6 +41,7 @@ class SliderPanel {
 
   private getInputList() {
     const inputs: Record<string, HTMLInputElement> = {};
+
     Array.from(this.container.children).forEach((element) => {
       const input: HTMLInputElement | null = element.querySelector(
         '.js-slider-panel-input',
@@ -162,13 +163,11 @@ class SliderPanel {
     const min = this.$slider.getMin();
     const max = this.$slider.getMax();
 
-    if (value < min) return min;
+    const aboveTo = isRange && value > to;
 
-    if (isRange) {
-      if (value > to) return to;
-    } else {
-      if (value > max) return max;
-    }
+    if (aboveTo) return to;
+    if (value < min) return min;
+    if (value > max) return max;
 
     return value;
   }

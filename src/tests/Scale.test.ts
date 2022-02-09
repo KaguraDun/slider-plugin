@@ -4,7 +4,6 @@ import SliderState from '@/models/SliderState';
 import Scale from '@/views/Scale';
 
 describe('Scale', () => {
-  let slider: HTMLElement | null = null;
   let scale: Scale | null = null;
 
   let mockState: SliderState = {
@@ -45,12 +44,12 @@ describe('Scale', () => {
   };
 
   beforeEach(() => {
-    slider = document.createElement('div');
+    const slider = document.createElement('div');
     slider.getBoundingClientRect = jest.fn(() => sliderRect);
 
     document.body.append(slider);
 
-    scale = new Scale(observerEventsMock);
+    scale = new Scale(slider, observerEventsMock);
   });
 
   afterEach(() => {
@@ -59,7 +58,6 @@ describe('Scale', () => {
 
   it('should render', () => {
     scale?.render({
-      sliderElement: slider!,
       state: mockState,
       percentPerMark: 6.309,
       thumbRect,
@@ -72,7 +70,7 @@ describe('Scale', () => {
     const newMockState = { ...mockState, showScale: false };
 
     scale?.render({
-      sliderElement: slider!,
+
       state: newMockState,
       percentPerMark: 6.309,
       thumbRect,
@@ -83,7 +81,6 @@ describe('Scale', () => {
 
   it('should handle scale clicks', () => {
     scale?.render({
-      sliderElement: slider!,
       state: mockState,
       percentPerMark: 6.309,
       thumbRect,
@@ -103,7 +100,6 @@ describe('Scale', () => {
     const newMockState = { ...mockState, isRange: true, toIndex: 10 };
 
     scale?.render({
-      sliderElement: slider!,
       state: newMockState,
       percentPerMark: 6.309,
       thumbRect,
@@ -118,8 +114,7 @@ describe('Scale', () => {
   it('should choose second thumb as closest', () => {
     const newMockState = { ...mockState, isRange: true, fromIndex: 1, toIndex: 10 };
 
-    scale?.render({
-      sliderElement: slider!,
+    scale?.render({ 
       state: newMockState,
       percentPerMark: 6.309,
       thumbRect,
@@ -135,7 +130,6 @@ describe('Scale', () => {
     const newMockState = { ...mockState, isRange: true, fromIndex: 1, toIndex: 9 };
 
     scale?.render({
-      sliderElement: slider!,
       state: newMockState,
       percentPerMark: 6.309,
       thumbRect,

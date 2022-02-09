@@ -1,7 +1,6 @@
 import createElement from '@/helpers/createElement';
 
-interface TipProps {
-  parent: HTMLElement;
+interface RenderProps {
   value: string;
   showTip: boolean;
 }
@@ -13,30 +12,24 @@ interface CheckIntersectionProps {
 }
 
 class Tip {
-  element: HTMLElement;
-  parent: HTMLElement | null;
+  readonly parent: HTMLElement;
+  readonly element: HTMLElement;
 
-  constructor() {
-    this.parent = null;
-    this.element = createElement('div', { class: 'slider__tip' });
+  constructor(parent: HTMLElement) {
+    this.parent = parent;
+    this.element = createElement('span', { class: 'slider__tip' });
   }
 
-  render({ parent, value, showTip }: TipProps) {
-    this.parent = parent;
-
+  render({ value, showTip }: RenderProps) {
     this.update(value);
     this.show(showTip);
   }
 
   update(value: string) {
-    if (!this.element) return;
-
     this.element.innerText = value;
   }
 
   show(showTip: boolean) {
-    if (!this.parent) return;
-
     if (showTip) {
       this.parent.append(this.element);
     } else {
