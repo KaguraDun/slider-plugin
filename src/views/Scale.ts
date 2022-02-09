@@ -63,7 +63,8 @@ class Scale {
       size,
     });
 
-    const sliderSize = this.parent.getBoundingClientRect()[size];
+    const sliderSize =
+      this.parent.getBoundingClientRect()[size] + thumbRect[size];
     const stepArray = this.getStepArray({
       sliderSize,
       markSize,
@@ -85,7 +86,7 @@ class Scale {
           class: 'slider__scale-mark',
           ['data-id']: String(item),
           style: `${direction}: ${markOffset}%;
-          width: ${markSize}px;
+          ${size}: ${markSize}px;
           transform:translate(${translateX}px, ${translateY}px);
           `,
         },
@@ -110,6 +111,13 @@ class Scale {
 
   private getStepArray({ sliderSize, markSize, valuesLength }: GetStepProps) {
     let maxMarksInScale = Math.floor(sliderSize / markSize);
+
+    if (valuesLength - maxMarksInScale === 1) {
+      maxMarksInScale += 1;
+    } else {
+      maxMarksInScale -= 1;
+    }
+
     let step = valuesLength / maxMarksInScale;
     const stepArray = [];
 

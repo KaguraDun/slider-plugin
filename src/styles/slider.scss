@@ -11,8 +11,13 @@ $bg-bar: #30475e;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  box-sizing: border-box;
   width: 100%;
   height: 100%;
+
+  & * {
+    box-sizing: border-box;
+  }
 
   &__thumb {
     position: absolute;
