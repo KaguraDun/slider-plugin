@@ -93,7 +93,7 @@ class Model {
 
     if (fromIndex === -1) {
       sliderErrors.throwOptionOutOfRange(ThumbID.from, min, max);
-      fromIndex = min;
+      fromIndex = 0;
     }
 
     if (fromIndex > this.state.maxIndex) fromIndex = this.state.maxIndex;
@@ -113,12 +113,12 @@ class Model {
   }
 
   setTo(to: number) {
-    const { min, max, isRange, fromIndex } = this.state;
+    const { min, max, isRange, fromIndex, maxIndex } = this.state;
     let toIndex = this.state.values.indexOf(Number(to));
 
     if (toIndex === -1) {
       sliderErrors.throwOptionOutOfRange(ThumbID.to, min, max);
-      toIndex = max;
+      toIndex = maxIndex;
     }
 
     if (toIndex > this.state.maxIndex) toIndex = this.state.maxIndex;
