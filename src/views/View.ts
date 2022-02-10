@@ -164,7 +164,7 @@ class View {
         max,
       })
     ) {
-      this.bar.update({ ...this.getThumbParams(), isRange, isVertical });
+      this.updateBar(isVertical, isRange);
     }
 
     this.prevState = { ...state };
@@ -184,6 +184,26 @@ class View {
     }
   };
 
+  private updateBar(isVertical: boolean, isRange: boolean) {
+    const firstThumbOffsetPercent =
+      this.firstThumb.getOffsetPercent(isVertical);
+
+    const secondThumbOffsetPercent =
+      this.secondThumb.getOffsetPercent(isVertical);
+
+    const distanceBetweenThumbs = Thumb.getDistanceBetweenThumbs(
+      firstThumbOffsetPercent,
+      secondThumbOffsetPercent,
+    );
+
+    this.bar.update({
+      firstThumbOffsetPercent,
+      distanceBetweenThumbs,
+      isRange,
+      isVertical,
+    });
+  }
+
   private updateTips({
     fromValue,
     toValue,
@@ -196,7 +216,9 @@ class View {
       isVertical,
     });
     const toggle = isRange ? isIntersect : false;
-    this.firstThumb.tip.toggleExpand(toggle);
+    const distanceBetweenThumbs = 0;
+
+    this.firstThumb.tip.toggleExpand(toggle, this.firstThumb);
 
     const shouldUpdateExpandedTip = isIntersect && isRange;
     if (shouldUpdateExpandedTip) {
@@ -223,23 +245,6 @@ class View {
     });
 
     return isChanged;
-  }
-
-  private getThumbParams() {
-    return {
-      firstThumbOffset: {
-        offsetLeft: this.firstThumb.element.offsetLeft,
-        offsetTop: this.firstThumb.element.offsetTop,
-      },
-      secondThumbOffset: {
-        offsetLeft: this.secondThumb.element.offsetLeft,
-        offsetTop: this.secondThumb.element.offsetTop,
-      },
-      thumbSize: {
-        width: this.firstThumb.element.getBoundingClientRect().width,
-        height: this.firstThumb.element.getBoundingClientRect().height,
-      },
-    };
   }
 }
 
