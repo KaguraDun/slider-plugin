@@ -1,14 +1,14 @@
 import createElement from '@/helpers/createElement';
+import SliderState from '@/models/SliderState';
 
 interface RenderProps {
   value: string;
-  showTip: boolean;
+  showTip: SliderState['showTip'];
 }
 
-interface CheckIntersectionProps {
-  firstTip: HTMLElement;
-  secondTip: HTMLElement;
-  isVertical: boolean;
+interface SetOffsetProps {
+  isVertical: SliderState['isVertical'];
+  offset: number;
 }
 
 class Tip {
@@ -25,11 +25,11 @@ class Tip {
     this.show(showTip);
   }
 
-  update(value: string) {
+  update(value: RenderProps['value']) {
     this.element.innerText = value;
   }
 
-  show(showTip: boolean) {
+  show(showTip: RenderProps['showTip']) {
     if (showTip) {
       this.parent.append(this.element);
     } else {
@@ -37,39 +37,26 @@ class Tip {
     }
   }
 
-  toggleExpand(expanded: boolean) {
-    this.element.classList.toggle(Tip.EXPANDED_MODIFIER, expanded);
-  }
-
-  static checkIntersection({
-    firstTip,
-    secondTip,
-    isVertical,
-  }: CheckIntersectionProps) {
-    const firstTipRect = firstTip.getBoundingClientRect();
-    const secondTipRect = secondTip.getBoundingClientRect();
-    const isExpanded = firstTip.classList.contains(Tip.EXPANDED_MODIFIER);
-
-    enum MatchSizes {
-      unExpanded = 1,
-      expanded = 2,
-    }
-
-    const matchSize = isExpanded ? MatchSizes.expanded : MatchSizes.unExpanded;
-    let isIntersect = false;
+  setOffset({ isVertical, offset }: SetOffsetProps) {
+    const defaultVerticalOffset = -130;
 
     if (isVertical) {
-      const secondTipArea = secondTipRect.height * matchSize;
-      isIntersect = firstTipRect.top + secondTipArea >= secondTipRect.top;
+      this.element.style.transform = `translate(${defaultVerticalOffset}%,${offset}%)`;
     } else {
-      const secondTipArea = secondTipRect.width;
-      isIntersect = firstTipRect.left + secondTipArea >= secondTipRect.left;
+      this.element.style.transform = `translate(${offset}%)`;
     }
-
-    return isIntersect;
   }
 
-  static readonly EXPANDED_MODIFIER = 'slider__tip_expanded';
+  removeOffset() {
+    this.element.style.removeProperty('transform');
+  }
+
+  static getDistanceBetweenTips(
+    firstTipOffsetPercent: number,
+    secondTipOffsetPercent: number,
+  ) {
+    return secondTipOffsetPercent - firstTipOffsetPercent;
+  }
 }
 
 export default Tip;

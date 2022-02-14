@@ -50,13 +50,8 @@ $bg-bar: #30475e;
     font-size: 18px;
     background: $bg-tip;
     border-radius: 2px;
-    transform: translateX(-50%);
+    transform: translate(-50%);
     cursor: pointer;
-
-    &_expanded {
-      left: 100%;
-      width: max-content;
-    }
   }
 
   &__scale {
@@ -115,18 +110,10 @@ $bg-bar: #30475e;
     }
 
     .slider__tip {
+      top: 50%;
       bottom: 0;
       left: 0;
-      transform: translate(-130%, 25%);
-    }
-
-    .slider__tip_expanded {
-      top: 50%;
-      left: 0;
-      width: auto;
-      height: max-content;
-      text-align: center;
-      transform: translate(-125%, -50%);
+      transform: translate(-130%, -50%);
     }
 
     .slider__thumb {

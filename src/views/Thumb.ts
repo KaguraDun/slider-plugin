@@ -1,6 +1,6 @@
 import createElement from '@/helpers/createElement';
 import getPercentOfNumber from '@/helpers/getPercentOfNumber';
-import { getSizeLiteral } from '@/helpers/getLiteral';
+import { getSizeLiteral, getOffsetLiteral } from '@/helpers/getLiteral';
 import SliderState from '@/models/SliderState';
 import ThumbID from '@/models/ThumbID';
 import { ObserverEvents } from '@/observer/ObserverEvents';
@@ -97,6 +97,28 @@ class Thumb {
 
   toggleTopElement(isTopElement: boolean) {
     this.element.classList.toggle('slider__thumb_top', isTopElement);
+  }
+
+  getOffsetPercent(isVertical: boolean) {
+    const size = getSizeLiteral(isVertical);
+    const offset = getOffsetLiteral(isVertical);
+
+    const trackSize = this.parent.getBoundingClientRect()[size];
+    const thumbSize = this.element.getBoundingClientRect()[size];
+
+    const thumbOffset = this.element[offset];
+    const thumbCenter = thumbOffset + thumbSize / 2;
+
+    const thumbOffsetPercent = getPercentOfNumber(thumbCenter, trackSize);
+
+    return thumbOffsetPercent;
+  }
+
+  static getDistanceBetweenThumbs(
+    firstThumbOffsetPercent: number,
+    secondThumbOffsetPercent: number,
+  ) {
+    return secondThumbOffsetPercent - firstThumbOffsetPercent;
   }
 
   private handleDragStart() {

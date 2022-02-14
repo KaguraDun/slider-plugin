@@ -3,6 +3,8 @@ import SliderState from '@/models/SliderState';
 import ThumbID from '@/models/ThumbID';
 import Tip from '@/views/Tip';
 import { ObserverEvents } from '@/observer/ObserverEvents';
+import { getSizeLiteral } from '@/helpers/getLiteral';
+import getPercentOfNumber from '@/helpers/getPercentOfNumber';
 
 import Bar from './Bar';
 import Scale from './Scale';
@@ -164,7 +166,7 @@ class View {
         max,
       })
     ) {
-      this.bar.update({ ...this.getThumbParams(), isRange, isVertical });
+      this.updateBar(isVertical, isRange);
     }
 
     this.prevState = { ...state };
@@ -184,32 +186,63 @@ class View {
     }
   };
 
-  private updateTips({
-    fromValue,
-    toValue,
-    isRange,
-    isVertical,
-  }: UpdateTipsProps) {
-    const isIntersect = Tip.checkIntersection({
-      firstTip: this.firstThumb.tip.element,
-      secondTip: this.secondThumb.tip.element,
+  private updateBar(isVertical: boolean, isRange: boolean) {
+    const firstThumbOffsetPercent =
+      this.firstThumb.getOffsetPercent(isVertical);
+
+    const secondThumbOffsetPercent =
+      this.secondThumb.getOffsetPercent(isVertical);
+
+    const distanceBetweenThumbs = Thumb.getDistanceBetweenThumbs(
+      firstThumbOffsetPercent,
+      secondThumbOffsetPercent,
+    );
+
+    this.bar.update({
+      firstThumbOffsetPercent,
+      distanceBetweenThumbs,
+      isRange,
       isVertical,
     });
-    const toggle = isRange ? isIntersect : false;
-    this.firstThumb.tip.toggleExpand(toggle);
+  }
 
-    const shouldUpdateExpandedTip = isIntersect && isRange;
-    if (shouldUpdateExpandedTip) {
-      const tipValue = isVertical
-        ? `${fromValue} ${toValue}`
-        : `${fromValue} : ${toValue}`;
+  private updateTips({ fromValue, toValue, isVertical }: UpdateTipsProps) {
+    const size = getSizeLiteral(isVertical);
 
-      this.secondThumb.tip.show(false);
-      this.firstThumb.tip.update(tipValue);
+    this.firstThumb.tip.element.style.transform = 'none';
+    this.secondThumb.tip.element.style.transform = 'none';
+
+    const firstTipRect = this.firstThumb.tip.element.getBoundingClientRect();
+    const secondTipRect = this.secondThumb.tip.element.getBoundingClientRect();
+
+    const firstTipCorner = isVertical
+      ? firstTipRect.bottom
+      : firstTipRect.right;
+    const secondTipCorner = isVertical ? secondTipRect.top : secondTipRect.left;
+
+    const distanceBetweenTips = Tip.getDistanceBetweenTips(
+      firstTipCorner,
+      secondTipCorner,
+    );
+
+    if (distanceBetweenTips <= 0) {
+      const tipSize = firstTipRect[size];
+      const absDistance = Math.abs(distanceBetweenTips);
+      const offsetPercent = getPercentOfNumber(absDistance, tipSize) / 2;
+      const CENTER_OFFSET_PERCENT = -50;
+
+      const firstTipOffset = CENTER_OFFSET_PERCENT - offsetPercent;
+      const secondTipOffset = CENTER_OFFSET_PERCENT + offsetPercent;
+
+      this.firstThumb.tip.setOffset({ isVertical, offset: firstTipOffset });
+      this.secondThumb.tip.setOffset({ isVertical, offset: secondTipOffset });
     } else {
-      this.firstThumb.tip.update(String(fromValue));
-      this.secondThumb.tip.update(String(toValue));
+      this.firstThumb.tip.removeOffset();
+      this.secondThumb.tip.removeOffset();
     }
+
+    this.firstThumb.tip.update(String(fromValue));
+    this.secondThumb.tip.update(String(toValue));
   }
 
   private hasStateChanged(stateValues: Partial<SliderState>) {
@@ -223,23 +256,6 @@ class View {
     });
 
     return isChanged;
-  }
-
-  private getThumbParams() {
-    return {
-      firstThumbOffset: {
-        offsetLeft: this.firstThumb.element.offsetLeft,
-        offsetTop: this.firstThumb.element.offsetTop,
-      },
-      secondThumbOffset: {
-        offsetLeft: this.secondThumb.element.offsetLeft,
-        offsetTop: this.secondThumb.element.offsetTop,
-      },
-      thumbSize: {
-        width: this.firstThumb.element.getBoundingClientRect().width,
-        height: this.firstThumb.element.getBoundingClientRect().height,
-      },
-    };
   }
 }
 
