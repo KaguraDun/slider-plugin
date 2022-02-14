@@ -3,6 +3,8 @@ import SliderState from '@/models/SliderState';
 import ThumbID from '@/models/ThumbID';
 import Tip from '@/views/Tip';
 import { ObserverEvents } from '@/observer/ObserverEvents';
+import { getSizeLiteral } from '@/helpers/getLiteral';
+import getPercentOfNumber from '@/helpers/getPercentOfNumber';
 
 import Bar from './Bar';
 import Scale from './Scale';
@@ -204,34 +206,43 @@ class View {
     });
   }
 
-  private updateTips({
-    fromValue,
-    toValue,
-    isRange,
-    isVertical,
-  }: UpdateTipsProps) {
-    const isIntersect = Tip.checkIntersection({
-      firstTip: this.firstThumb.tip.element,
-      secondTip: this.secondThumb.tip.element,
-      isVertical,
-    });
-    const toggle = isRange ? isIntersect : false;
-    const distanceBetweenThumbs = 0;
+  private updateTips({ fromValue, toValue, isVertical }: UpdateTipsProps) {
+    const size = getSizeLiteral(isVertical);
 
-    this.firstThumb.tip.toggleExpand(toggle, this.firstThumb);
+    this.firstThumb.tip.element.style.transform = 'none';
+    this.secondThumb.tip.element.style.transform = 'none';
 
-    const shouldUpdateExpandedTip = isIntersect && isRange;
-    if (shouldUpdateExpandedTip) {
-      const tipValue = isVertical
-        ? `${fromValue} ${toValue}`
-        : `${fromValue} : ${toValue}`;
+    const firstTipRect = this.firstThumb.tip.element.getBoundingClientRect();
+    const secondTipRect = this.secondThumb.tip.element.getBoundingClientRect();
 
-      this.secondThumb.tip.show(false);
-      this.firstThumb.tip.update(tipValue);
+    const firstTipCorner = isVertical
+      ? firstTipRect.bottom
+      : firstTipRect.right;
+    const secondTipCorner = isVertical ? secondTipRect.top : secondTipRect.left;
+
+    const distanceBetweenTips = Tip.getDistanceBetweenTips(
+      firstTipCorner,
+      secondTipCorner,
+    );
+
+    if (distanceBetweenTips <= 0) {
+      const avgSize = (firstTipRect[size] + secondTipRect[size]) / 2;
+      const absDistance = Math.abs(distanceBetweenTips);
+      const offsetPercent = getPercentOfNumber(absDistance, avgSize) / 2;
+      const CENTER_OFFSET_PERCENT = -50;
+
+      let firstTipOffset = CENTER_OFFSET_PERCENT - offsetPercent;
+      let secondTipOffset = CENTER_OFFSET_PERCENT + offsetPercent;
+
+      this.firstThumb.tip.setOffset({ isVertical, offset: firstTipOffset });
+      this.secondThumb.tip.setOffset({ isVertical, offset: secondTipOffset });
     } else {
-      this.firstThumb.tip.update(String(fromValue));
-      this.secondThumb.tip.update(String(toValue));
+      this.firstThumb.tip.removeOffset();
+      this.secondThumb.tip.removeOffset();
     }
+
+    this.firstThumb.tip.update(String(fromValue));
+    this.secondThumb.tip.update(String(toValue));
   }
 
   private hasStateChanged(stateValues: Partial<SliderState>) {
