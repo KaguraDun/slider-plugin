@@ -226,13 +226,13 @@ class View {
     );
 
     if (distanceBetweenTips <= 0) {
-      const avgSize = (firstTipRect[size] + secondTipRect[size]) / 2;
+      const tipSize = firstTipRect[size];
       const absDistance = Math.abs(distanceBetweenTips);
-      const offsetPercent = getPercentOfNumber(absDistance, avgSize) / 2;
+      const offsetPercent = getPercentOfNumber(absDistance, tipSize) / 2;
       const CENTER_OFFSET_PERCENT = -50;
 
-      let firstTipOffset = CENTER_OFFSET_PERCENT - offsetPercent;
-      let secondTipOffset = CENTER_OFFSET_PERCENT + offsetPercent;
+      const firstTipOffset = CENTER_OFFSET_PERCENT - offsetPercent;
+      const secondTipOffset = CENTER_OFFSET_PERCENT + offsetPercent;
 
       this.firstThumb.tip.setOffset({ isVertical, offset: firstTipOffset });
       this.secondThumb.tip.setOffset({ isVertical, offset: secondTipOffset });
