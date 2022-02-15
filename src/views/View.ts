@@ -206,11 +206,32 @@ class View {
     });
   }
 
-  private updateTips({ fromValue, toValue, isVertical }: UpdateTipsProps) {
+  private updateTips({
+    fromValue,
+    toValue,
+    isRange,
+    isVertical,
+  }: UpdateTipsProps) {
+    if (isRange) {
+      this.setTipsOffset(isVertical);
+    } else {
+      this.removeTipsOffset();
+    }
+
+    this.firstThumb.tip.update(String(fromValue));
+    this.secondThumb.tip.update(String(toValue));
+  }
+
+  private removeTipsOffset() {
+    this.firstThumb.tip.removeOffset();
+    this.secondThumb.tip.removeOffset();
+  }
+
+  private setTipsOffset(isVertical: boolean) {
     const size = getSizeLiteral(isVertical);
 
-    this.firstThumb.tip.element.style.transform = 'none';
-    this.secondThumb.tip.element.style.transform = 'none';
+    this.firstThumb.tip.resetOffset();
+    this.secondThumb.tip.resetOffset();
 
     const firstTipRect = this.firstThumb.tip.element.getBoundingClientRect();
     const secondTipRect = this.secondThumb.tip.element.getBoundingClientRect();
@@ -237,12 +258,8 @@ class View {
       this.firstThumb.tip.setOffset({ isVertical, offset: firstTipOffset });
       this.secondThumb.tip.setOffset({ isVertical, offset: secondTipOffset });
     } else {
-      this.firstThumb.tip.removeOffset();
-      this.secondThumb.tip.removeOffset();
+      this.removeTipsOffset();
     }
-
-    this.firstThumb.tip.update(String(fromValue));
-    this.secondThumb.tip.update(String(toValue));
   }
 
   private hasStateChanged(stateValues: Partial<SliderState>) {
