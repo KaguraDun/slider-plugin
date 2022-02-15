@@ -47,7 +47,7 @@ class Model {
       this.setTo(Number(this.state.max));
     }
 
-    this.observerEvents.stateChanged.notify(this.state);
+    this.observerEvents.stateChanged.notify(this.getState());
   };
 
   setThumb = (thumbID: Partial<SliderSettings>) => {
@@ -62,7 +62,7 @@ class Model {
   };
 
   getState() {
-    return this.state;
+    return { ...this.state };
   }
 
   setMin(min: number) {
@@ -88,15 +88,15 @@ class Model {
   }
 
   setFrom(from: number) {
-    const { min, max, isRange, toIndex } = this.state;
-    let fromIndex = this.state.values.indexOf(Number(from));
+    const { min, max, isRange, toIndex, values, maxIndex } = this.getState();
+    let fromIndex = values.indexOf(Number(from));
 
     if (fromIndex === -1) {
       sliderErrors.throwOptionOutOfRange(ThumbID.from, min, max);
       fromIndex = 0;
     }
 
-    if (fromIndex > this.state.maxIndex) fromIndex = this.state.maxIndex;
+    if (fromIndex > maxIndex) fromIndex = maxIndex;
 
     const isToIndexSet = isRange && toIndex !== undefined;
     const shouldEqualizeFromWithTo = isToIndexSet && fromIndex > toIndex;
@@ -113,15 +113,15 @@ class Model {
   }
 
   setTo(to: number) {
-    const { min, max, isRange, fromIndex, maxIndex } = this.state;
-    let toIndex = this.state.values.indexOf(Number(to));
+    const { min, max, isRange, fromIndex, maxIndex, values } = this.getState();
+    let toIndex = values.indexOf(Number(to));
 
     if (toIndex === -1) {
       sliderErrors.throwOptionOutOfRange(ThumbID.to, min, max);
       toIndex = maxIndex;
     }
 
-    if (toIndex > this.state.maxIndex) toIndex = this.state.maxIndex;
+    if (toIndex > maxIndex) toIndex = maxIndex;
 
     const shouldEqualizeToWithFrom = isRange && toIndex <= fromIndex;
     if (shouldEqualizeToWithFrom) toIndex = fromIndex;
@@ -133,7 +133,7 @@ class Model {
   }
 
   getTo() {
-    const { toIndex = this.state.maxIndex } = this.state;
+    const { toIndex = this.getState().maxIndex } = this.getState();
 
     return this.state.values[toIndex];
   }
@@ -141,6 +141,7 @@ class Model {
   setStep(step: number) {
     this.setState({ step });
     this.generateValues();
+    this.updateRangeValues();
   }
 
   getStep() {
@@ -190,7 +191,7 @@ class Model {
   }
 
   private updateRangeValues() {
-    const { isRange, values, fromIndex, toIndex, maxIndex } = this.state;
+    const { isRange, values, fromIndex, toIndex, maxIndex } = this.getState();
 
     let from = fromIndex > maxIndex ? maxIndex : fromIndex;
     this.setFrom(values[from]);
@@ -203,9 +204,9 @@ class Model {
   }
 
   private checkThumbSwap() {
-    const shouldSwapThumbs =
-      this.state.toIndex !== undefined &&
-      this.state.toIndex < this.state.fromIndex;
+    const { fromIndex, toIndex } = this.getState();
+
+    const shouldSwapThumbs = toIndex !== undefined && toIndex < fromIndex;
 
     if (shouldSwapThumbs) {
       this.swapThumbValues();
@@ -213,7 +214,7 @@ class Model {
   }
 
   private swapThumbValues() {
-    const { values, fromIndex, toIndex } = this.state;
+    const { values, fromIndex, toIndex } = this.getState();
     if (toIndex === undefined) return;
 
     this.setTo(values[fromIndex]);
@@ -223,7 +224,7 @@ class Model {
   private setState(newState: Partial<SliderState>) {
     Object.assign(this.state, newState);
 
-    this.observerEvents.stateChanged.notify(this.state);
+    this.observerEvents.stateChanged.notify(this.getState());
   }
 
   private generateNumberSequence({

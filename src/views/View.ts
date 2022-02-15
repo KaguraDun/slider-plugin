@@ -50,7 +50,7 @@ class View {
     this.prevState = undefined;
   }
 
-  init(container: HTMLElement, state: SliderState) {
+  init(container: HTMLElement, state: Readonly<SliderState>) {
     const { fromIndex, toIndex, values, showTip } = state;
     const fromValue = values[fromIndex];
     const toValue = toIndex !== undefined ? values[toIndex] : undefined;
@@ -67,16 +67,16 @@ class View {
     if (toValue !== undefined) this.secondThumb.renderTip(toValue, showTip);
 
     this.update(state);
-    this.prevState = { ...state };
   }
 
-  update = (state: SliderState) => {
+  update = (state: Readonly<SliderState>) => {
     const {
       min,
       max,
       step,
       fromIndex,
       toIndex,
+      maxIndex,
       values,
       showScale,
       showTip,
@@ -89,8 +89,13 @@ class View {
       this.slider.toggleVertical(isVertical);
     }
 
-    if (this.hasStateChanged({ fromIndex, isVertical, min, max })) {
-      this.firstThumb.move(fromIndex, isVertical);
+    if (this.hasStateChanged({ fromIndex, isVertical, min, max, step })) {
+      this.firstThumb.move({
+        valueIndex: fromIndex,
+        isVertical,
+        maxIndex,
+        values,
+      });
     }
 
     if (this.hasStateChanged({ isRange })) {
@@ -99,10 +104,16 @@ class View {
 
     const isToIndex = toIndex !== undefined;
     const shouldUpdateSecondTip =
-      isToIndex && this.hasStateChanged({ toIndex, isVertical, min, max });
+      isToIndex &&
+      this.hasStateChanged({ toIndex, isVertical, min, max, step });
 
     if (shouldUpdateSecondTip) {
-      this.secondThumb.move(toIndex, isVertical);
+      this.secondThumb.move({
+        valueIndex: toIndex,
+        isVertical,
+        maxIndex,
+        values,
+      });
     }
 
     const fromValue = values[fromIndex];
@@ -114,6 +125,7 @@ class View {
         toIndex,
         isRange,
         isVertical,
+        step,
         showTip,
         min,
         max,
@@ -147,7 +159,10 @@ class View {
     ) {
       this.scale.render({
         state,
-        percentPerMark: this.firstThumb.getPercentPerMark(),
+        percentPerMark: this.firstThumb.getPercentPerMark({
+          isVertical,
+          maxIndex,
+        }),
         thumbRect: this.firstThumb.element.getBoundingClientRect(),
       });
     }
@@ -164,6 +179,7 @@ class View {
         isVertical,
         min,
         max,
+        step,
       })
     ) {
       this.updateBar(isVertical, isRange);
