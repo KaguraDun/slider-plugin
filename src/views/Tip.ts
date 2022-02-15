@@ -51,6 +51,10 @@ class Tip {
     this.element.style.removeProperty('transform');
   }
 
+  resetOffset() {
+    this.element.style.transform = 'none';
+  }
+
   static getDistanceBetweenTips(
     firstTipOffsetPercent: number,
     secondTipOffsetPercent: number,

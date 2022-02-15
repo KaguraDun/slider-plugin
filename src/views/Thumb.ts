@@ -13,13 +13,22 @@ interface ThumbProperties {
   observerEvents: ObserverEvents;
 }
 
+interface MoveProps {
+  valueIndex: number;
+  isVertical: SliderState['isVertical'];
+  maxIndex: SliderState['maxIndex'];
+  values: SliderState['values'];
+}
+
+type GetPercentPerMarkProps = Pick<SliderState, 'isVertical' | 'maxIndex'>;
+
 class Thumb {
   readonly parent: HTMLElement;
   readonly thumbID: string;
   readonly element: HTMLElement;
   readonly tip: Tip;
   private moveEvent: ObserverEvents['thumbMoved'];
-  private state: SliderState | null;
+  private moveArguments: MoveProps | null;
 
   constructor({ parent, thumbID, observerEvents }: ThumbProperties) {
     this.parent = parent;
@@ -29,13 +38,11 @@ class Thumb {
     });
     this.tip = new Tip(this.element);
     this.moveEvent = observerEvents.thumbMoved;
-    this.state = null;
+    this.moveArguments = null;
   }
 
-  getPercentPerMark() {
+  getPercentPerMark({ isVertical, maxIndex }: GetPercentPerMarkProps) {
     if (!this.parent) return 0;
-
-    const { isVertical, maxIndex } = this.state!;
 
     const thumb = this.element.getBoundingClientRect();
     const track = this.parent.getBoundingClientRect();
@@ -47,10 +54,8 @@ class Thumb {
     return movePercent;
   }
 
-  render(state: SliderState) {
-    this.state = state;
-
-    const { isRange, isVertical, fromIndex, toIndex } = this.state;
+  render(state: Readonly<SliderState>) {
+    const { isRange, isVertical, fromIndex, toIndex, maxIndex, values } = state;
 
     this.element.addEventListener('pointerdown', this.handleDragThumb);
     this.element.addEventListener('dragstart', this.handleDragStart);
@@ -58,21 +63,25 @@ class Thumb {
     this.show(isRange);
 
     if (this.thumbID === ThumbID.from) {
-      this.move(fromIndex, isVertical);
+      this.move({ valueIndex: fromIndex, isVertical, maxIndex, values });
       return;
     }
 
     const shouldMoveTo = this.thumbID === ThumbID.to && toIndex !== undefined;
     if (shouldMoveTo) {
-      this.move(toIndex, isVertical);
+      this.move({ valueIndex: toIndex, isVertical, maxIndex, values });
       return;
     }
   }
 
-  move(valueIndex: number, isVertical: boolean) {
+  move(props: MoveProps) {
+    const { valueIndex, isVertical, maxIndex } = props;
+    this.moveArguments = props;
+
     if (!this.element.isConnected) return;
 
-    const movePercent = this.getPercentPerMark() * valueIndex;
+    const movePercent =
+      this.getPercentPerMark({ isVertical, maxIndex }) * valueIndex;
 
     if (isVertical) {
       this.element.style.top = `${movePercent}%`;
@@ -132,7 +141,9 @@ class Thumb {
     const shiftY = pointerDown.clientY - this.element.offsetTop;
 
     const handlePointerMove = (pointerMove: PointerEvent) => {
-      const { isVertical, maxIndex, values } = this.state!;
+      if (!this.moveArguments) return;
+
+      const { isVertical, maxIndex, values } = this.moveArguments;
 
       const offsetX = pointerMove.clientX - shiftX;
       const offsetY = pointerMove.clientY - shiftY;
@@ -144,7 +155,9 @@ class Thumb {
       const parentSize = this.parent.getBoundingClientRect()[size];
 
       const offsetPercent = getPercentOfNumber(offsetPx, parentSize);
-      let valueIndex = Math.round(offsetPercent / this.getPercentPerMark());
+      let valueIndex = Math.round(
+        offsetPercent / this.getPercentPerMark({ isVertical, maxIndex }),
+      );
 
       if (valueIndex > maxIndex) valueIndex = maxIndex;
 
