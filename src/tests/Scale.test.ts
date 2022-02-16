@@ -57,87 +57,41 @@ describe('Scale', () => {
   });
 
   it('should render', () => {
-    scale?.render({
+    scale!.render({
       state: mockState,
       percentPerMark: 6.309,
       thumbRect,
     });
 
-    expect(scale?.element).toBeInTheDocument();
+    expect(scale!.element).toBeInTheDocument();
   });
 
   it('should not render', () => {
     const newMockState = { ...mockState, showScale: false };
 
-    scale?.render({
-
+    scale!.render({
       state: newMockState,
       percentPerMark: 6.309,
       thumbRect,
     });
 
-    expect(scale?.element).not.toBeInTheDocument();
+    expect(scale!.element).not.toBeInTheDocument();
   });
 
   it('should handle scale clicks', () => {
-    scale?.render({
+    scale!.render({
       state: mockState,
       percentPerMark: 6.309,
       thumbRect,
     });
 
     fireEvent.click(scale!.element.childNodes[0]);
-    expect(observerEventsMock.scaleMarkClicked.notify).toHaveBeenLastCalledWith({ from: -5 });
+    expect(observerEventsMock.scaleMarkClicked.notify).toHaveBeenLastCalledWith(0);
 
     fireEvent.click(scale!.element.childNodes[5]);
-    expect(observerEventsMock.scaleMarkClicked.notify).toHaveBeenLastCalledWith({ from: 0 });
+    expect(observerEventsMock.scaleMarkClicked.notify).toHaveBeenLastCalledWith(5);
 
     fireEvent.click(scale!.element.childNodes[10]);
-    expect(observerEventsMock.scaleMarkClicked.notify).toHaveBeenLastCalledWith({ from: 5 });
-  });
-
-  it('should choose first thumb as closest', () => {
-    const newMockState = { ...mockState, isRange: true, toIndex: 10 };
-
-    scale?.render({
-      state: newMockState,
-      percentPerMark: 6.309,
-      thumbRect,
-    });
-
-    fireEvent.click(scale!.element.childNodes[1]);
-    expect(observerEventsMock.scaleMarkClicked.notify).toHaveBeenCalledWith({
-      from: -4
-    });
-  });
-
-  it('should choose second thumb as closest', () => {
-    const newMockState = { ...mockState, isRange: true, fromIndex: 1, toIndex: 10 };
-
-    scale?.render({ 
-      state: newMockState,
-      percentPerMark: 6.309,
-      thumbRect,
-    });
-
-    fireEvent.click(scale!.element.childNodes[9]);
-    expect(observerEventsMock.scaleMarkClicked.notify).toHaveBeenCalledWith({
-      to: 4
-    });
-  });
-
-  it('should choose second thumb as closest', () => {
-    const newMockState = { ...mockState, isRange: true, fromIndex: 1, toIndex: 9 };
-
-    scale?.render({
-      state: newMockState,
-      percentPerMark: 6.309,
-      thumbRect,
-    });
-
-    fireEvent.click(scale!.element.childNodes[5]);
-    expect(observerEventsMock.scaleMarkClicked.notify).toHaveBeenCalledWith({
-      to: 0
-    });
+    expect(observerEventsMock.scaleMarkClicked.notify).toHaveBeenLastCalledWith(10);
   });
 });
