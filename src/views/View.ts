@@ -34,7 +34,7 @@ class View {
     this.observerEvents = observerEvents;
     this.container = null;
     this.slider = new Slider();
-    this.track = new Track();
+    this.track = new Track(this.observerEvents);
     this.firstThumb = new Thumb({
       parent: this.track.element,
       thumbID: ThumbID.from,
@@ -85,6 +85,12 @@ class View {
       isVertical,
     } = state;
 
+    if (this.hasStateChanged({ maxIndex, isVertical })) {
+      this.track.setClickEventArguments({
+        maxIndex,
+        isVertical,
+      });
+    }
     if (this.hasStateChanged({ isVertical })) {
       this.slider.toggleVertical(isVertical);
     }
