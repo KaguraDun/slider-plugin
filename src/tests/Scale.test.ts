@@ -22,7 +22,7 @@ describe('Scale', () => {
   };
 
   const observerEventsMock: any = {
-    scaleClick: {
+    scaleMarkClicked: {
       notify: jest.fn((id: number) => id),
     },
   };
@@ -87,13 +87,13 @@ describe('Scale', () => {
     });
 
     fireEvent.click(scale!.element.childNodes[0]);
-    expect(observerEventsMock.scaleClick.notify).toHaveBeenLastCalledWith({ from: -5 });
+    expect(observerEventsMock.scaleMarkClicked.notify).toHaveBeenLastCalledWith({ from: -5 });
 
     fireEvent.click(scale!.element.childNodes[5]);
-    expect(observerEventsMock.scaleClick.notify).toHaveBeenLastCalledWith({ from: 0 });
+    expect(observerEventsMock.scaleMarkClicked.notify).toHaveBeenLastCalledWith({ from: 0 });
 
     fireEvent.click(scale!.element.childNodes[10]);
-    expect(observerEventsMock.scaleClick.notify).toHaveBeenLastCalledWith({ from: 5 });
+    expect(observerEventsMock.scaleMarkClicked.notify).toHaveBeenLastCalledWith({ from: 5 });
   });
 
   it('should choose first thumb as closest', () => {
@@ -106,7 +106,7 @@ describe('Scale', () => {
     });
 
     fireEvent.click(scale!.element.childNodes[1]);
-    expect(observerEventsMock.scaleClick.notify).toHaveBeenCalledWith({
+    expect(observerEventsMock.scaleMarkClicked.notify).toHaveBeenCalledWith({
       from: -4
     });
   });
@@ -121,7 +121,7 @@ describe('Scale', () => {
     });
 
     fireEvent.click(scale!.element.childNodes[9]);
-    expect(observerEventsMock.scaleClick.notify).toHaveBeenCalledWith({
+    expect(observerEventsMock.scaleMarkClicked.notify).toHaveBeenCalledWith({
       to: 4
     });
   });
@@ -136,7 +136,7 @@ describe('Scale', () => {
     });
 
     fireEvent.click(scale!.element.childNodes[5]);
-    expect(observerEventsMock.scaleClick.notify).toHaveBeenCalledWith({
+    expect(observerEventsMock.scaleMarkClicked.notify).toHaveBeenCalledWith({
       to: 0
     });
   });

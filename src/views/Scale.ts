@@ -36,7 +36,7 @@ class Scale {
   readonly parent: HTMLElement;
   readonly element: HTMLElement;
   private percentPerMark: number;
-  private scaleClickEvent: ObserverEvents['scaleClick'];
+  private scaleClickEvent: ObserverEvents['scaleMarkClicked'];
   private state: SliderState | undefined;
 
   constructor(parent: HTMLElement, observerEvents: ObserverEvents) {
@@ -45,7 +45,7 @@ class Scale {
       class: 'slider__scale',
     });
     this.percentPerMark = 0;
-    this.scaleClickEvent = observerEvents.scaleClick;
+    this.scaleClickEvent = observerEvents.scaleMarkClicked;
     this.state = undefined;
   }
 
