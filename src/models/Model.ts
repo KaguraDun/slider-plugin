@@ -233,8 +233,17 @@ class Model {
     max,
     step,
   }: Pick<SliderState, 'maxIndex' | 'min' | 'max' | 'step'>) {
-    const generateFn = (_value: null, index: number) =>
-      Number(min) + index * Number(step);
+    const decimalPlaces = String(step).split('.')[1]?.length;
+
+    const generateFn = (_value: null, index: number) => {
+      let result = min + index * step;
+
+      if (decimalPlaces !== undefined) {
+        result = Number(result.toFixed(decimalPlaces));
+      }
+
+      return result;
+    };
 
     const sequence = Array.from(Array(maxIndex), generateFn);
 
@@ -245,7 +254,7 @@ class Model {
   }
 
   private generateValues() {
-    const { min, max, step } = this.state;
+    const { min, max, step } = this.getState();
 
     if (step <= 0) return;
 

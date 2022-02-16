@@ -48,7 +48,7 @@ class Scale {
   }
 
   render({ state, percentPerMark, thumbRect }: RenderProps) {
-    const { values, showScale, isVertical } = state;
+    const { values, step, showScale, isVertical } = state;
 
     this.state = state;
     this.percentPerMark = percentPerMark;
@@ -58,8 +58,8 @@ class Scale {
     const size = getSizeLiteral(isVertical);
 
     const markSize = this.getMarkSize({
-      minElement: String(values[0]),
-      maxElement: String(values[values.length - 1]),
+      minElement: String(values[0] - step),
+      maxElement: String(values[values.length - 1] + step),
       size,
     });
 
