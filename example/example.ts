@@ -13,10 +13,11 @@ const sliderContainers = document.querySelectorAll(
 const sliderPanels = document.querySelectorAll('.js-slider-panel');
 
 const firstSliderSettings = {
-  from: -100,
-  to: 100,
-  min: -100,
-  max: 100,
+  from: -10.123,
+  to: 10.123,
+  min: -10.123,
+  max: 10.123,
+  step: 0.123,
   showBar: true,
   showScale: true,
   showTip: true,
