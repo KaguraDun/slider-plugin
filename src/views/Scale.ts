@@ -1,5 +1,6 @@
 import createElement from '@/helpers/createElement';
 import getPercentOfNumber from '@/helpers/getPercentOfNumber';
+import getDecimalPlaces from '@/helpers/getDecimalPlaces';
 import { getDirectionLiteral, getSizeLiteral } from '@/helpers/getLiteral';
 import SliderState from '@/models/SliderState';
 import ThumbID from '@/models/ThumbID';
@@ -12,8 +13,9 @@ interface RenderProps {
 }
 
 interface GetMarkSizeProps {
-  minElement: string;
-  maxElement: string;
+  min: SliderState['min'];
+  max: SliderState['max'];
+  step: SliderState['step'];
   size: 'height' | 'width';
 }
 
@@ -48,7 +50,7 @@ class Scale {
   }
 
   render({ state, percentPerMark, thumbRect }: RenderProps) {
-    const { values, step, showScale, isVertical } = state;
+    const { values, min, max, step, showScale, isVertical } = state;
 
     this.state = state;
     this.percentPerMark = percentPerMark;
@@ -58,8 +60,9 @@ class Scale {
     const size = getSizeLiteral(isVertical);
 
     const markSize = this.getMarkSize({
-      minElement: String(values[0] - step),
-      maxElement: String(values[values.length - 1] + step),
+      min,
+      max,
+      step,
       size,
     });
 
@@ -169,9 +172,22 @@ class Scale {
     this.scaleClickEvent.notify({ [closestThumb]: value });
   };
 
-  private getMarkSize({ minElement, maxElement, size }: GetMarkSizeProps) {
-    const widerElement =
-      minElement.length >= maxElement.length ? minElement : maxElement;
+  private getMarkSize({ min, max, step, size }: GetMarkSizeProps) {
+    const decimalPlaces = Math.max(
+      getDecimalPlaces(min),
+      getDecimalPlaces(max),
+      getDecimalPlaces(step),
+    );
+
+    const strMin = String(min);
+    const strMax = String(max);
+
+    let widerElement = strMin.length >= strMax.length ? strMin : strMax;
+
+    if (decimalPlaces > 0) {
+      const intPart = Math.trunc(Number(widerElement));
+      widerElement = `${intPart}.${['0'.repeat(decimalPlaces)]}`;
+    }
 
     // create fake mark to access element width
     const singleMark = createElement(

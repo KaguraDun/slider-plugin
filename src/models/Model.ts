@@ -1,4 +1,5 @@
 import { ObserverEvents } from '@/observer/ObserverEvents';
+import getDecimalPlaces from '@/helpers/getDecimalPlaces';
 
 import sliderErrors from './sliderErrors';
 import SliderSettings from './SliderSetting';
@@ -233,12 +234,16 @@ class Model {
     max,
     step,
   }: Pick<SliderState, 'maxIndex' | 'min' | 'max' | 'step'>) {
-    const decimalPlaces = String(step).split('.')[1]?.length;
+    const decimalPlaces = Math.max(
+      getDecimalPlaces(min),
+      getDecimalPlaces(max),
+      getDecimalPlaces(step),
+    );
 
     const generateFn = (_value: null, index: number) => {
       let result = min + index * step;
 
-      if (decimalPlaces !== undefined) {
+      if (decimalPlaces > 0) {
         result = Number(result.toFixed(decimalPlaces));
       }
 
