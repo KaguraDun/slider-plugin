@@ -51,23 +51,6 @@ class Model {
     this.observerEvents.stateChanged.notify(this.getState());
   };
 
-  private getClosestThumb(index: number): ThumbID {
-    const { isRange, fromIndex, toIndex } = this.getState();
-
-    const isToExist = isRange && toIndex !== undefined;
-    if (!isToExist) return ThumbID.from;
-
-    const distanceToFirst = Math.abs(fromIndex - index);
-    const distanceToSecond = Math.abs(toIndex - index);
-
-    const isFirstThumb =
-      distanceToFirst < distanceToSecond || index < fromIndex;
-
-    if (isFirstThumb) return ThumbID.from;
-
-    return ThumbID.to;
-  }
-
   setIndex = (index: number) => {
     const { maxIndex, values } = this.getState();
     const isIndexOutOfRange = index < 0 || index > maxIndex;
@@ -217,6 +200,23 @@ class Model {
 
   getIsVertical() {
     return this.state.isVertical;
+  }
+
+  private getClosestThumb(index: number): ThumbID {
+    const { isRange, fromIndex, toIndex } = this.getState();
+
+    const isToExist = isRange && toIndex !== undefined;
+    if (!isToExist) return ThumbID.from;
+
+    const distanceToFirst = Math.abs(fromIndex - index);
+    const distanceToSecond = Math.abs(toIndex - index);
+
+    const isFirstThumb =
+      distanceToFirst < distanceToSecond || index < fromIndex;
+
+    if (isFirstThumb) return ThumbID.from;
+
+    return ThumbID.to;
   }
 
   private updateRangeValues() {

@@ -5,7 +5,7 @@ import { ObserverSubject } from './ObserverSubject';
 
 type StateChanged = ObserverSubject<SliderState>;
 type ThumbMoved = ObserverSubject<Partial<SliderSettings>>;
-type ScaleMarkClicked = ObserverSubject<Partial<SliderSettings>>;
+type ScaleMarkClicked = ObserverSubject<number>;
 type TrackClicked = ObserverSubject<number>;
 type FromChanged = ObserverSubject<Pick<SliderSettings, 'from'>>;
 type ToChanged = ObserverSubject<Pick<SliderSettings, 'to'>>;
