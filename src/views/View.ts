@@ -51,7 +51,15 @@ class View {
   }
 
   init(container: HTMLElement, state: Readonly<SliderState>) {
-    const { fromIndex, toIndex, values, showTip } = state;
+    const {
+      fromIndex,
+      toIndex,
+      maxIndex,
+      values,
+      isVertical,
+      isRange,
+      showTip,
+    } = state;
     const fromValue = values[fromIndex];
     const toValue = toIndex !== undefined ? values[toIndex] : undefined;
 
@@ -59,11 +67,29 @@ class View {
     this.slider.render(this.container);
     this.track.render();
 
-    this.firstThumb.render(state);
+    this.firstThumb.init();
+    this.firstThumb.show(true);
+    this.firstThumb.move({
+      valueIndex: fromIndex,
+      isVertical,
+      maxIndex,
+      values,
+    });
     this.firstThumb.renderTip(fromValue, showTip);
     this.firstThumb.toggleTopElement(true);
 
-    this.secondThumb.render(state);
+    this.secondThumb.init();
+
+    if (toIndex !== undefined) {
+      this.secondThumb.show(isRange);
+      this.secondThumb.move({
+        valueIndex: toIndex,
+        isVertical,
+        maxIndex,
+        values,
+      });
+    }
+
     if (toValue !== undefined) this.secondThumb.renderTip(toValue, showTip);
 
     this.update(state);
@@ -93,7 +119,7 @@ class View {
       this.slider.toggleVertical(isVertical);
     }
 
-    if (this.hasStateChanged({ fromIndex, isVertical, values })) {
+    if (this.hasStateChanged({ fromIndex, isVertical, isRange, values })) {
       this.firstThumb.move({
         valueIndex: fromIndex,
         isVertical,
@@ -108,7 +134,8 @@ class View {
 
     const isToIndex = toIndex !== undefined;
     const shouldUpdateSecondTip =
-      isToIndex && this.hasStateChanged({ toIndex, isVertical, values });
+      isToIndex &&
+      this.hasStateChanged({ toIndex, isVertical, isRange, values });
 
     if (shouldUpdateSecondTip) {
       this.secondThumb.move({
