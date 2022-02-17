@@ -1,7 +1,7 @@
 import Track from '@/views/Track';
 import { fireEvent } from '@testing-library/dom';
 
-describe('Tip', () => {
+describe('Track', () => {
   let track: Track | null = null;
   let observerEventsMock: any | null= null;
 
@@ -49,7 +49,7 @@ describe('Tip', () => {
     expect(observerEventsMock.trackClicked.notify).toHaveBeenLastCalledWith(23);
 
     fireEvent.click(track!.element, { clientX: 200, clientY: 0 });
-    expect(observerEventsMock.trackClicked.notify).toHaveBeenLastCalledWith(23);
+    expect(observerEventsMock.trackClicked.notify).toHaveBeenLastCalledWith(100);
   })
 
 });
