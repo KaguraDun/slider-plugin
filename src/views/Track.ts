@@ -6,19 +6,21 @@ import SliderState from '@/models/SliderState';
 type ClickEventArguments = Pick<SliderState, 'isVertical' | 'maxIndex'>;
 
 class Track {
+  readonly parent: HTMLElement;
   readonly element: HTMLElement;
   private trackClicked: ObserverEvents['trackClicked'];
   private clickEventArguments: ClickEventArguments | undefined;
 
-  constructor(observerEvents: ObserverEvents) {
+  constructor(parent: HTMLElement, observerEvents: ObserverEvents) {
+    this.parent = parent;
     this.element = createElement('div', { class: 'slider__track' });
     this.trackClicked = observerEvents.trackClicked;
     this.clickEventArguments = undefined;
   }
 
-  render(parent: HTMLElement) {
+  render() {
     this.element.addEventListener('click', this.handleClick);
-    parent.append(this.element);
+    this.parent.append(this.element);
   }
 
   setClickEventArguments(clickEventArguments: ClickEventArguments) {

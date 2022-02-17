@@ -34,7 +34,7 @@ class View {
     this.observerEvents = observerEvents;
     this.container = null;
     this.slider = new Slider();
-    this.track = new Track(this.observerEvents);
+    this.track = new Track(this.slider.element, this.observerEvents);
     this.firstThumb = new Thumb({
       parent: this.track.element,
       thumbID: ThumbID.from,
@@ -57,7 +57,7 @@ class View {
 
     this.container = container;
     this.slider.render(this.container);
-    this.track.render(this.slider.element);
+    this.track.render();
 
     this.firstThumb.render(state);
     this.firstThumb.renderTip(fromValue, showTip);
