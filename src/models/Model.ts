@@ -81,7 +81,6 @@ class Model {
     this.setState({ min });
     this.generateValues();
     this.updateRangeValues();
-    this.checkThumbSwap();
   }
 
   getMin() {
@@ -92,7 +91,6 @@ class Model {
     this.setState({ max });
     this.generateValues();
     this.updateRangeValues();
-    this.checkThumbSwap();
   }
 
   getMax() {
@@ -185,9 +183,8 @@ class Model {
   }
 
   setIsRange(isRange: boolean) {
-    this.checkThumbSwap();
-
     this.setState({ isRange });
+    this.checkThumbSwap();
   }
 
   getIsRange() {
@@ -251,7 +248,7 @@ class Model {
   }
 
   private setState(newState: Partial<SliderState>) {
-    Object.assign(this.state, newState);
+    this.state = { ...this.getState(), ...newState };
 
     this.observerEvents.stateChanged.notify(this.getState());
   }
