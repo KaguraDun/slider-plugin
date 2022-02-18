@@ -2,6 +2,7 @@ import { fireEvent } from '@testing-library/dom';
 
 import SliderState from '@/models/SliderState';
 import Scale from '@/views/Scale';
+import { ObserverEvents } from '@/observer/ObserverEvents';
 
 describe('Scale', () => {
   let scale: Scale;
@@ -20,7 +21,7 @@ describe('Scale', () => {
     isVertical: false,
   };
 
-  const observerEventsMock: any = {
+  const observerEventsMock = {
     scaleMarkClicked: {
       notify: jest.fn((id: number) => id),
     },
@@ -48,7 +49,7 @@ describe('Scale', () => {
 
     document.body.append(slider);
 
-    scale = new Scale(slider, observerEventsMock);
+    scale = new Scale(slider, observerEventsMock as unknown as ObserverEvents);
   });
 
   afterEach(() => {

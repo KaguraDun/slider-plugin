@@ -1,18 +1,17 @@
 import Track from '@/views/Track';
 import { fireEvent } from '@testing-library/dom';
+import { ObserverEvents } from '@/observer/ObserverEvents';
 
 describe('Track', () => {
   let track: Track;
-  let observerEventsMock: any;
+  const observerEventsMock = {
+    trackClicked: {
+      notify: jest.fn((index: number) => index),
+    },
+  };
 
   beforeEach(() => {
-    observerEventsMock = {
-      trackClicked: {
-        notify: jest.fn((index: number) => index),
-      },
-    };
-
-    track = new Track(document.body, observerEventsMock);
+    track = new Track(document.body, observerEventsMock as unknown as ObserverEvents);
 
     const trackRect: DOMRect = {
       ...track.element.getBoundingClientRect(),

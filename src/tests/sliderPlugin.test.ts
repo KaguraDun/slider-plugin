@@ -6,10 +6,9 @@ import '@/ts/slider';
 
 describe('Slider', () => {
   let $slider: SliderMethods;
+  window.console.log = jest.fn();
 
   it('show error message in console when parent not found', () => {
-    window.console.log = jest.fn(() => true);
-
     const sliderOptions = {
       min: -10,
       max: 10,
@@ -24,8 +23,6 @@ describe('Slider', () => {
   });
 
   it('show error message when passing invalid option', () => {
-    window.console.log = jest.fn(() => true);
-
     const sliderOptions: Partial<SliderSettings> = {
       min: -10,
       max: 10,
@@ -44,8 +41,6 @@ describe('Slider', () => {
   });
 
   it('show error message in console when minimum parameters not passed', () => {
-    window.console.log = jest.fn(() => true);
-
     const sliderOptions: Partial<SliderSettings> = {
       from: 0,
     };
@@ -126,7 +121,7 @@ describe('Slider', () => {
   });
 
   it('should call callback when from changed', () => {
-    const callback = jest.fn(() => true);
+    const callback = jest.fn();
 
     $slider.fromChangedEvent(callback);
     $slider.setFrom(3);
@@ -135,7 +130,7 @@ describe('Slider', () => {
   });
 
   it('should call callback when to changed', () => {
-    const callback = jest.fn(() => true);
+    const callback = jest.fn();
 
     $slider.toChangedEvent(callback);
     $slider.setTo(9);

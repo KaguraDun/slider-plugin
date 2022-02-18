@@ -3,6 +3,7 @@ import { fireEvent } from '@testing-library/dom';
 import SliderState from '@/models/SliderState';
 import ThumbID from '@/models/ThumbID';
 import Thumb from '@/views/Thumb';
+import { ObserverEvents } from '@/observer/ObserverEvents';
 
 describe('Thumb', () => {
   let firstThumb: Thumb;
@@ -22,30 +23,28 @@ describe('Thumb', () => {
     showTip: false,
     isRange: false,
     isVertical: false,
+  }; 
+
+  const observerEventsMock = { 
+    thumbMoved: {
+      notify: jest.fn((thumb: { thumb: number } ) => thumb),
+    },  
   };
 
-  let observerEventsMock: any = null;
-
   beforeEach(() => {
-    observerEventsMock = {
-      thumbMoved: {
-        notify: jest.fn((thumb) => thumb),
-      },
-    };
-
     track = document.createElement('div');
     document.body.append(track);
 
     firstThumb = new Thumb({
       parent: track,
       thumbID: ThumbID.from,
-      observerEvents: observerEventsMock,
+      observerEvents: observerEventsMock as unknown as ObserverEvents,
     });
 
     secondThumb = new Thumb({
       parent: track,
       thumbID: ThumbID.to,
-      observerEvents: observerEventsMock,
+      observerEvents: observerEventsMock as unknown as ObserverEvents,
     });
 
     const thumbRect: DOMRect = {
@@ -173,11 +172,11 @@ describe('Thumb', () => {
       },
     };
 
-    firstThumb.element.getBoundingClientRect = jest.fn(
+    firstThumb.element.getBoundingClientRect = jest.fn().mockImplementationOnce(
       () => firstThumbRectVertical,
     );
 
-    track.getBoundingClientRect = jest.fn(() => trackRectVertical);
+    track.getBoundingClientRect = jest.fn().mockImplementationOnce(() => trackRectVertical);
 
     firstThumb.init();
     firstThumb.show(true);
