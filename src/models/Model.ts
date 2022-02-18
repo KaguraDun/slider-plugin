@@ -32,9 +32,11 @@ class Model {
     const { from, to, ...rest } = settings;
 
     Object.entries(rest).forEach(
-      ([setting, value]: [string, number | boolean]) => {
-        if (this.state.hasOwnProperty(setting)) {
-          Object.assign(this.state, { [setting]: value });
+      ([option, value]: [string, number | boolean]) => {
+        if (this.state.hasOwnProperty(option)) {
+          Object.assign(this.state, { [option]: value });
+        } else {
+          sliderErrors.throwOptionNotValid(option);
         }
       },
     );

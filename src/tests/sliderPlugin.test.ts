@@ -23,6 +23,26 @@ describe('Slider', () => {
     expect(window.console.log).toHaveBeenCalled();
   });
 
+  it('show error message when passing invalid option', () => {
+    window.console.log = jest.fn(() => true);
+
+    const sliderOptions: Partial<SliderSettings> = {
+      min: -10,
+      max: 10,
+      from: 0,
+      // @ts-ignore
+      notValidOption: 'notValidOption',
+    };
+
+    const parent = document.createElement('div');
+    document.body.append(parent);
+
+    // @ts-ignore
+    $(parent).createSlider(sliderOptions);
+
+    expect(window.console.log).toHaveBeenCalled();
+  });
+
   it('show error message in console when minimum parameters not passed', () => {
     window.console.log = jest.fn(() => true);
 
