@@ -1,12 +1,11 @@
 import $ from 'jquery';
 
-import SliderSettings  from '@/models/SliderSetting';
+import SliderSettings from '@/models/SliderSetting';
 import SliderMethods from '@/ts/SliderMethods';
-
 import '@/ts/slider';
 
 describe('Slider', () => {
-  let $slider: SliderMethods | null = null;
+  let $slider: SliderMethods;
 
   it('show error message in console when parent not found', () => {
     window.console.log = jest.fn(() => true);
@@ -17,11 +16,9 @@ describe('Slider', () => {
       from: 0,
     };
 
-    const notExistedElement = document.querySelector(
-      '.not-existed-element',
-    );
-
-    $(notExistedElement!).createSlider(sliderOptions);
+    const notExistedElement = document.querySelector('.not-existed-element');
+    // @ts-ignore
+    $(notExistedElement).createSlider(sliderOptions);
 
     expect(window.console.log).toHaveBeenCalled();
   });
@@ -60,59 +57,59 @@ describe('Slider', () => {
   });
 
   it('should set min', () => {
-    $slider!.setMin(-100);
-    expect($slider!.getMin()).toEqual(-100);
+    $slider.setMin(-100);
+    expect($slider.getMin()).toEqual(-100);
   });
 
   it('should set max', () => {
-    $slider!.setMax(100);
-    expect($slider!.getMax()).toEqual(100);
+    $slider.setMax(100);
+    expect($slider.getMax()).toEqual(100);
   });
 
   it('should set step', () => {
-    $slider!.setStep(5);
-    expect($slider!.getStep()).toEqual(5);
+    $slider.setStep(5);
+    expect($slider.getStep()).toEqual(5);
   });
 
   it('should set from value', () => {
-    expect($slider!.getFrom()).toEqual(0);
+    expect($slider.getFrom()).toEqual(0);
   });
 
   it('should set to value', () => {
-    $slider!.setTo(5);
-    expect($slider!.getTo()).toEqual(5);
+    $slider.setTo(5);
+    expect($slider.getTo()).toEqual(5);
   });
 
   it('should set isRange', () => {
-    $slider!.setIsRange(true);
-    expect($slider!.getIsRange()).toEqual(true);
+    $slider.setIsRange(true);
+    expect($slider.getIsRange()).toEqual(true);
   });
 
   it('should set isVertical', () => {
-    $slider!.setIsVertical(true);
-    expect($slider!.getIsVertical()).toEqual(true);
+    $slider.setIsVertical(true);
+    expect($slider.getIsVertical()).toEqual(true);
   });
 
   it('should set show bar', () => {
-    $slider!.setShowBar(true);
-    expect($slider!.getShowBar()).toEqual(true);
+    $slider.setShowBar(true);
+    expect($slider.getShowBar()).toEqual(true);
   });
 
   it('should set show tip', () => {
-    $slider!.setShowTip(true);
-    expect($slider!.getShowTip()).toEqual(true);
+    $slider.setShowTip(true);
+    expect($slider.getShowTip()).toEqual(true);
   });
 
   it('should set show scale', () => {
-    $slider!.setShowScale(true);
-    expect($slider!.getShowScale()).toEqual(true);
+    $slider.setShowScale(true);
+    expect($slider.getShowScale()).toEqual(true);
   });
 
   it('should call callback when from changed', () => {
     const callback = jest.fn(() => true);
 
-    $slider!.fromChangedEvent(callback);
-    $slider!.setFrom(3);
+    $slider.fromChangedEvent(callback);
+    $slider.setFrom(3);
 
     expect(callback).toHaveBeenCalled();
   });
@@ -120,8 +117,8 @@ describe('Slider', () => {
   it('should call callback when to changed', () => {
     const callback = jest.fn(() => true);
 
-    $slider!.toChangedEvent(callback);
-    $slider!.setTo(9);
+    $slider.toChangedEvent(callback);
+    $slider.setTo(9);
 
     expect(callback).toHaveBeenCalled();
   });

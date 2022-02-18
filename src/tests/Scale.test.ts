@@ -4,8 +4,7 @@ import SliderState from '@/models/SliderState';
 import Scale from '@/views/Scale';
 
 describe('Scale', () => {
-  let scale: Scale | null = null;
-
+  let scale: Scale;
   let mockState: SliderState = {
     fromIndex: 0,
     min: -5,
@@ -57,41 +56,47 @@ describe('Scale', () => {
   });
 
   it('should render', () => {
-    scale!.render({
+    scale.render({
       state: mockState,
       percentPerMark: 6.309,
       thumbRect,
     });
 
-    expect(scale!.element).toBeInTheDocument();
+    expect(scale.element).toBeInTheDocument();
   });
 
   it('should not render', () => {
     const newMockState = { ...mockState, showScale: false };
 
-    scale!.render({
+    scale.render({
       state: newMockState,
       percentPerMark: 6.309,
       thumbRect,
     });
 
-    expect(scale!.element).not.toBeInTheDocument();
+    expect(scale.element).not.toBeInTheDocument();
   });
 
   it('should handle scale clicks', () => {
-    scale!.render({
+    scale.render({
       state: mockState,
       percentPerMark: 6.309,
       thumbRect,
     });
 
-    fireEvent.click(scale!.element.childNodes[0]);
-    expect(observerEventsMock.scaleMarkClicked.notify).toHaveBeenLastCalledWith(0);
+    fireEvent.click(scale.element.childNodes[0]);
+    expect(observerEventsMock.scaleMarkClicked.notify).toHaveBeenLastCalledWith(
+      0,
+    );
 
-    fireEvent.click(scale!.element.childNodes[5]);
-    expect(observerEventsMock.scaleMarkClicked.notify).toHaveBeenLastCalledWith(5);
+    fireEvent.click(scale.element.childNodes[5]);
+    expect(observerEventsMock.scaleMarkClicked.notify).toHaveBeenLastCalledWith(
+      5,
+    );
 
-    fireEvent.click(scale!.element.childNodes[10]);
-    expect(observerEventsMock.scaleMarkClicked.notify).toHaveBeenLastCalledWith(10);
+    fireEvent.click(scale.element.childNodes[10]);
+    expect(observerEventsMock.scaleMarkClicked.notify).toHaveBeenLastCalledWith(
+      10,
+    );
   });
 });
