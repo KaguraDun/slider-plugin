@@ -137,6 +137,14 @@ class Presenter {
     return this.model.getStep();
   }
 
+  getValues() {
+    return this.model.getValues();
+  }
+
+  setOptions(options: SliderSettings) {
+    this.model.setOptions(options);
+  }
+
   private runFromChangedCallback = () => {
     this.fromChangedCallback();
   };

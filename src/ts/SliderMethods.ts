@@ -1,3 +1,5 @@
+import SliderSettings from './../models/SliderSetting';
+
 interface SliderMethods {
   fromChangedEvent(callback: () => void): SliderMethods;
   toChangedEvent(callback: () => void): SliderMethods;
@@ -21,6 +23,8 @@ interface SliderMethods {
   getIsRange(): boolean;
   setIsVertical(isVertical: boolean): SliderMethods;
   getIsVertical(): boolean;
+  getValues(): number[];
+  setOptions(options: SliderSettings): SliderMethods;
 }
 
 export default SliderMethods;

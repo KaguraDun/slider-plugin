@@ -21,11 +21,13 @@ UML diagram
 * Single value / range
 * Interface for change slider values
 * Interactive scale of values
+* Interactive track
 * Progress bar
 * Value tip
 * Toggle elements: tip, bar, scale 
 * Work with touch devices
 * Responsive
+* Integer / float values
 ## API
 ### Usage Example
 ```js
@@ -66,8 +68,8 @@ UML diagram
 
 ### Methods
 ```js
-fromChangedEvent(callback: () =>  void)
-toChangedEvent(callback: () =>  void)
+fromChangedEvent(callback: () =>  void) // run callback when from changed
+toChangedEvent(callback: () =>  void) // run callback when to changed
 setFrom(from)
 getFrom();
 setTo(to)
@@ -88,6 +90,8 @@ setIsRange(isRange)
 getIsRange();
 setIsVertical(isVertical)
 getIsVertical();
+getValues(); // get array of slider values
+setOptions(sliderOptions); // set multiple options 
 ```
 
 ## Use tips

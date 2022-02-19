@@ -201,6 +201,10 @@ class Model {
     return this.state.isVertical;
   }
 
+  getValues() {
+    return [...this.state.values];
+  }
+
   private getClosestThumb(index: number): ThumbID {
     const { isRange, fromIndex, toIndex } = this.getState();
 

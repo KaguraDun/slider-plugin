@@ -88,5 +88,12 @@ $.fn.createSlider = function (options: SliderSettings) {
     getIsVertical() {
       return slider.getIsVertical();
     },
+    getValues() {
+      return slider.getValues();
+    },
+    setOptions(sliderOptions: SliderSettings) {
+      slider.setOptions(sliderOptions);
+      return this;
+    },
   };
 };
