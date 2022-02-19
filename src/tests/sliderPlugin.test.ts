@@ -137,4 +137,24 @@ describe('Slider', () => {
 
     expect(callback).toHaveBeenCalled();
   });
+
+  it('should return array of values', () => {
+    const values = $slider.getValues();
+    const sliderValues = [
+      -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+    ];
+    expect(values).toEqual(sliderValues);
+  });
+
+  it('should set multiple options', () => {
+    $slider.setOptions({
+      min: -100,
+      max: 100,
+      step: 25,
+    });
+
+    expect($slider.getMin()).toEqual(-100);
+    expect($slider.getMax()).toEqual(100);
+    expect($slider.getStep()).toEqual(25);
+  });
 });
