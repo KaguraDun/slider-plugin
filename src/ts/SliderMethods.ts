@@ -24,7 +24,7 @@ interface SliderMethods {
   setIsVertical(isVertical: boolean): SliderMethods;
   getIsVertical(): boolean;
   getValues(): number[];
-  setOptions(options: SliderSettings): SliderMethods;
+  setOptions(options: Partial<SliderSettings>): SliderMethods;
 }
 
 export default SliderMethods;

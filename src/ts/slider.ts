@@ -91,7 +91,7 @@ $.fn.createSlider = function (options: SliderSettings) {
     getValues() {
       return slider.getValues();
     },
-    setOptions(sliderOptions: SliderSettings) {
+    setOptions(sliderOptions: Partial<SliderSettings>) {
       slider.setOptions(sliderOptions);
       return this;
     },

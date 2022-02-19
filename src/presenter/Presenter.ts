@@ -141,7 +141,7 @@ class Presenter {
     return this.model.getValues();
   }
 
-  setOptions(options: SliderSettings) {
+  setOptions(options: Partial<SliderSettings>) {
     this.model.setOptions(options);
   }
 
