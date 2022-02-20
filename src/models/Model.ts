@@ -154,7 +154,7 @@ class Model {
     let validatedStep = step;
 
     if (step <= 0) {
-      validatedStep = 0;
+      validatedStep = 1;
       sliderErrors.throwStepMustBeAboveZero();
     }
 
