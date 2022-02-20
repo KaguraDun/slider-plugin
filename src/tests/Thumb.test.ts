@@ -185,4 +185,19 @@ describe('Thumb', () => {
     const firstThumbTop = Number.parseInt(firstThumb.element.style.top, 10);
     expect(firstThumbTop).toEqual(47);
   });
+
+  it('should set top thumb', ()=>{
+    const newMockState = { isRange: true };
+
+    firstThumb.init();
+    secondThumb.init();
+    firstThumb.show(true);
+    secondThumb.show(newMockState.isRange);
+
+    firstThumb.toggleTopElement(true);
+
+    expect(firstThumb.element.classList).toContain('slider__thumb_top');
+    expect(secondThumb.element.classList).not.toContain('slider__thumb_top');
+
+  })
 });
