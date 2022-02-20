@@ -68,11 +68,11 @@ class Model {
     const [thumb] = Object.keys(thumbID);
 
     if (thumb === ThumbID.from) {
-      this.setFrom(Number(thumbID.from));
+      this.setFrom(thumbID.from!);
       return;
     }
 
-    if (thumb === ThumbID.to) this.setTo(Number(thumbID.to));
+    if (thumb === ThumbID.to) this.setTo(thumbID.to!);
   };
 
   getState() {
@@ -100,15 +100,13 @@ class Model {
   }
 
   setFrom(from: number) {
-    const { min, max, isRange, toIndex, values, maxIndex } = this.getState();
+    const { min, max, isRange, toIndex, values } = this.getState();
     let fromIndex = values.indexOf(Number(from));
 
     if (fromIndex === -1) {
       sliderErrors.throwOptionOutOfRange(ThumbID.from, min, max);
       fromIndex = 0;
     }
-
-    if (fromIndex > maxIndex) fromIndex = maxIndex;
 
     const isToIndexSet = isRange && toIndex !== undefined;
     const shouldEqualizeFromWithTo = isToIndexSet && fromIndex > toIndex;
@@ -133,8 +131,6 @@ class Model {
       toIndex = maxIndex;
     }
 
-    if (toIndex > maxIndex) toIndex = maxIndex;
-
     const shouldEqualizeToWithFrom = isRange && toIndex <= fromIndex;
     if (shouldEqualizeToWithFrom) toIndex = fromIndex;
 
@@ -145,9 +141,8 @@ class Model {
   }
 
   getTo() {
-    const { toIndex = this.getState().maxIndex } = this.getState();
-
-    return this.state.values[toIndex];
+    const { toIndex } = this.getState();
+    return this.state.values[toIndex!];
   }
 
   setStep(step: number) {
@@ -193,7 +188,7 @@ class Model {
 
   setIsRange(isRange: boolean) {
     this.setState({ isRange });
-    this.checkThumbSwap();
+    this.swapThumbs();
   }
 
   getIsRange() {
@@ -242,27 +237,18 @@ class Model {
     }
   }
 
-  private checkThumbSwap() {
-    const { fromIndex, toIndex } = this.getState();
-
+  private swapThumbs() {
+    const { values, fromIndex, toIndex } = this.getState();
     const shouldSwapThumbs = toIndex !== undefined && toIndex < fromIndex;
 
     if (shouldSwapThumbs) {
-      this.swapThumbValues();
+      this.setTo(values[fromIndex]);
+      this.setFrom(values[toIndex]);
     }
-  }
-
-  private swapThumbValues() {
-    const { values, fromIndex, toIndex } = this.getState();
-    if (toIndex === undefined) return;
-
-    this.setTo(values[fromIndex]);
-    this.setFrom(values[toIndex]);
   }
 
   private setState(newState: Partial<SliderState>) {
     this.state = { ...this.getState(), ...newState };
-
     this.observerEvents.stateChanged.notify(this.getState());
   }
 
