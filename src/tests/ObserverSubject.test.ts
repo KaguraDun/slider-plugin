@@ -13,6 +13,17 @@ describe('Observer', () => {
     expect(testFunction).toBeCalledWith(10);
   });
 
+  it('should notify function if event attached several times', () => {
+    const testFunction = jest.fn((value: number) => value);
+
+    testObserverEvent.attach(testFunction);
+    testObserverEvent.attach(testFunction);
+    testObserverEvent.attach(testFunction);
+
+    testObserverEvent.notify(10);
+    expect(testFunction).toBeCalledWith(10);
+  });
+
   it('should not notify a function if it is not attached', () => {
     const testFunction = jest.fn((value: number) => value);
 
