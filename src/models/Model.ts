@@ -151,7 +151,14 @@ class Model {
   }
 
   setStep(step: number) {
-    this.setState({ step });
+    let validatedStep = step;
+
+    if (step <= 0) {
+      validatedStep = 0;
+      sliderErrors.throwStepMustBeAboveZero();
+    }
+
+    this.setState({ step: validatedStep });
     this.generateValues();
     this.updateRangeValues();
   }
@@ -291,8 +298,6 @@ class Model {
 
   private generateValues() {
     const { min, max, step } = this.getState();
-
-    if (step <= 0) return;
 
     const maxIndex = Math.ceil(Math.abs((max - min) / step));
     const values = this.generateNumberSequence({

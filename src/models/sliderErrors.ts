@@ -11,6 +11,9 @@ const sliderErrors = {
   throwMinimumOptionsRequired: () => {
     console.log(`Options: min, max and from are required`);
   },
+  throwStepMustBeAboveZero: () => {
+    console.log(`Step must be above zero`);
+  },
 };
 
 export default sliderErrors;

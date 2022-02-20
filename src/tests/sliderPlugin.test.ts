@@ -23,7 +23,7 @@ describe('Slider', () => {
   });
 
   it('show error message when passing invalid option', () => {
-    const sliderOptions: Partial<SliderSettings> = {
+    const sliderOptions: SliderSettings = {
       min: -10,
       max: 10,
       from: 0,
@@ -34,7 +34,6 @@ describe('Slider', () => {
     const parent = document.createElement('div');
     document.body.append(parent);
 
-    // @ts-ignore
     $(parent).createSlider(sliderOptions);
 
     expect(window.console.log).toHaveBeenCalled();
@@ -49,6 +48,22 @@ describe('Slider', () => {
     document.body.append(parent);
 
     // @ts-ignore
+    $(parent).createSlider(sliderOptions);
+
+    expect(window.console.log).toHaveBeenCalled();
+  });
+
+  it('show error message in console when step below zero', () => {
+    const sliderOptions: SliderSettings = {
+      min: -10,
+      max: 10,
+      from: 0,
+      step: -10,
+    };
+
+    const parent = document.createElement('div');
+    document.body.append(parent);
+
     $(parent).createSlider(sliderOptions);
 
     expect(window.console.log).toHaveBeenCalled();
