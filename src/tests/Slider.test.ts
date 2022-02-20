@@ -4,28 +4,29 @@ describe('Slider', () => {
   const container = document.createElement('div');
   document.body.append(container);
 
-  let slider: Slider | null = null;
+  let slider: Slider;
 
   beforeEach(() => {
     slider = new Slider();
   });
+
   afterEach(() => {
     container.innerHTML = '';
   });
 
   it('should render', () => {
-    slider!.render(container);
+    slider.render(container);
 
-    expect(slider!.element).toBeInTheDocument();
+    expect(slider.element).toBeInTheDocument();
   });
 
   it('should toggle vertical', () => {
-    slider!.render(container);
+    slider.render(container);
 
-    slider!.toggleVertical(true);
-    expect(slider!.element).toHaveClass('slider_vertical');
+    slider.toggleVertical(true);
+    expect(slider.element).toHaveClass('slider_vertical');
 
-    slider!.toggleVertical(false);
-    expect(slider!.element).not.toHaveClass('slider_vertical');
+    slider.toggleVertical(false);
+    expect(slider.element).not.toHaveClass('slider_vertical');
   });
 });

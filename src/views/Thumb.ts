@@ -2,7 +2,6 @@ import createElement from '@/helpers/createElement';
 import getPercentOfNumber from '@/helpers/getPercentOfNumber';
 import { getSizeLiteral, getOffsetLiteral } from '@/helpers/getLiteral';
 import SliderState from '@/models/SliderState';
-import ThumbID from '@/models/ThumbID';
 import { ObserverEvents } from '@/observer/ObserverEvents';
 
 import Tip from './Tip';
@@ -41,37 +40,9 @@ class Thumb {
     this.moveArguments = null;
   }
 
-  getPercentPerMark({ isVertical, maxIndex }: GetPercentPerMarkProps) {
-    if (!this.parent) return 0;
-
-    const thumb = this.element.getBoundingClientRect();
-    const track = this.parent.getBoundingClientRect();
-    const size = getSizeLiteral(isVertical);
-
-    const pxPerMark = (track[size] - thumb[size]) / maxIndex;
-    const movePercent = getPercentOfNumber(pxPerMark, track[size]);
-
-    return movePercent;
-  }
-
-  render(state: Readonly<SliderState>) {
-    const { isRange, isVertical, fromIndex, toIndex, maxIndex, values } = state;
-
+  init() {
     this.element.addEventListener('pointerdown', this.handleDragThumb);
     this.element.addEventListener('dragstart', this.handleDragStart);
-
-    this.show(isRange);
-
-    if (this.thumbID === ThumbID.from) {
-      this.move({ valueIndex: fromIndex, isVertical, maxIndex, values });
-      return;
-    }
-
-    const shouldMoveTo = this.thumbID === ThumbID.to && toIndex !== undefined;
-    if (shouldMoveTo) {
-      this.move({ valueIndex: toIndex, isVertical, maxIndex, values });
-      return;
-    }
   }
 
   move(props: MoveProps) {
@@ -106,6 +77,19 @@ class Thumb {
 
   toggleTopElement(isTopElement: boolean) {
     this.element.classList.toggle('slider__thumb_top', isTopElement);
+  }
+
+  getPercentPerMark({ isVertical, maxIndex }: GetPercentPerMarkProps) {
+    if (!this.parent) return 0;
+
+    const thumb = this.element.getBoundingClientRect();
+    const track = this.parent.getBoundingClientRect();
+    const size = getSizeLiteral(isVertical);
+
+    const pxPerMark = (track[size] - thumb[size]) / maxIndex;
+    const percentPerMark = getPercentOfNumber(pxPerMark, track[size]);
+
+    return percentPerMark;
   }
 
   getOffsetPercent(isVertical: boolean) {

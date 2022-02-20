@@ -34,7 +34,7 @@ class View {
     this.observerEvents = observerEvents;
     this.container = null;
     this.slider = new Slider();
-    this.track = new Track();
+    this.track = new Track(this.slider.element, this.observerEvents);
     this.firstThumb = new Thumb({
       parent: this.track.element,
       thumbID: ThumbID.from,
@@ -51,19 +51,45 @@ class View {
   }
 
   init(container: HTMLElement, state: Readonly<SliderState>) {
-    const { fromIndex, toIndex, values, showTip } = state;
+    const {
+      fromIndex,
+      toIndex,
+      maxIndex,
+      values,
+      isVertical,
+      isRange,
+      showTip,
+    } = state;
     const fromValue = values[fromIndex];
     const toValue = toIndex !== undefined ? values[toIndex] : undefined;
 
     this.container = container;
     this.slider.render(this.container);
-    this.track.render(this.slider.element);
+    this.track.render();
 
-    this.firstThumb.render(state);
+    this.firstThumb.init();
+    this.firstThumb.show(true);
+    this.firstThumb.move({
+      valueIndex: fromIndex,
+      isVertical,
+      maxIndex,
+      values,
+    });
     this.firstThumb.renderTip(fromValue, showTip);
     this.firstThumb.toggleTopElement(true);
 
-    this.secondThumb.render(state);
+    this.secondThumb.init();
+
+    if (toIndex !== undefined) {
+      this.secondThumb.show(isRange);
+      this.secondThumb.move({
+        valueIndex: toIndex,
+        isVertical,
+        maxIndex,
+        values,
+      });
+    }
+
     if (toValue !== undefined) this.secondThumb.renderTip(toValue, showTip);
 
     this.update(state);
@@ -71,9 +97,6 @@ class View {
 
   update = (state: Readonly<SliderState>) => {
     const {
-      min,
-      max,
-      step,
       fromIndex,
       toIndex,
       maxIndex,
@@ -85,11 +108,18 @@ class View {
       isVertical,
     } = state;
 
+    if (this.hasStateChanged({ maxIndex, isVertical })) {
+      this.track.setClickEventArguments({
+        maxIndex,
+        isVertical,
+      });
+    }
+
     if (this.hasStateChanged({ isVertical })) {
       this.slider.toggleVertical(isVertical);
     }
 
-    if (this.hasStateChanged({ fromIndex, isVertical, min, max, step })) {
+    if (this.hasStateChanged({ fromIndex, isVertical, isRange, values })) {
       this.firstThumb.move({
         valueIndex: fromIndex,
         isVertical,
@@ -105,7 +135,7 @@ class View {
     const isToIndex = toIndex !== undefined;
     const shouldUpdateSecondTip =
       isToIndex &&
-      this.hasStateChanged({ toIndex, isVertical, min, max, step });
+      this.hasStateChanged({ toIndex, isVertical, isRange, values });
 
     if (shouldUpdateSecondTip) {
       this.secondThumb.move({
@@ -116,8 +146,10 @@ class View {
       });
     }
 
-    const fromValue = values[fromIndex];
-    const toValue = isToIndex ? values[toIndex] : undefined;
+    if (this.hasStateChanged({ showTip })) {
+      this.firstThumb.tip.show(showTip);
+      this.secondThumb.tip.show(showTip);
+    }
 
     if (
       this.hasStateChanged({
@@ -125,14 +157,11 @@ class View {
         toIndex,
         isRange,
         isVertical,
-        step,
-        showTip,
-        min,
-        max,
+        values,
       })
     ) {
-      this.firstThumb.tip.show(showTip);
-      this.secondThumb.tip.show(showTip);
+      const fromValue = values[fromIndex];
+      const toValue = isToIndex ? values[toIndex] : undefined;
 
       this.updateTips({
         fromValue,
@@ -148,13 +177,10 @@ class View {
 
     if (
       this.hasStateChanged({
-        min,
-        max,
-        step,
         isVertical,
-        values,
         fromIndex,
         toIndex,
+        values,
       })
     ) {
       this.scale.render({
@@ -177,9 +203,7 @@ class View {
         toIndex,
         isRange,
         isVertical,
-        min,
-        max,
-        step,
+        values,
       })
     ) {
       this.updateBar(isVertical, isRange);
@@ -280,15 +304,24 @@ class View {
 
   private hasStateChanged(stateValues: Partial<SliderState>) {
     if (!this.prevState) return true;
-    let isChanged = false;
+    let isStateChanged = false;
 
     Object.entries(stateValues).forEach(([name, value]) => {
-      if (this.prevState?.[name as keyof SliderState] !== value) {
-        isChanged = true;
+      let isValueChanged = false;
+
+      if (name === 'values') {
+        isValueChanged =
+          JSON.stringify(this.prevState?.values) !== JSON.stringify(value);
+      } else {
+        isValueChanged = this.prevState?.[name as keyof SliderState] !== value;
+      }
+
+      if (isValueChanged) {
+        isStateChanged = true;
       }
     });
 
-    return isChanged;
+    return isStateChanged;
   }
 }
 

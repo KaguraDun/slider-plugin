@@ -19,7 +19,10 @@
         }
       ],
       "prettier/prettier": [
-        "error"
+        "error",
+        {
+          "endOfLine": "auto"
+        }
       ],
       "lines-between-class-members": "off",
       "@typescript-eslint/lines-between-class-members": ["off"],

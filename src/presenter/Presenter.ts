@@ -45,7 +45,8 @@ class Presenter {
     this.observerEvents.toChanged.attach(this.view.setTopThumb);
 
     this.observerEvents.thumbMoved.attach(this.model.setThumb);
-    this.observerEvents.scaleClick.attach(this.model.setThumb);
+    this.observerEvents.scaleMarkClicked.attach(this.model.setIndex);
+    this.observerEvents.trackClicked.attach(this.model.setIndex);
   }
 
   addFromChangedCallback(callback: () => void) {
@@ -134,6 +135,14 @@ class Presenter {
 
   getStep() {
     return this.model.getStep();
+  }
+
+  getValues() {
+    return this.model.getValues();
+  }
+
+  setOptions(options: Partial<SliderSettings>) {
+    this.model.setOptions(options);
   }
 
   private runFromChangedCallback = () => {
