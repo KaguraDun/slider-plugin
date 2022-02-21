@@ -12,8 +12,8 @@ The Observer pattern is used to pass data between Model and View.
 
 The Presenter create Model and View and attach observer events to them. The presenter contains an interface with functions for getting/setting slider properties and from/to modified callbacks for a jQuery slider instance.
 
-UML diagram
-![jQery slider plugin (1)](https://user-images.githubusercontent.com/54976219/148756009-6b2d532a-1a4d-4446-9add-04b0d9cd2b72.png)
+### UML diagram
+![jQery slider plugin (2)](https://user-images.githubusercontent.com/54976219/155003005-31e9bde5-85d5-41e7-9809-83411fc66d9b.png)
 
 ### Main features
 * Change step
