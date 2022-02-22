@@ -200,6 +200,7 @@ class Model {
   setIsRange(isRange: boolean) {
     this.setState({ isRange });
     this.swapThumbs();
+    this.updateRangeValues();
   }
 
   getIsRange() {
