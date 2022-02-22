@@ -29,7 +29,11 @@ class Model {
   }
 
   setOptions = (settings: Partial<SliderSettings>) => {
-    const { from, to, ...rest } = settings;
+    const { min, max, step, from, to, ...rest } = settings;
+
+    if (min) this.setState({ min });
+    if (max) this.setState({ max });
+    if (step) this.setStep(step);
 
     Object.entries(rest).forEach(
       ([option, value]: [string, number | boolean]) => {
@@ -146,11 +150,18 @@ class Model {
   }
 
   setStep(step: number) {
+    const { min, max } = this.getState();
+
     let validatedStep = step;
 
     if (step <= 0) {
       validatedStep = 1;
       sliderErrors.throwStepMustBeAboveZero();
+    }
+
+    const diff = Math.abs(max - min);
+    if (step > diff) {
+      validatedStep = diff;
     }
 
     this.setState({ step: validatedStep });
@@ -189,6 +200,7 @@ class Model {
   setIsRange(isRange: boolean) {
     this.setState({ isRange });
     this.swapThumbs();
+    this.updateRangeValues();
   }
 
   getIsRange() {
