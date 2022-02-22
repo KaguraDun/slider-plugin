@@ -23,12 +23,12 @@ describe('Thumb', () => {
     showTip: false,
     isRange: false,
     isVertical: false,
-  }; 
+  };
 
-  const observerEventsMock = { 
+  const observerEventsMock = {
     thumbMoved: {
-      notify: jest.fn((thumb: { thumb: number } ) => thumb),
-    },  
+      notify: jest.fn((thumb: { thumb: number }) => thumb),
+    },
   };
 
   beforeEach(() => {
@@ -172,11 +172,13 @@ describe('Thumb', () => {
       },
     };
 
-    firstThumb.element.getBoundingClientRect = jest.fn().mockImplementationOnce(
-      () => firstThumbRectVertical,
-    );
+    firstThumb.element.getBoundingClientRect = jest
+      .fn()
+      .mockImplementationOnce(() => firstThumbRectVertical);
 
-    track.getBoundingClientRect = jest.fn().mockImplementationOnce(() => trackRectVertical);
+    track.getBoundingClientRect = jest
+      .fn()
+      .mockImplementationOnce(() => trackRectVertical);
 
     firstThumb.init();
     firstThumb.show(true);
@@ -186,7 +188,7 @@ describe('Thumb', () => {
     expect(firstThumbTop).toEqual(47);
   });
 
-  it('should set top thumb', ()=>{
+  it('should set top thumb', () => {
     const newMockState = { isRange: true };
 
     firstThumb.init();
@@ -198,6 +200,5 @@ describe('Thumb', () => {
 
     expect(firstThumb.element.classList).toContain('slider__thumb_top');
     expect(secondThumb.element.classList).not.toContain('slider__thumb_top');
-
-  })
+  });
 });

@@ -1,11 +1,12 @@
-import Track from '@/views/Track';
 import { fireEvent } from '@testing-library/dom';
+
+import Track from '@/views/Track';
 import { ObserverEvents } from '@/observer/ObserverEvents';
 
-interface ObserverEventsMock{
+interface ObserverEventsMock {
   trackClicked: {
     notify: jest.Mock;
-  }
+  };
 }
 
 describe('Track', () => {
@@ -19,7 +20,10 @@ describe('Track', () => {
       },
     };
 
-    track = new Track(document.body, observerEventsMock as unknown as ObserverEvents);
+    track = new Track(
+      document.body,
+      observerEventsMock as unknown as ObserverEvents,
+    );
 
     const trackRect: DOMRect = {
       ...track.element.getBoundingClientRect(),
@@ -36,7 +40,7 @@ describe('Track', () => {
 
   afterEach(() => {
     document.body.innerHTML = '';
-    observerEventsMock = {...observerEventsMock}
+    observerEventsMock = { ...observerEventsMock };
   });
 
   it('should render', () => {
@@ -91,12 +95,11 @@ describe('Track', () => {
     );
   });
 
-  it('should not handle click if event arguments is not set', ()=>{
+  it('should not handle click if event arguments is not set', () => {
     track.render();
 
     fireEvent.click(track.element, { clientX: 10, clientY: 0 });
 
     expect(observerEventsMock.trackClicked.notify).not.toHaveBeenCalled();
-  })
-
+  });
 });
