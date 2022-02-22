@@ -185,6 +185,13 @@ describe('Model', () => {
     expect(model.getTo()).toEqual(10);
   });
 
+  it('should validate step when max-min difference below step', () => {
+    model.setMax(-9);
+    model.setStep(5);
+
+    expect(model.getStep()).toEqual(1);
+  });
+
   it('should generate array of integer values', () => {
     model.setOptions({
       min: -50,

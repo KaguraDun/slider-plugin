@@ -8,6 +8,15 @@ interface SliderPanelProps {
   container: Element;
 }
 
+interface InputChangeHandler {
+  handler(value: number | boolean): void;
+}
+
+interface ChangedRange {
+  min?: number;
+  max?: number;
+}
+
 class SliderPanel {
   readonly container: Element;
   private $slider: SliderMethods;
@@ -92,10 +101,9 @@ class SliderPanel {
 
     if (!target) return;
 
-    const { handler }: { handler(value: number | boolean): void } =
-      Object.values(this.panelItems).filter(
-        ({ name }) => name === target.name,
-      )[0];
+    const { handler }: InputChangeHandler = Object.values(
+      this.panelItems,
+    ).filter(({ name }) => name === target.name)[0];
 
     if (target.type === TypeLiterals.checkbox) {
       handler(target.checked);
@@ -108,13 +116,31 @@ class SliderPanel {
     handler(value);
   };
 
+  private updateStep(changedRange: ChangedRange) {
+    const step = Number(this.inputList.step.value);
+    const validatedStep = String(this.validateStep(step, changedRange));
+
+    if (validatedStep !== String(step)) {
+      this.inputList.step.value = validatedStep;
+
+      const { handler }: InputChangeHandler = this.panelItems.step;
+      handler(Number(validatedStep));
+    }
+  }
+
   private validateNumberInputs(name: string, value: number) {
     if (name === 'min') {
-      return this.validateMin(value);
+      const validatedMin = this.validateMin(value);
+      this.updateStep({ min: validatedMin });
+
+      return validatedMin;
     }
 
     if (name === 'max') {
-      return this.validateMax(value);
+      const validatedMax = this.validateMax(value);
+      this.updateStep({ max: validatedMax });
+
+      return validatedMax;
     }
 
     if (name === 'step') {
@@ -145,9 +171,9 @@ class SliderPanel {
     return value;
   }
 
-  private validateStep(value: number) {
-    const min = this.$slider.getMin();
-    const max = this.$slider.getMax();
+  private validateStep(value: number, changedRange?: ChangedRange) {
+    const min = changedRange?.min || this.$slider.getMin();
+    const max = changedRange?.max || this.$slider.getMax();
     const maxStep = Math.abs(max - min);
     const minStepValue = 1;
 
